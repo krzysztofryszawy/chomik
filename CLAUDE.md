@@ -16,8 +16,9 @@ created with an agent and checked deterministically in CI.
   Squash commit and pull request titles follow Conventional Commits (`feat: …`, `fix: …`, `docs: …`,
   `test: …`, `chore: …`) with the same type as the branch. The squash merge uses
   that title, so `main` reads as a changelog.
-- `package.json` has `"private": true` until the first release, so nothing can be
-  published by accident.
+- Releases: bump `version` in `package.json`, push a tag `v<version>`. The publish
+  workflow runs `npm stage publish`; the owner approves the version on npmjs.com
+  with 2FA. Nothing is published from a local machine.
 - The earlier history and the old npm learning demo live in the private repository
   `krzysztofryszawy/chomik-prototype`.
 - Run tests with `npm test` (built-in `node:test`, no dependencies).

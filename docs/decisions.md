@@ -3,6 +3,12 @@
 Newest first. Each entry records what was decided and why. The current state of
 the convention is in [message-from-the-past.md](message-from-the-past.md).
 
+## 2026-11-06
+
+- **Staged publishing.** The trusted publisher on npm may only stage versions;
+  the owner approves each one on npmjs.com with 2FA before it becomes public.
+  Why: even a compromised repository or workflow cannot release a version alone.
+
 ## 2026-11-05
 
 - **The prompt guides a collaboration; it is not an exact script.** It carries as
