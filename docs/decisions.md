@@ -5,6 +5,29 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-05
 
+- **The prompt guides a collaboration; it is not an exact script.** It carries as
+  much context as possible, but the resolution may need the user. The agent
+  explains what it is doing now, why, and whether it is going well.
+- **A setup phase before the first reminder.** After installation chomik must
+  find out, with the user or on its own, how to hook into the build that runs
+  daily on the main branch, in any repository it has never seen. In this phase
+  the skill may read CI configuration such as `.github/workflows/`, then
+  proposes the exact place for the check step and asks for confirmation.
+- **The next test is the full flow in a real repository with the package
+  downloaded from npm.**
+- **The build log leads with the agent prompt.** Order: one line saying a message
+  from the past arrived, one instruction to paste the prompt into a coding agent
+  session in this repository or read FOR HUMANS below, the prompt between
+  markers, then the human part between markers. Why: in the sandbox test the
+  prompt was hidden behind a pointer to the file and was hard to find.
+- **The check mechanism is decided:** one Markdown file per reminder in
+  `.chomik/`, read by a dependency-free Node script called by its own CI step.
+- **The skill never sends a series of questions.** At most one question per
+  message, only when the reminder would be useless without the answer; all else
+  gets a stated default. The skill may read files the developer mentions or that
+  are part of the described change, and the current git branch, but still does
+  not search the repository. Why: the first sandbox test produced a list of three
+  questions, one of which the agent could have answered by reading `package.json`.
 - **Branch and commit convention:** `type/short-description` branches and
   Conventional Commits pull request titles. Why: squash merges turn titles into
   `main`'s history, which then doubles as the release changelog.

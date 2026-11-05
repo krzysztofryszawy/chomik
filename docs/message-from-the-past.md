@@ -101,26 +101,29 @@ reminder file alone.
 - Task-specific support is not part of the generic convention. For example,
   making a manifest available to a container may be needed by one reminder only.
 
-## Failure Message (draft)
+## Failure Message
 
 ```
-chomik sent a message from the past
-.chomik/2026-11-19-qs.md · Krzysztof Ryszawy · PR #123
-qs pinned at 6.13.0 because of a regression in 6.14. Check if a fix was released.
-Resolve and delete the file, or move the date with a reason.
-Optional: a ready prompt for an agent is in the "Prompt" section of that file.
+chomik sent a message from the past: .chomik/2026-11-19-qs.md
+Paste the prompt below into a coding agent session in this repository.
+To read yourself what needs to be done, see FOR HUMANS below the prompt.
+
+===== PROMPT =====
+<prompt>
+===== END OF PROMPT =====
+
+===== FOR HUMANS =====
+<human part of the reminder>
+===== END =====
+
+Run locally: node .chomik/check.mjs
 ```
 
-The first line tells the team at the daily meeting what happened; the rest is
-enough to handle the reminder without an agent.
+The prompt is the main part and comes first, ready to paste into any coding
+agent. The first line tells the team at the daily meeting what happened. The
+human part below is enough to handle the reminder without an agent.
 
 ## Still To Decide
-
-- The check mechanism. Tests are ruled out because conventions differ. Proposal
-  under discussion: one Markdown file per reminder in a fixed folder such as
-  `.chomik/`, read by one stack-independent build step such as
-  `npx chomik check` or `uses: krzysztofryszawy/chomik@v1`.
-- Whether the build log prints the full agent prompt or only points to it.
 - The generic storage format and how multiple messages are organized. Include a
   condition type field now, even though only dates are supported at first.
 - Supported nonblocking notification modes and their delivery mechanisms.

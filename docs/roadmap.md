@@ -12,6 +12,10 @@ Plans for chomik's development. Decisions and their reasons are in
   First draft: `template/.claude/skills/chomik/SKILL.md`.
 - `npx chomik init`: installs the skill after showing the plan and getting
   confirmation.
+- Setup phase in the skill: in an unfamiliar repository, read the CI workflows,
+  find the build that runs daily on the main branch, propose where the check
+  step goes, and confirm with the user.
+- Full-flow test in a real repository, with the package downloaded from npm.
 - Test in a real Node project from a local folder, before publishing.
 - Clean repository start, `LICENSE`, `SECURITY.md`, public repository.
 - Publishing through a workflow with trusted publishing and provenance.

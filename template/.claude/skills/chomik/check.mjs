@@ -7,6 +7,7 @@ const DIR = '.chomik';
 const REMINDER_NAME = /^(\d{4})-(\d{2})-(\d{2})-[a-z0-9][a-z0-9-]*\.md$/;
 const PROMPT_HEADING = /^#{1,6}\s+prompt\b/i;
 const MAX_LINES = 40;
+const MAX_PROMPT_LINES = 200;
 
 const env = process.env;
 const inActions = env.GITHUB_ACTIONS === 'true';
@@ -54,16 +55,23 @@ function run() {
   const token = inActions ? randomUUID() : null;
   if (token) console.log(`::stop-commands::${token}`);
 
-  if (due.length) {
-    console.log('chomik sent a message from the past');
-    for (const name of due) {
+  for (const name of due) {
+    const text = readFileSync(join(DIR, name), 'utf8').replace(/\r\n/g, '\n');
+    const prompt = promptPart(text);
+    if (name !== due[0]) console.log('');
+    console.log(`chomik sent a message from the past: ${join(DIR, name)}`);
+    if (prompt) {
+      console.log('Paste the prompt below into a coding agent session in this repository.');
+      console.log('To read yourself what needs to be done, see FOR HUMANS below the prompt.');
       console.log('');
-      console.log(join(DIR, name));
-      console.log(humanPart(readFileSync(join(DIR, name), 'utf8')));
+      console.log('===== PROMPT =====');
+      console.log(prompt);
+      console.log('===== END OF PROMPT =====');
     }
     console.log('');
-    console.log('Resolve and delete the file, or move the date in its name with a reason.');
-    console.log('Optional: a ready prompt for an agent is in the "Prompt" section of the file.');
+    console.log('===== FOR HUMANS =====');
+    console.log(humanPart(text));
+    console.log('===== END =====');
   }
 
   if (invalid.length) {
@@ -75,9 +83,9 @@ function run() {
   console.log('');
   console.log('Run locally: node .chomik/check.mjs');
   if (!enforce) {
-    console.log(branch
-      ? `Not failing: the build fails only in GitHub Actions on branch "${branch}".`
-      : 'Not failing: no branch given with --branch.');
+    if (!inActions) console.log('Not failing outside CI.');
+    else if (!branch) console.log('Not failing: no branch given with --branch.');
+    else console.log(`Not failing: the build fails only on branch "${branch}".`);
   }
 
   if (token) console.log(`::${token}::`);
@@ -88,13 +96,36 @@ function run() {
 
 function humanPart(text) {
   const lines = [];
-  for (const line of text.replace(/\r\n/g, '\n').split('\n')) {
+  for (const line of text.split('\n')) {
     if (PROMPT_HEADING.test(line)) break;
     lines.push(line);
   }
-  while (lines.length && lines.at(-1).trim() === '') lines.pop();
-  if (lines.length > MAX_LINES) return [...lines.slice(0, MAX_LINES), '...'].join('\n');
-  return lines.join('\n');
+  return limit(trimBlank(lines), MAX_LINES);
+}
+
+function promptPart(text) {
+  const lines = text.split('\n');
+  const start = lines.findIndex((line) => PROMPT_HEADING.test(line));
+  if (start === -1) return '';
+  let body = lines.slice(start + 1);
+  const open = body.findIndex((line) => line.startsWith('```'));
+  if (open !== -1) {
+    const close = body.findIndex((line, i) => i > open && line.startsWith('```'));
+    body = body.slice(open + 1, close === -1 ? undefined : close);
+  }
+  return limit(trimBlank(body), MAX_PROMPT_LINES);
+}
+
+function trimBlank(lines) {
+  let from = 0;
+  let to = lines.length;
+  while (from < to && lines[from].trim() === '') from++;
+  while (to > from && lines[to - 1].trim() === '') to--;
+  return lines.slice(from, to);
+}
+
+function limit(lines, max) {
+  return (lines.length > max ? [...lines.slice(0, max), '...'] : lines).join('\n');
 }
 
 function isRealDate(year, month, day) {

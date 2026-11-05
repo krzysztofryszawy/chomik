@@ -27,7 +27,7 @@ function check(root, { ci = false, ref = 'main', refType = 'branch', args = ['--
   return { code: result.status, out: result.stdout + result.stderr };
 }
 
-const reminder = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\nSECRET-AGENT-PROMPT\n';
+const reminder = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\n```text\nAGENT-PROMPT-LINE\n```\n';
 
 test('no .chomik folder: silent pass', () => {
   const { code, out } = check(project(null), { ci: true });
@@ -46,7 +46,27 @@ test('due today in CI on the configured branch: fails with exit code 1', () => {
   assert.equal(code, 1);
   assert.match(out, /chomik sent a message from the past/);
   assert.match(out, /qs pinned at 6\.13\.0/);
-  assert.doesNotMatch(out, /SECRET-AGENT-PROMPT/);
+});
+
+test('the prompt comes first, then the human part, each between clear markers', () => {
+  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: reminder }));
+  const lines = out.split('\n');
+  assert.match(lines[0], /^chomik sent a message from the past: \.chomik\/.*-qs\.md$/);
+  assert.match(lines[1], /Paste the prompt below/);
+  const prompt = lines.indexOf('===== PROMPT =====');
+  const promptEnd = lines.indexOf('===== END OF PROMPT =====');
+  const human = lines.indexOf('===== FOR HUMANS =====');
+  const humanEnd = lines.indexOf('===== END =====');
+  assert.deepEqual(lines.slice(prompt + 1, promptEnd), ['AGENT-PROMPT-LINE']);
+  assert.ok(promptEnd < human && human < humanEnd);
+  assert.ok(lines.slice(human, humanEnd).includes('qs pinned at 6.13.0 because of a regression in 6.14.'));
+});
+
+test('a reminder without a Prompt section shows only the human part', () => {
+  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: '# qs pin\n\nNo prompt here.\n' }));
+  assert.match(out, /No prompt here/);
+  assert.doesNotMatch(out, /===== PROMPT =====|Paste the prompt/);
+  assert.match(out, /===== FOR HUMANS =====/);
 });
 
 test('overdue locally: prints the message but passes', () => {
