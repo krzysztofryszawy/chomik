@@ -5,6 +5,9 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-05
 
+- **Branch and commit convention:** `type/short-description` branches and
+  Conventional Commits pull request titles. Why: squash merges turn titles into
+  `main`'s history, which then doubles as the release changelog.
 - **The clean start happened early, before the first release.** The prototype
   repository was renamed to `chomik-prototype` and kept private; this repository
   starts with one clean commit and stays private until the release. From now on
