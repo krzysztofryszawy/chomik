@@ -10,10 +10,12 @@ created with an agent and checked deterministically in CI.
 - `main` stays clean because this history becomes public. Prototypes and work in
   progress go on feature branches, which are deleted afterwards. Changes reach
   `main` through squash merge, one meaningful commit per change.
+- By default, merge a finished branch locally with `git merge --squash` and push
+  `main`. Open a pull request only when the owner wants to review a larger change.
 - Branch names: `type/short-description`, for example `feat/init-command`.
-  Pull request titles follow Conventional Commits (`feat: …`, `fix: …`, `docs: …`,
+  Squash commit and pull request titles follow Conventional Commits (`feat: …`, `fix: …`, `docs: …`,
   `test: …`, `chore: …`) with the same type as the branch. The squash merge uses
-  the pull request title, so `main` reads as a changelog.
+  that title, so `main` reads as a changelog.
 - `package.json` has `"private": true` until the first release, so nothing can be
   published by accident.
 - The earlier history and the old npm learning demo live in the private repository
