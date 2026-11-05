@@ -1,0 +1,20 @@
+# chomik
+
+Chomik implements "Message from the past": reminders with context for a team,
+created with an agent and checked deterministically in CI.
+
+- Convention and current state: `docs/message-from-the-past.md`
+- Decisions and their reasons: `docs/decisions.md`. Add an entry for every new decision.
+- Security checklist, checked before every release: `docs/security-checklist.md`
+- Development plans: `docs/roadmap.md`
+- `main` stays clean because this history becomes public. Prototypes and work in
+  progress go on feature branches, which are deleted afterwards. Changes reach
+  `main` through squash merge, one meaningful commit per change.
+- `package.json` has `"private": true` until the first release, so nothing can be
+  published by accident.
+- The earlier history and the old npm learning demo live in the private repository
+  `krzysztofryszawy/chomik-prototype`.
+- Run tests with `npm test` (built-in `node:test`, no dependencies).
+- Before a design decision, search current sources for existing tools that already
+  do it, and report what was found and what was not checked.
+- No hooks or automatic actions in chomik's design; the user confirms every step.

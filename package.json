@@ -1,0 +1,22 @@
+{
+  "name": "chomik",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Messages from the past: reminders with context for your team, checked in CI on a chosen date.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Krzysztof Ryszawy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzysztofryszawy/chomik.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krzysztofryszawy/chomik/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  }
+}

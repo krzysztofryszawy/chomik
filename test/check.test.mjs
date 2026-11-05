@@ -1,0 +1,109 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
+import { spawnSync } from 'node:child_process';
+
+const SCRIPT = resolve('template/.claude/skills/chomik/check.mjs');
+
+function isoDay(offsetDays) {
+  return new Date(Date.now() + offsetDays * 86_400_000).toISOString().slice(0, 10);
+}
+
+function project(files = {}) {
+  const root = mkdtempSync(join(tmpdir(), 'chomik-'));
+  if (files !== null) {
+    mkdirSync(join(root, '.chomik'));
+    for (const [name, content] of Object.entries(files)) writeFileSync(join(root, '.chomik', name), content);
+  }
+  return root;
+}
+
+function check(root, { ci = false, ref = 'main', refType = 'branch', args = ['--branch', 'main'] } = {}) {
+  const env = { PATH: process.env.PATH };
+  if (ci) Object.assign(env, { GITHUB_ACTIONS: 'true', GITHUB_REF_NAME: ref, GITHUB_REF_TYPE: refType });
+  const result = spawnSync(process.execPath, [SCRIPT, ...args], { cwd: root, env, encoding: 'utf8' });
+  return { code: result.status, out: result.stdout + result.stderr };
+}
+
+const reminder = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\nSECRET-AGENT-PROMPT\n';
+
+test('no .chomik folder: silent pass', () => {
+  const { code, out } = check(project(null), { ci: true });
+  assert.equal(code, 0);
+  assert.equal(out, '');
+});
+
+test('reminder in the future: silent pass', () => {
+  const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: reminder }), { ci: true });
+  assert.equal(code, 0);
+  assert.equal(out, '');
+});
+
+test('due today in CI on the configured branch: fails with exit code 1', () => {
+  const { code, out } = check(project({ [`${isoDay(0)}-qs.md`]: reminder }), { ci: true });
+  assert.equal(code, 1);
+  assert.match(out, /chomik sent a message from the past/);
+  assert.match(out, /qs pinned at 6\.13\.0/);
+  assert.doesNotMatch(out, /SECRET-AGENT-PROMPT/);
+});
+
+test('overdue locally: prints the message but passes', () => {
+  const { code, out } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }));
+  assert.equal(code, 0);
+  assert.match(out, /chomik sent a message from the past/);
+  assert.match(out, /Not failing/);
+});
+
+test('overdue in a pull request: prints the message but passes', () => {
+  const { code, out } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }), { ci: true, ref: '42/merge' });
+  assert.equal(code, 0);
+  assert.match(out, /chomik sent a message from the past/);
+});
+
+test('overdue in CI without --branch: passes', () => {
+  const { code } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }), { ci: true, args: [] });
+  assert.equal(code, 0);
+});
+
+test('a tag with the branch name does not fail the build', () => {
+  const { code } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }), { ci: true, refType: 'tag' });
+  assert.equal(code, 0);
+});
+
+test('invalid file name or impossible date in CI on the branch: exit code 2', () => {
+  for (const name of ['qs.md', '2026-02-30-qs.md', '2026-1-05-qs.md', '2026-11-05-Bad Name.md']) {
+    const { code, out } = check(project({ [name]: 'text' }), { ci: true });
+    assert.equal(code, 2, name);
+    assert.match(out, /invalid reminder file/, name);
+  }
+});
+
+test('non-Markdown files in .chomik are ignored', () => {
+  const { code, out } = check(project({ 'check.mjs': '', 'notes.txt': '' }), { ci: true });
+  assert.equal(code, 0);
+  assert.equal(out, '');
+});
+
+test('symbolic links are not followed', () => {
+  const root = project({});
+  const outside = join(mkdtempSync(join(tmpdir(), 'chomik-outside-')), 'secret.md');
+  writeFileSync(outside, 'OUTSIDE-CONTENT');
+  symlinkSync(outside, join(root, '.chomik', `${isoDay(-1)}-link.md`));
+  const { code, out } = check(root, { ci: true });
+  assert.equal(code, 0);
+  assert.doesNotMatch(out, /OUTSIDE-CONTENT/);
+});
+
+test('workflow commands in reminder text are switched off in GitHub Actions', () => {
+  const evil = '::set-env name=X::y\n::add-mask::z\n';
+  const { out } = check(project({ [`${isoDay(-1)}-evil.md`]: evil }), { ci: true });
+  const lines = out.split('\n');
+  const stop = lines.findIndex((l) => l.startsWith('::stop-commands::'));
+  const token = lines[stop].slice('::stop-commands::'.length);
+  const resume = lines.indexOf(`::${token}::`);
+  const evilLine = lines.indexOf('::set-env name=X::y');
+  assert.ok(token.length >= 32);
+  assert.ok(stop < evilLine && evilLine < resume);
+});
