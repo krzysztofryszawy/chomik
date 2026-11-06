@@ -195,7 +195,8 @@ test('released-files.json matches the files of every release tag in this reposit
   } catch {
     return;
   }
-  for (const tag of tags) {
+  // The tag of the version being released is the current version, not a past one.
+  for (const tag of tags.filter((t) => t !== `v${VERSION}`)) {
     for (const file of ['SKILL.md', 'check.mjs']) {
       const content = execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`]);
       const hash = createHash('sha256').update(content).digest('hex');
