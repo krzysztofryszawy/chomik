@@ -1,6 +1,6 @@
 {
   "name": "chomik",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Messages from the past: reminders with context for your team, checked in CI on a chosen date.",
   "type": "module",
   "license": "MIT",

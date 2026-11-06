@@ -13,8 +13,11 @@ humans. Whoever takes it, even someone new to the project, knows what to do.
 In the root of a Node project:
 
 ```
-npx chomik@0.1.0 init
+npx chomik@0.1.1
 ```
+
+Run the same command later to update. It shows the plan first, and it never
+overwrites edits that are not committed to git.
 
 Then open your coding agent in the project (Claude Code or GitHub Copilot) and
 type `/chomik`.

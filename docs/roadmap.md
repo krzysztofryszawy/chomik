@@ -10,9 +10,11 @@ Plans for chomik's development. Decisions and their reasons are in
 - Skill for creating a reminder, installed at project level in `.claude/skills/`.
   The skill copies the check script with the first reminder in a project.
   First draft: `template/.claude/skills/chomik/SKILL.md`.
-- `npx chomik init` (first draft done: `bin/chomik.mjs`): installs the skill after showing the plan and getting
-  confirmation.
-- Setup phase in the skill: in an unfamiliar repository, read the CI workflows,
+- `npx chomik` (done: `bin/chomik.mjs`): installs or updates the skill after
+  showing the plan and getting confirmation. All or nothing: it refuses to
+  overwrite edits that are not committed, unless `--force`. `--dry-run` shows the
+  plan only.
+- Setup phase in the skill (first draft done): in an unfamiliar repository, read the CI workflows,
   find the build that runs daily on the main branch, propose where the check
   step goes, and confirm with the user.
 - Full-flow test in a real repository, with the package downloaded from npm.
@@ -20,6 +22,12 @@ Plans for chomik's development. Decisions and their reasons are in
 - Clean repository start, `LICENSE`, `SECURITY.md`, public repository.
 - Publishing through a workflow with trusted publishing and provenance.
 - Unpublishing the experimental versions 0.0.1 and 0.0.2.
+
+## Beta: version 0.2.0
+
+- Breaking changes are fine until then.
+- Until then, working versions are 0.1.x.
+- Publish 0.2.0 as the beta, then unpublish all 0.1.x versions, in that order.
 
 ## Chomik CLI
 

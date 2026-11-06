@@ -18,10 +18,17 @@ created with an agent and checked deterministically in CI.
   that title, so `main` reads as a changelog.
 - Releases: bump `version` in `package.json`, push a tag `v<version>`. The publish
   workflow runs `npm stage publish`; the owner approves the version on npmjs.com
-  with 2FA. Nothing is published from a local machine.
+  with 2FA. Nothing is published from a local machine. After a release, add its
+  skill file hashes to `bin/released-files.json`; a test checks every `v*` tag.
 - The earlier history and the old npm learning demo live in the private repository
   `krzysztofryszawy/chomik-prototype`.
 - Run tests with `npm test` (built-in `node:test`, no dependencies).
+- Every CLI command and option has help (`--help` and `-h`) and a test. CLI
+  behavior follows https://clig.dev: `--version`, exit code 0 only on success,
+  errors on stderr, prompts only in a terminal with a flag instead. One way to do
+  each thing: `npx chomik` both installs and updates; there is no second command
+  for the same job. Running it without arguments is safe because it shows the
+  plan and asks before writing.
 - Before a design decision, search current sources for existing tools that already
   do it, and report what was found and what was not checked.
 - No hooks or automatic actions in chomik's design; the user confirms every step.

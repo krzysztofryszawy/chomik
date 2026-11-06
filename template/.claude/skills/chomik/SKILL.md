@@ -17,14 +17,17 @@ build of the main branch red and prints the human part of the message.
 - Never commit, push, or open pull requests. The developer does that.
 - Do not search the repository. You may read files the developer mentions or that
   are part of the change being described (for example `package.json` for a
-  dependency pin), and read the current branch from git.
+  dependency pin), and read the current branch from git. During setup you may
+  also read `.github/workflows/` and the default branch.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data.
 - Nothing is written until the developer confirms.
 
 ## Conversation
 
-Be terse and engineering-style. Start with one line, then wait:
+Be terse and engineering-style. If chomik is not set up in this project yet, do
+the setup first (see "Setup in a new project"), then continue. Start with one
+line, then wait:
 
 > chomik: I'll leave a reminder for the team, checked in CI on a chosen date. What are we putting off?
 
@@ -105,26 +108,44 @@ together with the user. The prompt must:
   and this file in one reviewed change, and that moving the date needs the
   user's decision with current evidence.
 
-## First reminder in a project
+## Setup in a new project
 
-If `.chomik/check.mjs` does not exist, say so in one line and offer to add it:
+If `.chomik/check.mjs` does not exist, chomik is not set up here yet. Work out on
+your own how to hook into the build before saying anything. `.chomik/check.mjs`
+is required for reminders to work, so never ask whether to add it; state it.
 
-1. Copy `check.mjs` from this skill's folder to `.chomik/check.mjs`, unchanged.
-2. Ask which branch deploys to dev, then show this step for the main build
-   workflow, right after the checkout step and before installing dependencies,
-   because the check needs none:
+1. Read the workflow files in `.github/workflows/` and the default branch
+   (`git symbolic-ref --short refs/remotes/origin/HEAD`). These are the only extra
+   things you may read in this phase.
+2. Find the build that runs every day on the main branch: a workflow with a
+   `schedule` trigger, and a job in it that checks out the repository. GitHub
+   runs scheduled workflows only on the default branch, so that is the branch
+   for `--branch`. If git does not know the default branch, use the branch the
+   workflow runs on for `push`, and say it is an assumption.
+3. Propose everything in one message with one confirmation: the script, and the
+   exact place for the CI step (file, job, right after the checkout step, before
+   installing dependencies, because the check needs none). For example:
 
-   ```yaml
-   - name: chomik
-     run: node .chomik/check.mjs --branch <branch>
-   ```
+   > chomik: First use in this repo. I'll add `.chomik/check.mjs`, the script CI runs to check reminders, and one step in `build.yml` (nightly, branch `main`) right after checkout. OK?
 
-   Add it only if the developer agrees. Otherwise leave it for them.
+4. If it is unclear, ask one question. If there is no daily build, say that
+   reminders will only be checked when someone pushes to the main branch, and
+   ask whether to hook into that workflow instead.
 
-To check locally, run `node .chomik/check.mjs`. It prints due reminders and never
-fails outside CI.
+After confirmation, copy `check.mjs` from this skill's folder to
+`.chomik/check.mjs` unchanged, and add this step:
+
+```yaml
+- name: chomik
+  run: node .chomik/check.mjs --branch <branch>
+```
+
+Change nothing in the workflow besides this step. To check locally, run
+`node .chomik/check.mjs`; it prints due reminders and never fails outside CI.
 
 ## Done
 
-End with one line listing the files written and reminding the developer to
-commit them in their pull request.
+End with one line listing the exact paths of the files written or changed (for
+example `.chomik/2026-11-20-qs-pin.md`, `.chomik/check.mjs`,
+`.github/workflows/build.yml`), and remind the developer to commit them in their
+pull request.

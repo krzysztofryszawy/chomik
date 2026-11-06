@@ -5,6 +5,30 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-06
 
+- **`npx chomik` is the single command for install and update; `init` is gone.**
+  Why: two ways to do the same thing make people unsure whether they really do
+  the same. The plan shows versions (for example `0.1.0 -> 0.2.0`), the prompt
+  is `(Y/n)` so Enter accepts after reading the plan, and `--dry-run` shows the
+  plan only.
+- **Updates are all or nothing, and never lose edits for good.** Users may edit
+  the skill files freely. Files identical to a released version are updated
+  silently; edited files that are committed are replaced with a note, since git
+  keeps them; edited files that are not committed, or edited files outside git,
+  block the whole update unless `--force`. Released versions are recognized by
+  SHA-256 hashes in `bin/released-files.json`.
+- **Breaking changes are allowed until the beta, which is version 0.2.0.**
+  Working versions are 0.1.x; commands and files may change without
+  compatibility until then. At the beta, the fresh opening: publish 0.2.0, then
+  unpublish all 0.1.x versions so only the beta remains. Never unpublish
+  before the new version is out, so the name stays held. Repository history is
+  not rewritten.
+- **The check script is stated, never asked about.** It is required for chomik to
+  work. Setup asks for one confirmation covering the script and the CI step.
+  Why: in the npm test in Copilot, a separate question about the script was
+  confusing and pointless.
+- **Verified: `npx chomik@0.1.0 init` from npm works, and `/chomik` works in
+  GitHub Copilot in VS Code.** Not yet checked: whether Copilot honors
+  `disable-model-invocation`.
 - **Staged publishing.** The trusted publisher on npm may only stage versions;
   the owner approves each one on npmjs.com with 2FA before it becomes public.
   Why: even a compromised repository or workflow cannot release a version alone.
