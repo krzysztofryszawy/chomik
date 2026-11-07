@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-07
 
+- **The skill was rewritten from scratch, following Anthropic's skill-authoring
+  best practices**, after rules piled up and made the agent verbose. It states
+  only what the model would not know: purpose, the reminder file format, what
+  the prompt must cover, and hard limits. Setup, which is fragile, moved to
+  `setup.md` with exact steps, read only on first use. No sample sentences for
+  the agent to copy and no style micro-rules.
 - **No separate pull request flow for reminders.** A reminder belongs in the
   same pull request as the change it is about, so the reviewer sees the
   workaround and its expiry together. A dedicated flow (sparse worktree, own

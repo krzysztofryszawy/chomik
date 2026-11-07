@@ -44,8 +44,8 @@ test('npx chomik --yes installs exactly the two skill files', () => {
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /\n\nchomik just moved in\. Say hi: open your coding agent in this project and type \/chomik\.\n$/);
   assert.match(stdout, /Feel free to share chomik with your team/);
-  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
-  for (const file of ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
+  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
+  for (const file of ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
   assert.deepEqual(readdirSync(root).sort(), ['.claude', 'package.json']);
 });
 

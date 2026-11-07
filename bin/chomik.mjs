@@ -13,7 +13,7 @@ const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-fil
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
 const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skills', 'chomik')];
 const TARGET = TARGET_DIRS.at(-1);
-const FILES = ['SKILL.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
+const FILES = ['SKILL.md', 'setup.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
 const HELP = `Usage: npx chomik@latest [options]
 
