@@ -5,23 +5,31 @@ Plans for chomik's development. Decisions and their reasons are in
 
 ## Version 0
 
-- Dependency-free Node check script, copied into the project as `.chomik/looking-for-messages-from-the-past.mjs`.
-  Done: bundled with the skill as `template/.claude/skills/chomik/looking-for-messages-from-the-past.mjs`, with tests.
-- Skill for creating a reminder, installed at project level in `.claude/skills/`.
-  The skill copies the check script with the first reminder in a project.
-  First draft: `template/.claude/skills/chomik/SKILL.md`.
-- `npx chomik` (done: `bin/chomik.mjs`): installs or updates the skill after
-  showing the plan and getting confirmation. All or nothing: it refuses to
-  overwrite edits that are not committed, unless `--force`. `--dry-run` shows the
-  plan only.
-- Setup phase in the skill (first draft done): in an unfamiliar repository, read the CI workflows,
-  find the build that runs daily on the main branch, propose where the check
-  step goes, and confirm with the user.
-- Full-flow test in a real repository, with the package downloaded from npm.
-- Test in a real Node project from a local folder, before publishing.
+Status on 2026-11-07: released up to 0.1.4; `main` holds 0.1.5 in progress.
+
+Done:
+
+- Dependency-free Node check script, installed with the skill and copied by it
+  into the project as `.chomik/looking-for-messages-from-the-past.mjs`, with tests.
+- Skill for creating a reminder (`SKILL.md`), installed at project level in
+  `.claude/skills/chomik/`, with a separate `setup.md` for first use.
+- `npx chomik`: installs or updates the skill after showing the plan and getting
+  confirmation; all or nothing, never overwrites uncommitted edits unless
+  `--force`; `--dry-run` shows the plan only.
+- `.github/workflows/chomik.yml` template: called by the daily build with two
+  lines, or runs nightly on its own in a project without one.
 - Clean repository start, `LICENSE`, `SECURITY.md`, public repository.
-- Publishing through a workflow with trusted publishing and provenance.
-- Unpublishing the experimental versions 0.0.1 and 0.0.2.
+- Publishing through a workflow with trusted publishing, staged publishing and
+  provenance.
+- Experimental versions 0.0.1 and 0.0.2 unpublished from npm.
+- Tested: install from npm, the skill in Claude Code and GitHub Copilot, writing
+  a reminder, the check script locally.
+
+Next: full end-to-end proof of concept on real GitHub. A small test repository
+with a Node app and a nightly build: run setup, set a reminder due today, see
+the build turn red in GitHub Actions, then handle the reminder from its prompt
+in a fresh agent session. Not tested yet: setup in a repository with CI, a real
+red run, handling by someone else.
 
 ## Beta: version 0.2.0
 
