@@ -131,10 +131,11 @@ async function installOrUpdate({ yes, dryRun, force }) {
   mkdirSync(TARGET, { recursive: true });
   for (const p of plan) writeFileSync(p.target, p.source);
 
-  console.log(installed === 'not installed'
-    ? 'Done. Open your coding agent in this project and type /chomik.'
-    : `Done. chomik is now ${VERSION}.`);
+  console.log(installed === 'not installed' ? `Done. chomik ${VERSION} is installed.` : `Done. chomik is now ${VERSION}.`);
   console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.');
+  console.log('');
+  const greeting = installed === 'not installed' ? 'chomik just moved in.' : 'chomik learned some new tricks.';
+  console.log(`${greeting} Say hi: open your coding agent in this project and type /chomik.`);
   return 0;
 }
 

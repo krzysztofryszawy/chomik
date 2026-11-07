@@ -1,7 +1,7 @@
 # chomik
 
-Messages from the past: reminders with context for the team, checked in CI on a
-chosen date.
+Bulletproof reminders for things that really matter. A message from the past
+turns the build red on a chosen date, with everything the team needs to act.
 
 ## What it does
 

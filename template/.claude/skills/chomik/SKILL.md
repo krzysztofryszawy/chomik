@@ -36,11 +36,16 @@ Talk in English by default, and in the developer's language once they use
 another one; the example lines show meaning, not wording. Reminder files are
 always in English.
 
-Be terse and engineering-style. If chomik is not set up in this project yet, do
-the setup first (see "Setup in a new project"), then continue. Start with one
-line, then wait:
+Talk like a friendly, sharp colleague: say what matters in as few words as it
+takes, lead with what the developer gets, and never pad or repeat. Go into
+detail only when the developer needs it to decide.
 
-> chomik: I'll leave a reminder for the team, checked in CI on a chosen date. What are we putting off?
+If chomik is not set up in this project yet, do the setup first (see "Setup in
+a new project"). Setup is a complete step on its own: unless the developer
+already described something to put off, end there instead of asking for a
+reminder. Otherwise start with one line, then wait:
+
+> chomik: What must the team not forget? I'll make sure it comes back on the right day.
 
 This is a conversation, not a form. Never send a list of questions.
 
@@ -142,7 +147,10 @@ whether to add it; state it.
    after this build succeeds (`on: workflow_run`), say that on a reminder's date
    that deployment waits until the reminder is handled. For example:
 
-   > chomik: First use in this repo. I'll add `.chomik/looking-for-messages-from-the-past.mjs`, `.github/workflows/chomik.yml`, and two lines in `build.yml` (nightly, branch `main`) that call it. Your jobs stay untouched. OK?
+   > chomik: Hi! First, a small check in your nightly build (`build.yml`), so reminders reach the team on time. Your jobs stay untouched. OK?
+
+   Mention anything that may surprise the developer in one short line, for
+   example when `origin` is not their repository.
 
 4. If it is unclear, ask one question. If there is no daily build, chomik.yml
    runs on its own every night and on push instead; propose that in the same
@@ -171,7 +179,12 @@ To check locally, run
 
 ## Done
 
-End with one line listing the exact paths of the files written or changed (for
+After setup alone, say in a line or two that chomik is ready, which files to
+commit, and that next time the developer can type `/chomik` and describe what to
+come back to.
+
+After a reminder, end with one line listing the exact paths of the files written
+or changed (for
 example `.chomik/2026-11-20-qs-pin.md`, `.chomik/looking-for-messages-from-the-past.mjs`,
 `.github/workflows/build.yml`), and remind the developer to commit them in their
 pull request.

@@ -42,7 +42,7 @@ test('npx chomik --yes installs exactly the two skill files', () => {
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
-  assert.match(stdout, /type \/chomik/);
+  assert.match(stdout, /\n\nchomik just moved in\. Say hi: open your coding agent in this project and type \/chomik\.\n$/);
   assert.match(stdout, /Feel free to share chomik with your team/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
   for (const file of ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
@@ -76,6 +76,7 @@ test('an unedited older release is updated and shows the versions', () => {
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Updating chomik in this project: ${version} -> `));
+  assert.match(stdout, /\n\nchomik learned some new tricks\. Say hi: open your coding agent in this project and type \/chomik\.\n$/);
   assert.match(stdout, /update\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.ok(readFileSync(skillFile(root)).equals(template('SKILL.md')));
 });

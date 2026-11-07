@@ -5,6 +5,15 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-07
 
+- **No separate pull request flow for reminders.** A reminder belongs in the
+  same pull request as the change it is about, so the reviewer sees the
+  workaround and its expiry together. A dedicated flow (sparse worktree, own
+  branch and PR) was designed and dropped: it added complexity and broke that
+  link. The developer commits the reminder with their work.
+- **Chomik is for things that really matter.** A red build is a strong signal,
+  so chomik is a bulletproof reminder, not a TODO list. The README leads with
+  this. What matters is the developer's call: the skill never judges whether a
+  reminder is important enough.
 - **Chomik explains itself inside the project.** It installs
   `.claude/skills/chomik/README.md` (what it is, its files, why it is safe, help,
   update, stop and remove), and every chomik file points to it in its first

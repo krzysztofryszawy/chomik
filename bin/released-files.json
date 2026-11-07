@@ -6,5 +6,11 @@
   "0.1.1": {
     "SKILL.md": "1d43d0214ac704ed982cf31be1dc0a0f3f80547034ef968885ae64c7a2ccbf05",
     "check.mjs": "cc03625bc22e822481bc740a6f77e6bfa93982c74c1af5b80cc319e2dc79ec70"
+  },
+  "0.1.2": {
+    "SKILL.md": "87b3a90f705ca6a9d496f10b9f70c74bbc7007c4791995b3ffbd4f009a041ca7",
+    "README.md": "da846b56e1c8eb068fa936e1d829c83c7b96a7f7a06560fb4bc66b213801d6ba",
+    "looking-for-messages-from-the-past.mjs": "1cf8d01c1711d454efdff33a287b4d10225d6287e5cdc95e777b8fa2f36ce020",
+    "chomik-workflow.yml": "a512d24f508aaf496fe30b214f61709cadce29401db5ddb30d34f130590e5ecc"
   }
 }
