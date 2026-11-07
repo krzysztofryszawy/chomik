@@ -2,7 +2,9 @@
 
 Follow these steps exactly; CI configuration breaks easily.
 
-1. Say in one line that you are checking how CI runs, read-only. Read the files
+1. This is usually the developer's first contact with chomik, so open with one
+   sentence on what it is for, then say you are checking how CI runs, read-only.
+   Read the files
    in `.github/workflows/`, the default branch from
    `.git/refs/remotes/origin/HEAD` (`ref: refs/remotes/origin/<branch>`), and
    whether the `origin` remote in `.git/config` is on github.com. If it is not,
