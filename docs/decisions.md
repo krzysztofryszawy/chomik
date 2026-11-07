@@ -5,6 +5,9 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-07
 
+- **London kept, Barcelona (check code as an external GitHub Action) rejected.**
+  Archived with full reasoning in
+  [archive/2026-11-07-barcelona-rejected.md](archive/2026-11-07-barcelona-rejected.md).
 - **The skill was rewritten from scratch, following Anthropic's skill-authoring
   best practices**, after rules piled up and made the agent verbose. It states
   only what the model would not know: purpose, the reminder file format, what
