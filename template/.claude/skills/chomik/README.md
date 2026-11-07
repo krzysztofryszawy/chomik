@@ -1,0 +1,48 @@
+# chomik
+
+Messages from the past: reminders with context for the team, checked in CI on a
+chosen date.
+
+## What it does
+
+- A reminder is a Markdown file `.chomik/YYYY-MM-DD-name.md`: a part for humans
+  and a ready prompt for any coding agent.
+- `.chomik/looking-for-messages-from-the-past.mjs` runs in CI through
+  `.github/workflows/chomik.yml`. From a reminder's date it prints the prompt and
+  the part for humans, and the run on the main branch turns red. Locally and in
+  pull requests it only prints.
+- To create a reminder, type `/chomik` in Claude Code or GitHub Copilot.
+- To handle a reminder, resolve the problem and delete its file, or rename the
+  file to a new date and add a line explaining why. No agent is required.
+
+## Files that belong to chomik
+
+- `.claude/skills/chomik/` (this folder)
+- `.chomik/`: the check script and the reminders
+- `.github/workflows/chomik.yml`
+- in a project with a daily build, two lines in that build workflow: the job
+  `looking-for-messages-from-the-past`, which calls `chomik.yml`
+
+## Is it safe?
+
+- No dependencies, no install scripts, no network access, no build step.
+- The check script only reads `.chomik/*.md`. It never executes their content and
+  switches off GitHub workflow commands while printing it.
+- `chomik.yml` has read-only permissions and pins its action to a commit SHA.
+- Source: https://github.com/krzysztofryszawy/chomik. Releases are published with
+  npm provenance (`npm audit signatures`).
+
+## Help
+
+`npx chomik@latest --help`
+
+## Update
+
+Run `npx chomik@latest` in the project root. It shows the plan and asks first,
+and it never overwrites edits that are not committed to git.
+
+## Stop or remove
+
+- Stop: delete the two-line `looking-for-messages-from-the-past` job from the
+  build workflow, or `.github/workflows/chomik.yml` if there is no build.
+- Remove: delete the files listed above. Nothing else depends on chomik.

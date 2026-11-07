@@ -3,6 +3,47 @@
 Newest first. Each entry records what was decided and why. The current state of
 the convention is in [message-from-the-past.md](message-from-the-past.md).
 
+## 2026-11-07
+
+- **Chomik explains itself inside the project.** It installs
+  `.claude/skills/chomik/README.md` (what it is, its files, why it is safe, help,
+  update, stop and remove), and every chomik file points to it in its first
+  lines. Why: the public README is not in the user's repository, and an agent
+  asked about chomik there must find the answer locally. The public README, the
+  installed README and every `--help` use the same structure and wording.
+- **Chomik lives in one file, `.github/workflows/chomik.yml`.** In a project
+  with a daily build, the build calls it with two lines
+  (`looking-for-messages-from-the-past: uses: ./.github/workflows/chomik.yml`),
+  so the build turns red on a reminder's date while its other jobs run on; the
+  file then has no schedule of its own, so it never runs twice. Without a daily
+  build, the same file runs every night (02:07 UTC) and on push. A separate
+  workflow alone was rejected for projects with CI: easy to overlook. The name
+  `looking-for-messages-from-the-past` is used consistently for the script, the
+  job and the step. No switches or remove command: removing chomik means
+  deleting its files and the two lines, described in the README.
+- **A project without a daily build gets its own small workflow.** The skill
+  proposes `.github/workflows/chomik.yml`, copied from a template shipped with
+  the skill (actions pinned to a commit SHA), that only runs the check every day,
+  on push to the default branch and on demand. Manual checks only, other CI
+  systems, git hooks and npm scripts were rejected. GitHub notifies the person
+  who created a scheduled workflow, which in a small project is the author.
+- **Language:** conversation in English by default and in the developer's
+  language once they use it; reminder files always in English. Kept to one
+  short instruction in the skill.
+- **The skill looks around without shell commands.** It reads files instead
+  (`.github/workflows/`, `.git/HEAD`, `.git/refs/remotes/origin/HEAD`) and says
+  in one line that it is checking, read-only. Why: a permission prompt for
+  `git symbolic-ref` sounded alarming to the developer although it changed
+  nothing.
+- **The recommended command is `npx chomik@latest`.** Why: installation must be
+  as simple as possible, and `@latest` avoids an older copy cached by npx.
+  Pinning a version stays possible and documented.
+- **Friendly voice, humor only where it fits.** The check script is now
+  `.chomik/looking-for-messages-from-the-past.mjs`; install and update messages
+  say plainly what happens; after installing, chomik invites sharing it with the
+  team. Humor never goes into errors or agent prompts. No migration from older
+  names: nobody uses 0.1.x, and those versions are deleted at the beta.
+
 ## 2026-11-06
 
 - **`npx chomik` is the single command for install and update; `init` is gone.**

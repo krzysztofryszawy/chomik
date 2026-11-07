@@ -28,7 +28,8 @@ created with an agent and checked deterministically in CI.
   errors on stderr, prompts only in a terminal with a flag instead. One way to do
   each thing: `npx chomik` both installs and updates; there is no second command
   for the same job. Running it without arguments is safe because it shows the
-  plan and asks before writing.
+  plan and asks before writing. Help lives in one place, `npx chomik --help`,
+  plus the README; other chomik files point there instead of repeating it.
 - Before a design decision, search current sources for existing tools that already
   do it, and report what was found and what was not checked.
 - No hooks or automatic actions in chomik's design; the user confirms every step.

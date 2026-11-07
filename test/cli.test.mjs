@@ -34,16 +34,18 @@ function run(root, args) {
 
 const skillFile = (root) => join(root, SKILL_DIR, 'SKILL.md');
 const template = (file) => readFileSync(join(TEMPLATE, file));
+const SCRIPT = 'looking-for-messages-from-the-past.mjs';
 
 test('npx chomik --yes installs exactly the two skill files', () => {
   const root = project();
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
-  assert.match(stdout, /installed here: not installed/);
+  assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /type \/chomik/);
-  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'check.mjs']);
-  for (const file of ['SKILL.md', 'check.mjs']) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
+  assert.match(stdout, /Feel free to share chomik with your team/);
+  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
+  for (const file of ['SKILL.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
   assert.deepEqual(readdirSync(root).sort(), ['.claude', 'package.json']);
 });
 
@@ -52,10 +54,10 @@ test('running again reports that everything is up to date', () => {
   run(root, ['--yes']);
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
-  assert.match(stdout, new RegExp(`chomik ${VERSION.replaceAll('.', '\\.')} is installed .* up to date`));
+  assert.match(stdout, new RegExp(`chomik ${VERSION.replaceAll('.', '\\.')} is already here and up to date`));
 });
 
-test('an unedited file from a released version is updated and shows the versions', () => {
+test('an unedited older release is updated and shows the versions', () => {
   const tag = (() => {
     try {
       return execFileSync('git', ['tag', '--list', 'v*', '--sort=-v:refname'], { encoding: 'utf8' }).split('\n')[0];
@@ -68,12 +70,13 @@ test('an unedited file from a released version is updated and shows the versions
   if (oldFile('SKILL.md').equals(template('SKILL.md'))) return;
   const root = project();
   mkdirSync(join(root, SKILL_DIR), { recursive: true });
-  for (const file of ['SKILL.md', 'check.mjs']) writeFileSync(join(root, SKILL_DIR, file), oldFile(file));
+  const oldFiles = Object.keys(RELEASED[tag.slice(1)]);
+  for (const file of oldFiles) writeFileSync(join(root, SKILL_DIR, file), oldFile(file));
   const version = tag.slice(1).replaceAll('.', '\\.');
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
-  assert.match(stdout, new RegExp(`installed here: ${version}\\)`));
-  assert.match(stdout, new RegExp(`update\\s+\\.claude/skills/chomik/SKILL\\.md \\(${version} -> `));
+  assert.match(stdout, new RegExp(`Updating chomik in this project: ${version} -> `));
+  assert.match(stdout, /update\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.ok(readFileSync(skillFile(root)).equals(template('SKILL.md')));
 });
 
@@ -83,12 +86,12 @@ test('uncommitted edits block the whole update and nothing is written', () => {
   gitIn(root, 'add', '-A');
   gitIn(root, 'commit', '-qm', 'chomik');
   writeFileSync(skillFile(root), 'my uncommitted edit');
-  writeFileSync(join(root, SKILL_DIR, 'check.mjs'), 'old');
+  writeFileSync(join(root, SKILL_DIR, SCRIPT), 'old');
   const { code, stderr } = run(root, ['--yes']);
   assert.equal(code, 1);
   assert.match(stderr, /would be lost for good/);
   assert.equal(readFileSync(skillFile(root), 'utf8'), 'my uncommitted edit');
-  assert.equal(readFileSync(join(root, SKILL_DIR, 'check.mjs'), 'utf8'), 'old');
+  assert.equal(readFileSync(join(root, SKILL_DIR, SCRIPT), 'utf8'), 'old');
 });
 
 test('edits in a project without git block the update', () => {
@@ -170,7 +173,8 @@ test('--help and -h print help and write nothing', () => {
     const root = project();
     const { code, stdout } = run(root, [flag]);
     assert.equal(code, 0);
-    assert.match(stdout, /Usage: npx chomik \[options\]/);
+    assert.match(stdout, /Usage: npx chomik@latest \[options\]/);
+    assert.match(stdout, /\.claude\/skills\/chomik\/README\.md/);
     assert.equal(existsSync(join(root, '.claude')), false);
   }
 });
@@ -197,10 +201,27 @@ test('released-files.json matches the files of every release tag in this reposit
   }
   // The tag of the version being released is the current version, not a past one.
   for (const tag of tags.filter((t) => t !== `v${VERSION}`)) {
-    for (const file of ['SKILL.md', 'check.mjs']) {
+    for (const file of Object.keys(RELEASED[tag.slice(1)] ?? { 'SKILL.md': 1 })) {
       const content = execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`]);
       const hash = createHash('sha256').update(content).digest('hex');
       assert.equal(RELEASED[tag.slice(1)]?.[file], hash, `${tag} ${file}`);
     }
   }
+});
+
+
+test('the workflow templates pin every action to a full commit SHA', () => {
+  for (const file of ['chomik-workflow.yml']) {
+    const uses = readFileSync(join(TEMPLATE, file), 'utf8').match(/uses:\s*\S+/g) ?? [];
+    assert.ok(uses.length > 0, file);
+    for (const line of uses) assert.match(line, /@[0-9a-f]{40}$/, `${file}: ${line}`);
+  }
+});
+
+test('the workflow template marks its own schedule and uses the shared name', () => {
+  const text = readFileSync(join(TEMPLATE, 'chomik-workflow.yml'), 'utf8');
+  assert.match(text, /workflow_call:/);
+  assert.match(text, /# chomik: only without a daily build, begin\n[\s\S]*schedule:[\s\S]*# chomik: only without a daily build, end/);
+  assert.match(text, /^ {2}looking-for-messages-from-the-past:$/m);
+  assert.match(text, /node \.chomik\/looking-for-messages-from-the-past\.mjs --branch BRANCH/);
 });

@@ -13,20 +13,23 @@ const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-fil
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
 const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skills', 'chomik')];
 const TARGET = TARGET_DIRS.at(-1);
-const FILES = ['SKILL.md', 'check.mjs'];
+const FILES = ['SKILL.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
-const HELP = `Usage: npx chomik [options]
+const HELP = `Usage: npx chomik@latest [options]
 
-Installs or updates the chomik skill in this project (.claude/skills/chomik/).
-Shows the plan and asks before writing. Never overwrites changes that could not
-be recovered from git, unless you use --force.
+Installs chomik in this project, or updates it: run the same command again.
+Writes only .claude/skills/chomik/. Shows the plan and asks before writing, and
+never overwrites edits that are not committed to git, unless you use --force.
+Then type /chomik in Claude Code or GitHub Copilot.
 
 Options:
   --yes          Do not ask; required when not running in a terminal
   --dry-run      Show the plan and change nothing
   --force        Also overwrite files with changes that are not committed
   -h, --help     Show help
-  --version      Show version`;
+  --version      Show version
+
+About chomik, including how to stop or remove it: .claude/skills/chomik/README.md`;
 
 const args = process.argv.slice(2);
 const has = (flag) => args.includes(flag);
@@ -63,28 +66,33 @@ async function installOrUpdate({ yes, dryRun, force }) {
     }
   }
 
-  const plan = FILES.map((file) => {
+  const installed = installedVersion();
+  const plan = [];
+  for (const file of FILES) {
     const source = readFileSync(join(SOURCE, file));
     const target = join(TARGET, file);
-    if (!existsSync(target)) return { target, source, action: 'create' };
+    if (!existsSync(target)) {
+      plan.push({ target, source, action: 'create' });
+      continue;
+    }
     const current = readFileSync(target);
-    if (current.equals(source)) return { target, source, action: 'unchanged', from: VERSION };
+    if (current.equals(source)) continue;
     const from = releasedVersionOf(file, sha256(current));
-    if (from) return { target, source, action: 'update', from };
-    return { target, source, action: 'replace', committed: isCommittedInGit(target) };
-  });
+    plan.push(from ? { target, source, action: 'update', from } : { target, source, action: 'replace', committed: isCommittedInGit(target) });
+  }
 
-  const installed = installedVersion();
-  if (plan.every((p) => p.action === 'unchanged')) {
-    console.log(`chomik ${VERSION} is installed in this project and up to date.`);
+  if (plan.length === 0) {
+    console.log(`chomik ${VERSION} is already here and up to date.`);
     return 0;
   }
 
-  console.log(`chomik ${VERSION} (installed here: ${installed})`);
+  if (installed === 'not installed') console.log(`Installing chomik ${VERSION} in this project.`);
+  else if (installed === 'edited') console.log(`Updating chomik in this project to ${VERSION} (some of its files were edited here).`);
+  else console.log(`Updating chomik in this project: ${installed} -> ${VERSION}.`);
   console.log('Plan:');
   for (const p of plan) {
     if (p.action === 'create') console.log(`  create   ${p.target}`);
-    if (p.action === 'update') console.log(`  update   ${p.target} (${p.from} -> ${VERSION})`);
+    if (p.action === 'update') console.log(`  update   ${p.target}`);
     if (p.action === 'replace') {
       console.log(`  replace  ${p.target} (edited here; ${p.committed ? 'your committed changes stay in git history' : 'changes are NOT committed'})`);
     }
@@ -121,24 +129,27 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   mkdirSync(TARGET, { recursive: true });
-  for (const p of plan) if (p.action !== 'unchanged') writeFileSync(p.target, p.source);
+  for (const p of plan) writeFileSync(p.target, p.source);
 
   console.log(installed === 'not installed'
     ? 'Done. Open your coding agent in this project and type /chomik.'
     : `Done. chomik is now ${VERSION}.`);
-  console.log('Commit .claude/skills/chomik/ to share it with your team.');
+  console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.');
   return 0;
 }
 
 // A file can be identical in several versions, so the installed version is the
-// newest one that matches every installed file.
+// newest one that every present skill file matches.
 function installedVersion() {
-  const existing = FILES.filter((file) => existsSync(join(TARGET, file)));
-  if (existing.length === 0) return 'not installed';
-  const known = { ...RELEASED, [VERSION]: Object.fromEntries(FILES.map((f) => [f, sha256(readFileSync(join(SOURCE, f)))])) };
-  const matching = Object.keys(known).filter((version) =>
-    FILES.every((file) => existsSync(join(TARGET, file)) && known[version][file] === sha256(readFileSync(join(TARGET, file)))));
-  if (matching.length === 0) return 'edited or incomplete';
+  const present = FILES.filter((file) => existsSync(join(TARGET, file)));
+  if (present.length === 0) return 'not installed';
+  const current = Object.fromEntries(FILES.map((f) => [f, sha256(readFileSync(join(SOURCE, f)))]));
+  const known = { ...RELEASED, [VERSION]: current };
+  const matching = Object.keys(known).filter((version) => {
+    const files = present.filter((file) => known[version][file]);
+    return files.length > 0 && files.every((file) => sha256(readFileSync(join(TARGET, file))) === known[version][file]);
+  });
+  if (matching.length === 0) return 'edited';
   return matching.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).at(-1);
 }
 

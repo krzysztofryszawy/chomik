@@ -116,7 +116,7 @@ To read yourself what needs to be done, see FOR HUMANS below the prompt.
 <human part of the reminder>
 ===== END =====
 
-Run locally: node .chomik/check.mjs
+Run locally: node .chomik/looking-for-messages-from-the-past.mjs
 ```
 
 The prompt is the main part and comes first, ready to paste into any coding

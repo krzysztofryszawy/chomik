@@ -43,7 +43,9 @@ release. Recorded on 2026-11-05.
 - [ ] 2FA is enabled on the npm and GitHub accounts.
 - [ ] After the first trusted publish, token publishing is disallowed in the
       package settings.
-- [ ] The README shows the install command with a specific version, not the latest.
+- [ ] The README recommends `npx chomik@latest`, the simplest command, which also
+      bypasses an older copy cached by npx. A specific version is mentioned for
+      people who want to pin it.
 
 ## Transparency
 

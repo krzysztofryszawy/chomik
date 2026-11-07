@@ -1,0 +1,25 @@
+# 🐹 chomik is looking for messages from the past.
+# About chomik: .claude/skills/chomik/README.md. To remove it, delete this file and, if your build calls it,
+# the looking-for-messages-from-the-past job there.
+name: chomik
+
+on:
+  workflow_call: # called by your build
+  workflow_dispatch: # run it by hand from the Actions tab
+  # chomik: only without a daily build, begin
+  schedule:
+    - cron: '7 2 * * *' # 02:07 UTC, outside working hours; GitHub may start it a bit later
+  push:
+    branches: [BRANCH]
+  # chomik: only without a daily build, end
+
+permissions:
+  contents: read # chomik only reads; it never writes to the repository
+
+jobs:
+  looking-for-messages-from-the-past:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Looking for messages from the past
+        run: node .chomik/looking-for-messages-from-the-past.mjs --branch BRANCH

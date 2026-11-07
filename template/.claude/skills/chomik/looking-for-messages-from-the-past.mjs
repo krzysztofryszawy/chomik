@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// 🐹 chomik: looks for messages from the past in .chomik/. About chomik: .claude/skills/chomik/README.md
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -81,7 +82,7 @@ function run() {
   }
 
   console.log('');
-  console.log('Run locally: node .chomik/check.mjs');
+  console.log('Run locally: node .chomik/looking-for-messages-from-the-past.mjs');
   if (!enforce) {
     if (!inActions) console.log('Not failing outside CI.');
     else if (!branch) console.log('Not failing: no branch given with --branch.');

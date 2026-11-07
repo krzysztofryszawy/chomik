@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const SCRIPT = resolve('template/.claude/skills/chomik/check.mjs');
+const SCRIPT = resolve('template/.claude/skills/chomik/looking-for-messages-from-the-past.mjs');
 
 function isoDay(offsetDays) {
   return new Date(Date.now() + offsetDays * 86_400_000).toISOString().slice(0, 10);
@@ -101,7 +101,7 @@ test('invalid file name or impossible date in CI on the branch: exit code 2', ()
 });
 
 test('non-Markdown files in .chomik are ignored', () => {
-  const { code, out } = check(project({ 'check.mjs': '', 'notes.txt': '' }), { ci: true });
+  const { code, out } = check(project({ 'looking-for-messages-from-the-past.mjs': '', 'notes.txt': '' }), { ci: true });
   assert.equal(code, 0);
   assert.equal(out, '');
 });

@@ -2,5 +2,9 @@
   "0.1.0": {
     "SKILL.md": "c4e3e9b3b608dcd24391faaa4b39f98a2ad12d5cdb4797e35cac742abd9b747e",
     "check.mjs": "cc03625bc22e822481bc740a6f77e6bfa93982c74c1af5b80cc319e2dc79ec70"
+  },
+  "0.1.1": {
+    "SKILL.md": "1d43d0214ac704ed982cf31be1dc0a0f3f80547034ef968885ae64c7a2ccbf05",
+    "check.mjs": "cc03625bc22e822481bc740a6f77e6bfa93982c74c1af5b80cc319e2dc79ec70"
   }
 }

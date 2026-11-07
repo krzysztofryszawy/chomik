@@ -5,8 +5,8 @@ Plans for chomik's development. Decisions and their reasons are in
 
 ## Version 0
 
-- Dependency-free Node check script, copied into the project as `.chomik/check.mjs`.
-  Done: bundled with the skill as `template/.claude/skills/chomik/check.mjs`, with tests.
+- Dependency-free Node check script, copied into the project as `.chomik/looking-for-messages-from-the-past.mjs`.
+  Done: bundled with the skill as `template/.claude/skills/chomik/looking-for-messages-from-the-past.mjs`, with tests.
 - Skill for creating a reminder, installed at project level in `.claude/skills/`.
   The skill copies the check script with the first reminder in a project.
   First draft: `template/.claude/skills/chomik/SKILL.md`.
