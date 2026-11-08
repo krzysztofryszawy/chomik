@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The hint after an unknown argument points to `npx chomik@latest --help`, the
+  same command as in the help and the README.
 - The prompt for your coding agent after the first install, and from
   `npx chomik check` in a project without chomik, asks what is worth never
   forgetting and says chomik will help set up the first reminder, instead of

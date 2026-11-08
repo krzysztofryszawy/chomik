@@ -429,7 +429,7 @@ test('--version prints the package version', () => {
 test('an unknown argument such as the old "init" fails on stderr', () => {
   const { code, stdout, stderr } = run(project(), ['init']);
   assert.equal(code, 1);
-  assert.equal(stderr, `chomik: unknown argument "init" in chomik ${VERSION}.\nIf it comes from a newer chomik, try: npx chomik@latest init\nHelp: npx chomik --help\n`);
+  assert.equal(stderr, `chomik: unknown argument "init" in chomik ${VERSION}.\nIf it comes from a newer chomik, try: npx chomik@latest init\nHelp: npx chomik@latest --help\n`);
   assert.equal(stdout, '');
 });
 
@@ -444,7 +444,7 @@ test('a typo suggests the closest command or option', () => {
   for (const [typo, meant] of [['chek', 'check'], ['--hepl', '--help'], ['--dryrun', '--dry-run']]) {
     const { code, stderr } = run(project(), [typo]);
     assert.equal(code, 1, typo);
-    assert.equal(stderr, `chomik: unknown argument "${typo}" in chomik ${VERSION}.\nDid you mean "${meant}"?\nHelp: npx chomik --help\n`, typo);
+    assert.equal(stderr, `chomik: unknown argument "${typo}" in chomik ${VERSION}.\nDid you mean "${meant}"?\nHelp: npx chomik@latest --help\n`, typo);
   }
 });
 

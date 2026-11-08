@@ -77,7 +77,7 @@ try {
     if (near) console.error(`Did you mean "${near}"?`);
     // Without -y or --yes, so following the hint still shows the plan and asks first.
     else console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.filter((a) => a !== '-y' && a !== '--yes').join(' ')}`);
-    console.error('Help: npx chomik --help');
+    console.error('Help: npx chomik@latest --help');
     process.exitCode = 1;
   } else if (has('--help') || has('-h')) {
     console.log(HELP);
