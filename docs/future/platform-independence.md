@@ -1,7 +1,9 @@
 # Platform independence for chomik
 
-Long-term plan for people and agents alike: agents above all must be able to use
-chomik wherever they want and need it. Written on 2026-11-08 from the code of
+Long-term plan for people and agents alike. It starts only after chomik for people
+is stable, even if that first stable version is for Node only. The goal is that
+agents get ready-made support in the many environments closest to them, and can
+use chomik wherever they want and need it. Written on 2026-11-08 from the code of
 chomik 0.1.7 and checked against 0.1.9. Stage sizes are relative (small, medium),
 with no time estimates. Nothing here is built.
 
