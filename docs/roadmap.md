@@ -84,8 +84,8 @@ Agent Skill for Node projects with Claude Code or GitHub Copilot. Research on
 ## Future plans
 
 Beyond the steps above, and not built: see [future/](future/README.md). Platform
-independence is the long-term plan for chomik; `chomik-for-robots` is a separate
-direction for agents.
+independence is the long-term plan for people and agents alike; `chomik-for-robots`
+is a separate direction for agents.
 
 ## Later
 
