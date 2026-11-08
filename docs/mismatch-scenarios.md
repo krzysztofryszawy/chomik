@@ -30,6 +30,8 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | A skill file deleted by hand | Recreated, nothing else touched | ✅ automated |
 | Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated |
 | Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
+| New version released between a dry run and the install | The plan shown before the question is the current one | ⚠️ by hand |
+| Check script edited by hand | Update refused unless the edit is committed or `--force` is used | ✅ automated |
 | Node older than `engines` in `package.json` | Stop before anything else, name the Node needed | ✅ automated, with a faked version |
 
 ## Check: package, skill, script and workflow
@@ -37,7 +39,8 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Scenario | Expected | Test |
 |---|---|---|
 | Skill, script and workflow match | No extra line | ✅ automated |
-| No CI workflow | One line: CI is not set up; type /chomik | ✅ automated |
+| No CI workflow, project on GitHub | One line: CI is not set up; type /chomik | ✅ automated |
+| No CI workflow, project not on GitHub | One line: not on GitHub yet; /chomik once it is | ✅ automated |
 | Check script older than the skill | "older than chomik X; run npx chomik@latest" | ✅ automated |
 | CI workflow older than the skill | ".github/workflows/chomik.yml is still X; type /chomik" | ✅ automated |
 | Check script newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
@@ -68,7 +71,6 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | CI workflow older than the skill | Proposes replacing it first, waits for a yes | ❌ |
 | CI workflow newer than the skill | Does not propose replacing it | ❌ |
 | Reminders but no CI workflow | Writes the reminder, then one sentence that it shows only with `npx chomik check` and that `/chomik` can set up CI | ❌ |
-| Copied script edited by hand | Says the edit would be lost before replacing | ❌ |
 | Developer asks for something the skill does not cover (hooks, cron) | Answers from README, invents no setup | ⚠️ by hand |
 | Setup only, nothing to remember yet | Ends after setup, no reminder suggested | ⚠️ by hand |
 

@@ -143,7 +143,9 @@ function versionHint() {
   }
   const workflow = join('.github', 'workflows', 'chomik.yml');
   if (!existsSync(workflow)) {
-    return 'CI is not set up, so reminders show only when you run this. To set it up, type /chomik in your coding agent.';
+    return onGitHub()
+      ? 'CI is not set up, so reminders show only when you run this. To set it up, type /chomik in your coding agent.'
+      : 'This project is not on GitHub yet, so reminders show only when you run this. Once it is, type /chomik in your coding agent to set up CI.';
   }
   const ci = stampOf(workflow);
   if (/^\d/.test(skill) && ci && newer(skill, ci)) {

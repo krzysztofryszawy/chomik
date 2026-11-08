@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- In a project that is not on GitHub, `npx chomik check` says CI can be set up
+  once it is there, instead of suggesting `/chomik` right away.
 - The FAQ explains the manual, craft mode for working without a coding agent.
 - The hint after an unknown argument points to `npx chomik@latest --help`, the
   same command as in the help and the README.

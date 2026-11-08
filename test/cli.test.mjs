@@ -253,11 +253,20 @@ test('check adds nothing when chomik, its script and its workflow match', () => 
 });
 
 test('check works right after install and says when CI is not set up', () => {
-  const root = project();
+  const root = project({ git: true });
+  gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
   run(root, ['--yes']);
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
   assert.match(stdout, /\n\nCI is not set up, so reminders show only when you run this\. To set it up, type \/chomik in your coding agent\.\n$/);
+});
+
+test('check outside GitHub does not promise that /chomik can set up CI now', () => {
+  const root = project();
+  run(root, ['--yes']);
+  const { code, stdout } = run(root, ['check']);
+  assert.equal(code, 0);
+  assert.match(stdout, /\n\nThis project is not on GitHub yet, so reminders show only when you run this\. Once it is, type \/chomik in your coding agent to set up CI\.\n$/);
 });
 
 test('check says when the check script is older than the skill', () => {
