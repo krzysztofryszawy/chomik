@@ -5,6 +5,11 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.8] - unreleased
 
+### Changed
+
+- The hint to try a newer chomik leaves out `-y` and `--yes`, so following it
+  still shows the plan and asks first.
+
 ## [0.1.7] - 2026-11-08
 
 ### Fixed

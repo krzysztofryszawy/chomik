@@ -392,6 +392,13 @@ test('an unknown argument such as the old "init" fails on stderr', () => {
   assert.equal(stdout, '');
 });
 
+test('the hint to try a newer chomik leaves out --yes and -y', () => {
+  for (const yes of ['--yes', '-y']) {
+    const { stderr } = run(project(), ['init', yes]);
+    assert.match(stderr, /\nIf it comes from a newer chomik, try: npx chomik@latest init\n/, yes);
+  }
+});
+
 test('a typo suggests the closest command or option', () => {
   for (const [typo, meant] of [['chek', 'check'], ['--hepl', '--help'], ['--dryrun', '--dry-run']]) {
     const { code, stderr } = run(project(), [typo]);

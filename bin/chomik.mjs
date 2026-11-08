@@ -63,7 +63,8 @@ try {
     console.error(`chomik: unknown argument "${unknown}" in chomik ${VERSION}.`);
     const near = closest(unknown, command ? allowed : ['check', ...allowed]);
     if (near) console.error(`Did you mean "${near}"?`);
-    else console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.join(' ')}`);
+    // Without -y or --yes, so following the hint still shows the plan and asks first.
+    else console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.filter((a) => a !== '-y' && a !== '--yes').join(' ')}`);
     console.error('Help: npx chomik --help');
     process.exitCode = 1;
   } else if (has('--help') || has('-h')) {
