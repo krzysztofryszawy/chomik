@@ -132,7 +132,7 @@ function versionHint() {
   const stamp = /🐹 chomik (\d+\.\d+\.\d+)/.exec(readFileSync(CHECK_SCRIPT, 'utf8').split('\n').slice(0, 2).join('\n'));
   const copies = stamp ? stamp[1] : 'an older version';
   if (!stamp || newer(skill, copies)) {
-    return `chomik was updated, but its copies here are still ${copies}. To update them, type /chomik in your coding agent.`;
+    return `chomik was updated, but its check script in .chomik/ is still ${copies}. To update it, type /chomik in your coding agent.`;
   }
   return '';
 }

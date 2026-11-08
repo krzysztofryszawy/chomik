@@ -9,6 +9,8 @@ What changed in chomik, newest first. chomik follows
 
 - The hint to try a newer chomik leaves out `-y` and `--yes`, so following it
   still shows the plan and asks first.
+- `npx chomik check` names the check script in `.chomik/` when it is older than
+  the skill, instead of speaking of "copies".
 
 ## [0.1.7] - 2026-11-08
 

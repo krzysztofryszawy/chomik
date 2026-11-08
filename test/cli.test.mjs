@@ -247,7 +247,7 @@ test('check says when the copies are older than the skill', () => {
   setUp(root, template(SCRIPT).toString('utf8').replace(`chomik ${VERSION}:`, 'chomik 0.1.0:'));
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
-  assert.match(stdout, /\n\nchomik was updated, but its copies here are still 0\.1\.0\. To update them, type \/chomik in your coding agent\.\n$/);
+  assert.match(stdout, /\n\nchomik was updated, but its check script in \.chomik\/ is still 0\.1\.0\. To update it, type \/chomik in your coding agent\.\n$/);
 });
 
 test('check says when a newer chomik is out than the skill in the project', () => {
@@ -332,7 +332,7 @@ test('an older chomik refuses to replace a newer skill unless forced', () => {
 test('check says that copies without a version comment are older', () => {
   const root = project();
   setUp(root, template(SCRIPT).toString('utf8').replace(/^\/\/ 🐹 chomik [^:]+:/m, '// 🐹 chomik:'));
-  assert.match(run(root, ['check']).stdout, /copies here are still an older version\. To update them, type \/chomik/);
+  assert.match(run(root, ['check']).stdout, /check script in \.chomik\/ is still an older version\. To update it, type \/chomik/);
 });
 
 test('check gives no hint when the copies are newer than the skill', () => {

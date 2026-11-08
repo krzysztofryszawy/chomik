@@ -36,7 +36,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Scenario | Expected | Test |
 |---|---|---|
 | Skill and copies match | No extra line | ✅ automated |
-| Copies older than the skill | "copies here are still X; type /chomik" | ✅ automated |
+| Copies older than the skill | "check script in .chomik/ is still X; type /chomik" | ✅ automated |
 | Copies without a version comment (before 0.1.6) | "still an older version" | ✅ automated |
 | Copies newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
 | Package newer than the skill | "X is out; this project has Y" | ✅ automated |
