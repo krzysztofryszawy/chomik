@@ -37,23 +37,6 @@ red run, handling by someone else.
 - Until then, working versions are 0.1.x.
 - Publish 0.2.0 as the beta, then unpublish all 0.1.x versions, in that order.
 
-## Chomik CLI
-
-A deterministic command-line tool that both people and agents use, so the
-format is enforced by code rather than by instructions to a model. Planned
-commands, added once the reminder format is stable:
-
-- `chomik add`: creates a correctly named reminder file. The manual path for
-  people who do not use an agent, and the safe path for agents that create
-  reminders for themselves.
-- `chomik extend`: moves a reminder's date and requires a reason.
-- `chomik list`: overview of all reminders in the project, the basis for audit mode.
-- `chomik check`: the same check as the copied script, for local use.
-
-Every command follows the same rules as the rest of chomik: no dependencies,
-no network, only chomik's own files, plan shown and confirmed before writing.
-An MCP server can later be built on top of this CLI.
-
 ## Later
 
 - Deterministic conditions besides dates: a dependency version in the lockfile,
@@ -61,3 +44,6 @@ An MCP server can later be built on top of this CLI.
 - Personal skill installation, Claude Code plugin marketplace.
 - Stacks other than Node, CI systems other than GitHub Actions.
 - A decision model such as `rkinas/basal`, then a full LLM query in CI.
+- Other delivery channels, if testing shows they work better than the skill in a
+  conversation with an agent: a deterministic `chomik` CLI (for example `add`,
+  `extend`, `list`, `check`) or an MCP server. Open options, not plans.
