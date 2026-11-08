@@ -1,7 +1,8 @@
 # Setting up chomik in a project
 
 Follow these steps exactly; CI configuration breaks easily. If the developer
-prefers to go without CI for now, follow "Use it locally" in README.md instead.
+prefers to go without CI for now, follow "Use it locally" in README.md instead
+of steps 2 and 3.
 
 1. This is usually the developer's first contact with chomik, so open with one
    sentence on what it is for, then say you are checking how CI runs, read-only.
@@ -35,5 +36,8 @@ prefers to go without CI for now, follow "Use it locally" in README.md instead.
      waits until the reminder is handled.
    - Without a daily build: keep that block in `chomik.yml` and remove only its
      two marker comments, so it runs every night and on push by itself.
-4. Say that chomik is ready, list the files to commit, and that next time
-   `/chomik` with a short description is all it takes.
+4. Finish like a short tutorial for someone new to chomik: invite them to run
+   `node .chomik/looking-for-messages-from-the-past.mjs` now, say it finds
+   nothing yet, and what it will show once a reminder is due. Then list the
+   files to commit, and say that next time `/chomik` with a short description
+   is all it takes.
