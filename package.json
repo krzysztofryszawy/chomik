@@ -1,10 +1,29 @@
 {
   "name": "chomik",
   "version": "0.1.8",
-  "description": "Messages from the past: reminders with context for your team, checked in CI on a chosen date.",
+  "description": "Agent Skill for Claude Code and GitHub Copilot: bulletproof reminders that turn your GitHub Actions build red on a chosen date, with a ready prompt for your coding agent. Node, no dependencies.",
+  "keywords": [
+    "agent-skills",
+    "agent-skill",
+    "claude-code",
+    "claude-skills",
+    "github-copilot",
+    "copilot",
+    "vscode",
+    "ai-agent",
+    "coding-agent",
+    "reminders",
+    "todo",
+    "deadline",
+    "expiring",
+    "github-actions",
+    "ci",
+    "technical-debt"
+  ],
   "type": "module",
   "license": "MIT",
   "author": "Krzysztof Ryszawy",
+  "homepage": "https://github.com/krzysztofryszawy/chomik#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/krzysztofryszawy/chomik.git"

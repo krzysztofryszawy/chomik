@@ -1,6 +1,8 @@
 ---
 name: chomik
-description: Leave a reminder for later that turns the main-branch build red on a chosen date, with context and a ready prompt for whoever handles it. Invoke manually with /chomik.
+description: Leave a reminder for later that turns the main-branch build red on a chosen date, with context and a ready prompt for whoever handles it. Use when something must not be forgotten, such as expiring credentials, retiring an API version, or a temporary pin or workaround. Invoke manually with /chomik.
+license: MIT
+compatibility: A Node project; the full flow needs a GitHub repository with GitHub Actions. Works in Claude Code and GitHub Copilot.
 disable-model-invocation: true
 ---
 

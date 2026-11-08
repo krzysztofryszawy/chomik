@@ -50,6 +50,25 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 - Until then, working versions are 0.1.x.
 - Publish 0.2.0 as the beta, then unpublish all 0.1.x versions, in that order.
 
+## Discoverability
+
+So that people, search engines and coding agents see at once that chomik is an
+Agent Skill for Node projects with Claude Code or GitHub Copilot. Research on
+2026-11-08; done: npm `keywords`, `homepage` and description, and the skill's
+`description`, `license` and `compatibility`. Next, in order:
+
+1. GitHub repository description and topics (`agent-skills`, `claude-code`,
+   `claude-code-skills`, `claude-skills`, `github-copilot`, `github-actions`,
+   `reminders`). Public change, made only with the owner's yes.
+2. After the beta: submit chomik to `github/awesome-copilot` (its skills
+   directory) and lists such as `VoltAgent/awesome-agent-skills` and
+   `ComposioHQ/awesome-claude-skills`. A listing, not a third-party installer.
+3. Check whether `disable-model-invocation`, a Claude Code-only field, causes an
+   "unexpected key" error in tools that validate strictly against the Agent
+   Skills spec, and how Copilot treats it.
+4. Not now: `llms.txt`. Google ignores it and AI providers do not promise to read
+   it; a clear README with examples matters more for one-page documentation.
+
 ## Later
 
 - Deterministic conditions besides dates: a dependency version in the lockfile,

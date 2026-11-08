@@ -5,6 +5,13 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **chomik presents itself as an Agent Skill.** npm keywords and description,
+  and the skill's `description`, `license` and `compatibility`, name the open
+  Agent Skills standard, Claude Code, GitHub Copilot, Node and GitHub Actions.
+  Why: Agent Skills is the name people, search engines and models already use;
+  GitHub Copilot reads skills from `.claude/skills/`, where chomik installs.
+  `llms.txt` is skipped for now: Google ignores it and AI providers do not
+  promise to read it.
 - **chomik checks the Node version itself.** Before any command, it compares
   Node with `engines` in `package.json` and stops with the version needed. Why:
   npm treats `engines` as advisory, so on an older Node chomik would otherwise

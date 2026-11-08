@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The skill says when to use it, its license and what it needs (Node, GitHub
+  Actions, Claude Code or GitHub Copilot), following the Agent Skills standard.
 - The README explains how to verify a release cryptographically, in an empty
   folder with `npm audit signatures`; `npm view` only showed that a record
   exists.
