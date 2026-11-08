@@ -39,5 +39,6 @@ of steps 2 and 3.
 4. Skip how the files were checked and finish like a short tutorial for someone
    new to chomik: invite them to run `npx chomik check` now, say it finds
    nothing yet, and what it will show once a reminder is due. Then list the
-   files to commit, and say that next time `/chomik` with a short description
-   is all it takes.
+   files to commit, including `.claude/skills/chomik/` so the whole team can
+   use `/chomik`, and say that next time `/chomik` with a short description is
+   all it takes.

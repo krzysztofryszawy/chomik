@@ -15,7 +15,8 @@ What changed in chomik, newest first. chomik follows
   that nothing was changed.
 - After the first install, the prompt for your coding agent reads the README
   installed with the skill, so it works without internet; the README now has the
-  FAQ with examples. The note about committing comes after setup instead.
+  FAQ with examples. The note about committing the skill for your team comes at
+  the end of setup instead.
 
 ## [0.1.6] - 2026-11-08
 
