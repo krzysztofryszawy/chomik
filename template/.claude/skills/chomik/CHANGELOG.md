@@ -12,6 +12,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- With no reminders yet, the check points to the skill's README, which explains
+  reminders, instead of the installer's help.
 - Without GitHub, setup says that putting the project on GitHub is up to you,
   before you come back with `/chomik`.
 - `--help` and the README no longer say that `npx chomik check` never fails
