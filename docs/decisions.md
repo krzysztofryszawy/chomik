@@ -16,6 +16,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   cover are answered from `.claude/skills/chomik/README.md`, never improvised.
   Why: a long skill dilutes the essential instructions, and the README is
   installed next to it, so the agent can always read it.
+- **One skill with supporting files, not several skills.** Larger topics get
+  their own file next to `SKILL.md`, read only when needed. Why: a helper skill
+  that the agent can call has its description in context in every session and
+  can run on its own; one that it cannot call needs a second command from the
+  user.
 
 ## 2026-11-07
 
