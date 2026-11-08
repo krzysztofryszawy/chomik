@@ -5,6 +5,14 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **An update says what changed, and the skill updates its copies.** After an
+  update, the installer prints a prompt for the agent with the GitHub comparison
+  of the old and new tags, whose commit titles are the changelog. The installer
+  writes only the skill, so on the next `/chomik` the skill compares the version
+  in the first comment of the copied check script and `chomik.yml` with its own
+  and proposes replacing them. Why: the copies are what CI runs, and an old copy
+  could misread reminders written by the new skill.
+
 - **First contact comes with a prompt for the agent.** After the first install,
   and from `npx chomik check` in a project without chomik, chomik prints one
   ready prompt: read the repository and explain with its examples what chomik

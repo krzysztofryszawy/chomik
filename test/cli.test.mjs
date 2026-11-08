@@ -76,7 +76,7 @@ test('an unedited older release is updated and shows the versions', () => {
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Updating chomik in this project: ${version} -> `));
-  assert.match(stdout, /\n\nchomik learned some new tricks\. Say hi: start a new session of your coding agent in this project and type \/chomik\.\n$/);
+  assert.match(stdout, new RegExp(`\\n\\nchomik learned some new tricks\\. Curious which\\? Paste this into a new session of your coding agent:\\n {2}Read https://github\\.com/krzysztofryszawy/chomik/compare/v${version}\\.\\.\\.v${VERSION.replaceAll('.', '\\.')} and tell me briefly what changed .*Do not change anything\\.\\n$`));
   assert.match(stdout, /update\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.ok(readFileSync(skillFile(root)).equals(template('SKILL.md')));
 });

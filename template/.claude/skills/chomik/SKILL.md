@@ -21,6 +21,11 @@ chomik works in stages, and the developer starts each one:
 3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
    inside it; this skill is not involved.
 
+The copies setup made, `.chomik/looking-for-messages-from-the-past.mjs` and
+`.github/workflows/chomik.yml`, name their chomik version in the first comment.
+If it differs from the same files in this folder, chomik was updated: first
+propose replacing them as in step 3 of setup.md, and wait for a yes.
+
 Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
 [README.md](README.md) describes; to move it to CI, follow setup.md. For anything
 this file does not cover, rely on README.md instead of inventing setups such as

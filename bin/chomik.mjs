@@ -178,7 +178,9 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${FIRST_TIME_PROMPT}`);
     console.log('Then type /chomik there to set it up.');
   } else {
-    console.log('chomik learned some new tricks. Say hi: start a new session of your coding agent in this project and type /chomik.');
+    const changes = /^\d/.test(installed) ? `compare/v${installed}...v${VERSION}` : `commits/v${VERSION}`;
+    console.log('chomik learned some new tricks. Curious which? Paste this into a new session of your coding agent:');
+    console.log(`  Read https://github.com/krzysztofryszawy/chomik/${changes} and tell me briefly what changed in chomik and what it means for this project. Do not change anything.`);
   }
   return 0;
 }
