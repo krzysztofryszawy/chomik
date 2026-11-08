@@ -210,6 +210,48 @@ test('the check pitch opens the README word for word', () => {
   assert.ok(readFileSync('README.md', 'utf8').includes(`\n\n${pitch}\n\n`));
 });
 
+function setUp(root, script = template(SCRIPT)) {
+  run(root, ['--yes']);
+  mkdirSync(join(root, '.chomik'));
+  writeFileSync(join(root, '.chomik', SCRIPT), script);
+}
+
+test('check adds nothing when the skill and its copies match', () => {
+  const root = project();
+  setUp(root);
+  const { code, stdout } = run(root, ['check']);
+  assert.equal(code, 0);
+  assert.doesNotMatch(stdout, /To update/);
+});
+
+test('check says when the copies are older than the skill', () => {
+  const root = project();
+  setUp(root, template(SCRIPT).toString('utf8').replace(`chomik ${VERSION}:`, 'chomik 0.1.0:'));
+  const { code, stdout } = run(root, ['check']);
+  assert.equal(code, 0);
+  assert.match(stdout, /\n\nchomik was updated, but its copies here are still 0\.1\.0\. To update them, type \/chomik in your coding agent\.\n$/);
+});
+
+test('check says when a newer chomik is out than the skill in the project', () => {
+  const tag = (() => {
+    try {
+      return execFileSync('git', ['tag', '--list', 'v*', '--sort=-v:refname'], { encoding: 'utf8' }).split('\n')[0];
+    } catch {
+      return '';
+    }
+  })();
+  if (!tag || tag.slice(1) === VERSION) return;
+  const root = project();
+  mkdirSync(join(root, SKILL_DIR), { recursive: true });
+  for (const file of Object.keys(RELEASED[tag.slice(1)])) {
+    writeFileSync(join(root, SKILL_DIR, file), execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`]));
+  }
+  mkdirSync(join(root, '.chomik'));
+  writeFileSync(join(root, '.chomik', SCRIPT), template(SCRIPT));
+  const { stdout } = run(root, ['check']);
+  assert.match(stdout, new RegExp(`\\n\\nchomik ${VERSION.replaceAll('.', '\\.')} is out; this project has ${tag.slice(1).replaceAll('.', '\\.')}\\. To update: npx chomik@latest\\n$`));
+});
+
 test('check refuses a check script that is a symbolic link', () => {
   const root = project();
   mkdirSync(join(root, '.chomik'));

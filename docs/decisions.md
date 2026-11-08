@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **`npx chomik check` names one version mismatch at most.** After the check, it
+  says when a newer chomik is out than the skill in the project, or else when the
+  copies setup made are older than the skill. Versions come from the package,
+  the skill file hashes and the first comment of the copied script. Why: three
+  versions can differ, and fixing the first mismatch leads to the next one.
 - **An update says what changed, and the skill updates its copies.** After an
   update, the installer prints a prompt for the agent to read the changelog
   since the old version. The installer

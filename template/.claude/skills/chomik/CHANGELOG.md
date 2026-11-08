@@ -7,7 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Added
 
-- `npx chomik check` shows the reminders that are due, the same check CI runs.
+- `npx chomik check` shows the reminders that are due, the same check CI runs,
+  and says when chomik or its copies in the project can be updated.
 - With nothing due, the check says there are no reminders yet, or when the next
   one is due.
 - Local use without CI, for when you do not want CI for now. Moving to CI later

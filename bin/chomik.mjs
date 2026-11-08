@@ -88,7 +88,28 @@ function check() {
     console.error(`chomik: ${CHECK_SCRIPT} is a symbolic link; not running it.`);
     return 1;
   }
-  return spawnSync(process.execPath, [CHECK_SCRIPT], { stdio: 'inherit' }).status ?? 1;
+  const status = spawnSync(process.execPath, [CHECK_SCRIPT], { stdio: 'inherit' }).status ?? 1;
+  const hint = versionHint();
+  if (hint) console.log(`\n${hint}`);
+  return status;
+}
+
+// Three versions can differ: this package, the skill and the copies setup made.
+// Only the first mismatch is named; fixing it leads to the next one.
+function versionHint() {
+  const skill = installedVersion();
+  if (!/^\d/.test(skill)) return '';
+  if (newer(VERSION, skill)) return `chomik ${VERSION} is out; this project has ${skill}. To update: npx chomik@latest`;
+  const stamp = /🐹 chomik (\d+\.\d+\.\d+)/.exec(readFileSync(CHECK_SCRIPT, 'utf8').split('\n').slice(0, 2).join('\n'));
+  const copies = stamp ? stamp[1] : 'an older version';
+  if (!stamp || newer(skill, copies)) {
+    return `chomik was updated, but its copies here are still ${copies}. To update them, type /chomik in your coding agent.`;
+  }
+  return '';
+}
+
+function newer(a, b) {
+  return a.localeCompare(b, undefined, { numeric: true }) > 0;
 }
 
 async function installOrUpdate({ yes, dryRun, force }) {
