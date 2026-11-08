@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- Setup ends as a short dialogue, one step per message, instead of one long
+  message.
 - Setup is proposed in a few plain sentences, as a one-time step, and working
   without CI comes up only if you decline it.
 - The agent gives a short overview, and leads a minimal tutorial when you want to

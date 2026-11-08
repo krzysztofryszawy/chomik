@@ -38,9 +38,12 @@ says what that means.
      waits until the reminder is handled.
    - Without a daily build: keep that block in `chomik.yml` and remove only its
      two marker comments, so it runs every night and on push by itself.
-4. Skip how the files were checked and finish like a short tutorial for someone
-   new to chomik: invite them to run `npx chomik check` now, say it finds
-   nothing yet, and what it will show once a reminder is due. Then list the
-   files to commit: `.claude/skills/chomik/`, so the whole team can use
-   `/chomik`, `.chomik/`, which CI runs, and any workflow changed in step 3. Say
-   that next time `/chomik` with a short description is all it takes.
+4. Skip how the files were checked and finish as a short dialogue with someone
+   new to chomik, one step per message, waiting for their reply each time:
+   - invite them to run `npx chomik check` now, and say in one sentence what it
+     shows;
+   - then list the files to commit: `.claude/skills/chomik/`, so the whole team
+     can use `/chomik`, `.chomik/`, which CI runs, and any workflow changed in
+     step 3;
+   - then say chomik is ready, and that when they have something to remember,
+     they can just say so.
