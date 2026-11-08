@@ -29,6 +29,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | A skill file deleted by hand | Recreated, nothing else touched | ✅ automated |
 | Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated from 0.1.7; installers up to 0.1.6 replace the newer files |
 | Older chomik without a command that exists now (`check` in 0.1.5) | "unknown argument" | ⚠️ by hand only |
+| Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
 
 ## Check: package, skill and copies
 
@@ -50,6 +51,9 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Unknown condition | Reported, passes locally | ✅ automated |
 | Header without its closing `---` | Read as format 1 without a header, text printed | ✅ automated |
 | Due, invalid and newer reminders together | All reported, exit 2 in CI | ✅ automated |
+| Other files or folders in `.chomik/` (`.MD`, `.md.bak`, subfolder, symbolic link, empty file) | Each reported with its reason, exit 2 in CI | ✅ automated |
+| Code block inside the prompt, heading starting with "Prompt", byte order mark | Nothing cut or misread | ✅ automated |
+| Check script missing, reminders still there | Says how many reminders are not checked | ✅ automated |
 
 ## Skill: agent runs
 

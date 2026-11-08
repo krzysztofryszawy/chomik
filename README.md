@@ -71,7 +71,8 @@ Handling a reminder does not need one: each has a part for humans.
 
 - `.claude/skills/chomik/`, including its own `README.md`, which tells any
   coding agent in your project what chomik is
-- `.chomik/`: the check script and the reminders
+- `.chomik/`: the check script and the reminders, nothing else; the check
+  reports anything else there, so no reminder is lost unnoticed
 - `.github/workflows/chomik.yml`
 - in a project with a daily build, two lines in that build workflow: the job
   `looking-for-messages-from-the-past`, which calls `chomik.yml`

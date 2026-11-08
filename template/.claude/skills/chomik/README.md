@@ -62,7 +62,8 @@ locally. Reminders are written the same way.
 ## Files that belong to chomik
 
 - `.claude/skills/chomik/` (this folder)
-- `.chomik/`: the check script and the reminders
+- `.chomik/`: the check script and the reminders, nothing else; the check
+  reports anything else there, so no reminder is lost unnoticed
 - `.github/workflows/chomik.yml` (not in local use)
 - in a project with a daily build, two lines in that build workflow: the job
   `looking-for-messages-from-the-past`, which calls `chomik.yml`
