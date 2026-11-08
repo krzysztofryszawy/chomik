@@ -13,8 +13,8 @@ knows what to do, even without the author. Be a friendly, brief colleague.
 
 If `.chomik/looking-for-messages-from-the-past.mjs` does not exist, chomik is not
 set up in this project yet: follow [setup.md](setup.md) first. Setup is a step on
-its own; continue to a reminder only if the developer has already said what to
-remember.
+its own and ends there; continue to a reminder only if the developer has already
+said what to remember. Never ask for or suggest one.
 
 Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
 [README.md](README.md) describes; to move it to CI, follow setup.md. For anything
