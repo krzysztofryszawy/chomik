@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -17,8 +17,6 @@ const TARGET = TARGET_DIRS.at(-1);
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
 const SCRIPT = 'looking-for-messages-from-the-past.mjs';
 const CHECK_SCRIPT = join('.chomik', SCRIPT);
-// Up to 0.1.7 the script also sat in the skill folder and the agent copied it to .chomik/.
-const OLD_SCRIPT_COPY = join(TARGET, SCRIPT);
 const OWN_FILES = [
   ...FILES.map((file) => ({ key: file, source: join(SOURCE, file), target: join(TARGET, file) })),
   { key: SCRIPT, source: join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT), target: CHECK_SCRIPT, note: ' (the check CI runs)' },
@@ -140,7 +138,7 @@ function versionHint() {
   const skill = installedVersion();
   if (/^\d/.test(skill) && newer(VERSION, skill)) return `chomik ${VERSION} is out; this project has ${skill}. To update: npx chomik@latest`;
   const script = stampOf(CHECK_SCRIPT);
-  if (/^\d/.test(skill) && (!script || newer(skill, script))) {
+  if (/^\d/.test(skill) && script && newer(skill, script)) {
     return `The check script in .chomik/ is older than chomik ${skill} here. To update it, run: npx chomik@latest`;
   }
   const workflow = join('.github', 'workflows', 'chomik.yml');
@@ -148,8 +146,8 @@ function versionHint() {
     return 'CI is not set up, so reminders show only when you run this. To set it up, type /chomik in your coding agent.';
   }
   const ci = stampOf(workflow);
-  if (/^\d/.test(skill) && (!ci || newer(skill, ci))) {
-    return `chomik was updated, but .github/workflows/chomik.yml is still ${ci || 'an older version'}. To update it, type /chomik in your coding agent.`;
+  if (/^\d/.test(skill) && ci && newer(skill, ci)) {
+    return `chomik was updated, but .github/workflows/chomik.yml is still ${ci}. To update it, type /chomik in your coding agent.`;
   }
   return '';
 }
@@ -170,7 +168,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   // Refuse symbolic links on the way, so chomik never writes outside the project.
-  for (const path of [...TARGET_DIRS, '.chomik', OLD_SCRIPT_COPY, ...OWN_FILES.map((f) => f.target)]) {
+  for (const path of [...TARGET_DIRS, '.chomik', ...OWN_FILES.map((f) => f.target)]) {
     if (isLink(path)) {
       console.error(`chomik: ${path} is a symbolic link; refusing to write through it.`);
       return 1;
@@ -200,10 +198,6 @@ async function installOrUpdate({ yes, dryRun, force }) {
       ? { target, source, note, action: 'update' }
       : { target, source, note, action: 'replace', committed: isCommittedInGit(target) });
   }
-  if (existsSync(OLD_SCRIPT_COPY)) {
-    const edited = !releasedVersionOf(SCRIPT, sha256(readFileSync(OLD_SCRIPT_COPY)));
-    plan.push({ target: OLD_SCRIPT_COPY, note: ', no longer needed here', action: 'remove', edited, committed: edited && isCommittedInGit(OLD_SCRIPT_COPY) });
-  }
 
   if (plan.length === 0) {
     console.log(`chomik ${VERSION} is already here and up to date.`);
@@ -220,7 +214,6 @@ async function installOrUpdate({ yes, dryRun, force }) {
     if (p.action === 'create') console.log(`  create   ${p.target}${p.note}`);
     if (p.action === 'update') console.log(`  update   ${p.target}${p.note}`);
     if (p.action === 'replace') console.log(`  replace  ${p.target} (edited here; ${keep(p)})`);
-    if (p.action === 'remove') console.log(`  remove   ${p.target} (${p.edited ? `edited here; ${keep(p)}` : 'an old copy'}${p.note})`);
   }
   console.log('Nothing else is changed. No dependencies are added.');
   if (installed === 'not installed') {
@@ -229,7 +222,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     if (!onGitHub()) console.log('This project is not on GitHub yet; until it is, try chomik with npx chomik check.');
   }
 
-  const atRisk = plan.filter((p) => (p.action === 'replace' || (p.action === 'remove' && p.edited)) && !p.committed);
+  const atRisk = plan.filter((p) => p.action === 'replace' && !p.committed);
   if (atRisk.length && !force) {
     console.error('');
     console.error('chomik: not updating, because these edits would be lost for good:');
@@ -264,12 +257,8 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   for (const p of plan) {
-    if (p.action === 'remove') {
-      rmSync(p.target);
-    } else {
-      mkdirSync(dirname(p.target), { recursive: true });
-      writeFileSync(p.target, p.source);
-    }
+    mkdirSync(dirname(p.target), { recursive: true });
+    writeFileSync(p.target, p.source);
   }
 
   if (installed === 'not installed') {

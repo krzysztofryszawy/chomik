@@ -98,7 +98,7 @@ Handling a reminder does not need one: each has a part for humans.
 
 Run `npx chomik@latest` again. It shows the plan and asks first, and it never
 overwrites edits that are not committed to git. To pin a version, use for
-example `npx chomik@0.1.2`.
+example `npx chomik@<version>`.
 
 ## Stop or remove
 

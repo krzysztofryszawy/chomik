@@ -122,13 +122,16 @@ function problem(entry) {
   const match = REMINDER_NAME.exec(entry.name);
   if (!match) return 'expected a name like YYYY-MM-DD-what-to-revisit.md, in lowercase';
   if (!isRealDate(match[1], match[2], match[3])) return 'that date does not exist';
-  if (parse(readFileSync(join(DIR, entry.name), 'utf8')).body.trim() === '') return 'the file is empty';
+  const { header, body } = parse(readFileSync(join(DIR, entry.name), 'utf8'));
+  if (!header && body.trim() === '') return 'the file is empty';
+  if (!header) return 'it does not start with the header (chomik: 1, condition: date)';
+  if (body.trim() === '') return 'nothing after the header';
   return '';
 }
 
 // Unknown formats and conditions come from a newer chomik; skipping them could hide a reminder.
 function understood(header) {
-  return (header.chomik ?? '1') === '1' && (header.condition ?? 'date') === 'date';
+  return header.chomik === '1' && header.condition === 'date';
 }
 
 function nothingDue(waiting) {
@@ -145,14 +148,13 @@ function nothingDue(waiting) {
   return 0;
 }
 
-// A reminder may start with a YAML header such as "chomik: 1" and "condition: date";
-// only flat "key: value" lines are read. Without a header it is format 1.
+// A reminder starts with a YAML header such as "chomik: 1" and "condition: date";
+// only flat "key: value" lines are read.
 function parse(raw) {
   const lines = raw.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').split('\n');
+  const end = lines[0] === '---' ? lines.indexOf('---', 1) : -1;
+  if (end === -1) return { header: null, body: lines.join('\n') };
   const header = {};
-  if (lines[0] !== '---') return { header, body: lines.join('\n') };
-  const end = lines.indexOf('---', 1);
-  if (end === -1) return { header, body: lines.join('\n') };
   for (const line of lines.slice(1, end)) {
     const match = /^([A-Za-z][\w-]*):\s*(.*?)\s*$/.exec(line);
     if (match) header[match[1]] = match[2];

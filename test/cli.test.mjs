@@ -328,22 +328,7 @@ test('every older release is recognized and updated', () => {
     assert.match(stdout, new RegExp(`Updating chomik in this project: ${tag.slice(1).replaceAll('.', '\\.')} -> `), tag);
     for (const file of FILES) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)), `${tag} ${file}`);
     assert.ok(readFileSync(join(root, '.chomik', SCRIPT)).equals(scriptTemplate()), tag);
-    assert.equal(existsSync(join(root, SKILL_DIR, SCRIPT)), false, tag);
   }
-});
-
-test('an update from 0.1.7 replaces the copied check script and removes the old one', () => {
-  if (!RELEASED['0.1.7'] || !releaseTags.includes('v0.1.7')) return;
-  const root = withRelease(project(), 'v0.1.7');
-  mkdirSync(join(root, '.chomik'));
-  writeFileSync(join(root, '.chomik', SCRIPT), execFileSync('git', ['show', `v0.1.7:template/.claude/skills/chomik/${SCRIPT}`]));
-  writeFileSync(join(root, '.chomik', `${new Date().toISOString().slice(0, 10)}-keep.md`), 'my reminder');
-  const { code, stdout } = run(root, ['--yes']);
-  assert.equal(code, 0);
-  assert.match(stdout, /update\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(the check CI runs\)/);
-  assert.match(stdout, /remove\s+\.claude\/skills\/chomik\/looking-for-messages-from-the-past\.mjs \(an old copy, no longer needed here\)/);
-  assert.ok(readFileSync(join(root, '.chomik', SCRIPT)).equals(scriptTemplate()));
-  assert.equal(readFileSync(join(root, '.chomik', `${new Date().toISOString().slice(0, 10)}-keep.md`), 'utf8'), 'my reminder');
 });
 
 test('skill files from different releases are treated as edited', () => {
@@ -377,12 +362,6 @@ test('an older chomik refuses to replace a newer skill unless forced', () => {
   assert.equal(refused.code, 1);
   assert.equal(refused.stderr, `chomik: this project has chomik 99.0.0, newer than ${VERSION} that you ran.\nTo update, run: npx chomik@latest\nTo go back to an older version on purpose, add --force.\nNothing was changed.\n`);
   assert.equal(run(root, ['--yes', '--force']).code, 0);
-});
-
-test('check says that a check script without a version comment is older', () => {
-  const root = project();
-  setUp(root, scriptTemplate().toString('utf8').replace(/^\/\/ 🐹 chomik [^:]+:/m, '// 🐹 chomik:'));
-  assert.match(run(root, ['check']).stdout, /The check script in \.chomik\/ is older than chomik .* here\. To update it, run: npx chomik@latest/);
 });
 
 test('check gives no hint when the check script is newer than the skill', () => {
@@ -508,7 +487,6 @@ test('released-files.json matches the files of every release tag in this reposit
     }
   }
 });
-
 
 test('the changelog has an entry for the current version', () => {
   assert.match(template('CHANGELOG.md').toString('utf8'), new RegExp(`^## \\[${VERSION.replaceAll('.', '\\.')}\\] - `, 'm'));

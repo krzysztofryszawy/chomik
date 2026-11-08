@@ -49,6 +49,8 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 - Breaking changes are fine until then.
 - Until then, working versions are 0.1.x.
 - Publish 0.2.0 as the beta, then unpublish all 0.1.x versions, in that order.
+- Start the history at 0.2.0: `bin/released-files.json` and `CHANGELOG.md` keep
+  only 0.2.0 on, and the tests stop reading 0.1.x tags.
 
 ## Discoverability
 

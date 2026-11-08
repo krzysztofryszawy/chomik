@@ -27,7 +27,9 @@ function check(root, { ci = false, ref = 'main', refType = 'branch', args = ['--
   return { code: result.status, out: result.stdout + result.stderr };
 }
 
-const reminder = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\n```text\nAGENT-PROMPT-LINE\n```\n';
+const HEADER = '---\nchomik: 1\ncondition: date\n---\n\n';
+const body = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\n```text\nAGENT-PROMPT-LINE\n```\n';
+const reminder = HEADER + body;
 
 const noReminders = 'chomik: no reminders in .chomik/ yet.\nTo leave one, type /chomik in your coding agent. More: .claude/skills/chomik/README.md\n';
 
@@ -71,7 +73,7 @@ test('the prompt comes first, then the human part, each between clear markers', 
 });
 
 test('a reminder from a newer format fails in CI and asks to update, even before its date', () => {
-  const newer = `---\nchomik: 2\ncondition: date\n---\n\n${reminder}`;
+  const newer = `---\nchomik: 2\ncondition: date\n---\n\n${body}`;
   const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: newer }), { ci: true });
   assert.equal(code, 2);
   assert.match(out, /::error title=chomik::chomik found a reminder it cannot read/);
@@ -79,23 +81,24 @@ test('a reminder from a newer format fails in CI and asks to update, even before
 });
 
 test('an unknown condition is reported locally but passes', () => {
-  const unknown = `---\nchomik: 1\ncondition: dependency\n---\n\n${reminder}`;
+  const unknown = `---\nchomik: 1\ncondition: dependency\n---\n\n${body}`;
   const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: unknown }));
   assert.equal(code, 0);
   assert.match(out, /asks for a newer chomik/);
   assert.match(out, /Not failing outside CI\./);
 });
 
-test('a header without its closing line is read as text in format 1', () => {
-  const broken = `---\nchomik: 2\n\n${reminder}`;
-  const { code, out } = check(project({ [`${isoDay(0)}-qs.md`]: broken }), { ci: true });
-  assert.equal(code, 1);
-  assert.doesNotMatch(out, /asks for a newer chomik/);
-  assert.match(out, /qs pinned at 6\.13\.0/);
+test('a reminder without a complete header is reported, not read', () => {
+  for (const text of [body, `---\nchomik: 1\ncondition: date\n\n${body}`]) {
+    const { code, out } = check(project({ [`${isoDay(0)}-qs.md`]: text }), { ci: true });
+    assert.equal(code, 2);
+    assert.match(out, /-qs\.md: it does not start with the header \(chomik: 1, condition: date\)/);
+    assert.doesNotMatch(out, /qs pinned at 6\.13\.0/);
+  }
 });
 
 test('due, invalid and newer reminders together are all reported, exit code 2', () => {
-  const newer = `---\nchomik: 2\n---\n\n${reminder}`;
+  const newer = `---\nchomik: 2\n---\n\n${body}`;
   const { code, out } = check(project({ [`${isoDay(0)}-due.md`]: reminder, 'notes.md': '', [`${isoDay(5)}-newer.md`]: newer }), { ci: true });
   assert.equal(code, 2);
   assert.match(out, /chomik sent a message from the past: \.chomik\/.*-due\.md/);
@@ -104,20 +107,20 @@ test('due, invalid and newer reminders together are all reported, exit code 2', 
 });
 
 test('a code block inside the prompt does not cut the prompt short', () => {
-  const text = '# x\n\n## Prompt\n\n```text\nline one\n```bash\nls\n```\nnever push to main\n```\n';
+  const text = HEADER + '# x\n\n## Prompt\n\n```text\nline one\n```bash\nls\n```\nnever push to main\n```\n';
   const lines = check(project({ [`${isoDay(0)}-x.md`]: text })).out.split('\n');
   const prompt = lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT ====='));
   assert.deepEqual(prompt, ['line one', '```bash', 'ls', '```', 'never push to main']);
 });
 
 test('a heading that only starts with "Prompt" stays in the part for humans', () => {
-  const text = '# x\n\n## Prompt engineering notes\nkeep me\n\n## Resolved when\n- done\n\n## Prompt\n\n```text\nP\n```\n';
+  const text = HEADER + '# x\n\n## Prompt engineering notes\nkeep me\n\n## Resolved when\n- done\n\n## Prompt\n\n```text\nP\n```\n';
   const { out } = check(project({ [`${isoDay(0)}-x.md`]: text }));
   assert.match(out, /===== FOR HUMANS =====[\s\S]*keep me[\s\S]*## Resolved when\n- done\n===== END =====/);
 });
 
 test('a byte order mark before the header is ignored', () => {
-  const text = `\uFEFF---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
+  const text = `\uFEFF${HEADER}${body}`;
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: text }));
   assert.doesNotMatch(out, /chomik: 1/);
   assert.match(out, /===== FOR HUMANS =====\n# qs pin/);
@@ -125,12 +128,12 @@ test('a byte order mark before the header is ignored', () => {
 
 test('a prompt that is cut says where the rest is', () => {
   const long = Array.from({ length: 205 }, (_, i) => `L${i}`).join('\n');
-  const { out } = check(project({ [`${isoDay(0)}-long.md`]: `# x\n\n## Prompt\n\n\`\`\`text\n${long}\n\`\`\`\n` }));
+  const { out } = check(project({ [`${isoDay(0)}-long.md`]: `${HEADER}# x\n\n## Prompt\n\n\`\`\`text\n${long}\n\`\`\`\n` }));
   assert.match(out, /L199\n\.\.\. \(cut after 200 lines; the rest is in \.chomik\/.*-long\.md\)\n===== END OF PROMPT =====/);
 });
 
 test('the YAML header is not printed', () => {
-  const withHeader = `---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
+  const withHeader = reminder;
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: withHeader }));
   assert.doesNotMatch(out, /chomik: 1|condition: date/);
   const lines = out.split('\n');
@@ -139,7 +142,7 @@ test('the YAML header is not printed', () => {
 });
 
 test('a reminder without a Prompt section shows only the human part', () => {
-  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: '# qs pin\n\nNo prompt here.\n' }));
+  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: `${HEADER}# qs pin\n\nNo prompt here.\n` }));
   assert.match(out, /No prompt here/);
   assert.doesNotMatch(out, /===== PROMPT =====|Paste the prompt/);
   assert.match(out, /===== FOR HUMANS =====/);
@@ -215,7 +218,7 @@ test('symbolic links are not followed', () => {
 });
 
 test('workflow commands in reminder text are switched off in GitHub Actions', () => {
-  const evil = '::set-env name=X::y\n::add-mask::z\n';
+  const evil = `${HEADER}::set-env name=X::y\n::add-mask::z\n`;
   const { out } = check(project({ [`${isoDay(-1)}-evil.md`]: evil }), { ci: true });
   const lines = out.split('\n');
   const stop = lines.findIndex((l) => l.startsWith('::stop-commands::'));

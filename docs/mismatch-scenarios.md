@@ -1,7 +1,8 @@
 # Mismatch scenarios
 
 Unusual states a project can be in, what chomik should do in each, and how it is
-tested. Rule of thumb from [decisions.md](decisions.md): anything unknown fails
+tested. Only the current version is considered: until the 0.2.0 beta nobody
+but testers uses chomik, so there is nothing older to migrate. Rule of thumb from [decisions.md](decisions.md): anything unknown fails
 loudly with a hint, and nothing is downgraded or overwritten silently.
 
 Two kinds of tests:
@@ -27,8 +28,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Edited skill files, committed / not committed / no git | Replace with a note / refuse / refuse | ✅ automated |
 | Skill files from different versions mixed | Treated as edited, never as one version | ✅ automated |
 | A skill file deleted by hand | Recreated, nothing else touched | ✅ automated |
-| Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated from 0.1.7; installers up to 0.1.6 replace the newer files |
-| Older chomik without a command that exists now (`check` in 0.1.5) | "unknown argument" | ⚠️ by hand only |
+| Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated |
 | Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
 | Node older than `engines` in `package.json` | Stop before anything else, name the Node needed | ✅ automated, with a faked version |
 
@@ -40,9 +40,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | No CI workflow | One line: CI is not set up; type /chomik | ✅ automated |
 | Check script older than the skill | "older than chomik X; run npx chomik@latest" | ✅ automated |
 | CI workflow older than the skill | ".github/workflows/chomik.yml is still X; type /chomik" | ✅ automated |
-| Check script without a version comment (before 0.1.6) | Treated as older | ✅ automated |
 | Check script newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
-| Update from 0.1.7 or older | Script in `.chomik/` updated, old copy in the skill folder removed, reminders untouched | ✅ automated |
 | Package newer than the skill | "X is out; this project has Y" | ✅ automated |
 | Package older than the skill (stale npx cache) | No hint | ✅ automated, as an unknown skill |
 | Skill edited, so its version is unknown | No hint | ✅ automated |
@@ -53,7 +51,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 |---|---|---|
 | Reminder from a newer format | Fails in CI (exit 2), asks to update | ✅ automated |
 | Unknown condition | Reported, passes locally | ✅ automated |
-| Header without its closing `---` | Read as format 1 without a header, text printed | ✅ automated |
+| No header, or a header without its closing `---` | Reported as invalid, not read | ✅ automated |
 | Due, invalid and newer reminders together | All reported, exit 2 in CI | ✅ automated |
 | Other files or folders in `.chomik/` (`.MD`, `.md.bak`, subfolder, symbolic link, empty file) | Each reported with its reason, exit 2 in CI | ✅ automated |
 | Code block inside the prompt, heading starting with "Prompt", byte order mark | Nothing cut or misread | ✅ automated |
@@ -63,7 +61,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 
 | Scenario | Expected | Test |
 |---|---|---|
-| No GitHub remote | Says the full flow needs GitHub; asks: GitHub first (done by the user) or local for now | ⚠️ by hand, 0.1.6 |
+| No GitHub remote | Says the full flow needs GitHub; asks: GitHub first (done by the user) or local for now | ⚠️ by hand |
 | GitHub, no workflows | Proposes a standalone `chomik.yml` | ⚠️ by hand |
 | GitHub with a daily build | Adds the two-line job, nothing else in the build | ❌ |
 | Local use, then moving to CI | Runs setup, keeps reminders | ❌ |

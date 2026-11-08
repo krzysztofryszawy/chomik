@@ -5,6 +5,13 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **No knowledge of 0.1.x in code or instructions.** Until the 0.2.0 beta only
+  the owner and testers use chomik, and all 0.1.x versions are unpublished after
+  it, so there are no migrations: a reminder must start with its header (no
+  "format 1 without a header"), and no code moves files left by older versions.
+  Testers reinstall. Protections meant for the future, such as the format
+  version and the downgrade guard, stay. Why: legacy handling for versions nobody
+  will run only adds code to read and maintain.
 - **One copy of the check script, written by the installer.** The installer
   puts it in `.chomik/` and keeps it current with every update, shown in its
   plan; the skill folder no longer carries it, and `/chomik` only sets up CI.
