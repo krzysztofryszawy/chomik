@@ -35,6 +35,7 @@ function run(root, args) {
 const skillFile = (root) => join(root, SKILL_DIR, 'SKILL.md');
 const template = (file) => readFileSync(join(TEMPLATE, file));
 const SCRIPT = 'looking-for-messages-from-the-past.mjs';
+const prose = (text) => text.replace(/\n {2}/g, ' ');
 const scriptTemplate = () => readFileSync(resolve('template/.chomik', SCRIPT));
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
 
@@ -45,7 +46,8 @@ test('npx chomik --yes installs exactly the skill files and the check script', (
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /create\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(the check CI runs\)/);
-  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read \.claude\/skills\/chomik\/README\.md and explain with its examples what chomik does\. Then point out what in this project is worth never forgetting, .* and say that chomik will help me set up my first reminder\. Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
+  assert.match(prose(stdout), /\n\nchomik just moved in\.\n\nFirst time with chomik\? Paste this into a new session of your coding agent:\n Read \.claude\/skills\/chomik\/README\.md and explain with its examples what chomik does\. Then point out what in this project is worth never forgetting, .* and say that chomik will help me set up my first reminder\. Do not change anything\.\n\nThen type \/chomik there to set it up\.\n$/);
+  assert.ok(stdout.split('\n').every((line) => line.length <= 80 || !line.startsWith('  ')));
   assert.doesNotMatch(stdout, /Feel free to share chomik/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), [...FILES].sort());
   for (const file of FILES) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
@@ -77,7 +79,7 @@ test('an unedited older release is updated and shows the versions', () => {
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Updating chomik in this project: ${version} -> `));
-  assert.match(stdout, new RegExp(`\\n\\nchomik learned some new tricks\\. Curious which\\? Paste this into a new session of your coding agent:\\n {2}Read \\.claude/skills/chomik/CHANGELOG\\.md and tell me briefly what changed since chomik ${version} and what it means .*Do not change anything\\.\\n$`));
+  assert.match(prose(stdout), new RegExp(`\\n\\nchomik learned some new tricks\\.\\n\\nCurious which\\? Paste this into a new session of your coding agent:\\n Read \\.claude/skills/chomik/CHANGELOG\\.md and tell me briefly what changed since chomik ${version} and what it means .*Do not change anything\\.\\n$`));
   assert.match(stdout, /update\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.ok(readFileSync(skillFile(root)).equals(template('SKILL.md')));
 });
@@ -207,7 +209,7 @@ test('check in a project without chomik introduces it with a prompt for an agent
   assert.equal(code, 1);
   assert.equal(stdout, '');
   assert.match(stderr, /^chomik is not in this project yet\.\n\nBulletproof reminders/);
-  assert.match(stderr, /Give chomik a chance to impress you: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
+  assert.match(stderr, /Give chomik a chance to impress you: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
 });
 
 test('check with the check script deleted says how to restore it', () => {

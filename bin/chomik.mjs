@@ -97,6 +97,20 @@ try {
   process.exitCode = 1;
 }
 
+// Wrapped by hand, because a terminal breaks long lines in the middle of a word.
+function indented(text, width = 78) {
+  const lines = [];
+  let line = ' ';
+  for (const word of text.split(' ')) {
+    if (line.length + word.length + 1 > width) {
+      lines.push(line);
+      line = ' ';
+    }
+    line += ` ${word}`;
+  }
+  return [...lines, line].join('\n');
+}
+
 // In a subfolder or a package of a monorepo, chomik's files would land where GitHub
 // never reads them, so both commands run only in the repository root.
 function outsideRoot() {
@@ -112,7 +126,7 @@ function check() {
   if (!existsSync(CHECK_SCRIPT) && !existsSync(join(TARGET, 'SKILL.md'))) {
     console.error(`chomik is not in this project yet.\n\n${PITCH}\nBuilt for coding agents.\n`);
     console.error('Give chomik a chance to impress you: npx chomik@latest');
-    console.error(`Curious first? Paste this into your coding agent:\n  ${explainFrom('https://github.com/krzysztofryszawy/chomik')}`);
+    console.error(`Curious first? Paste this into your coding agent:\n\n${indented(explainFrom('https://github.com/krzysztofryszawy/chomik'))}`);
     return 1;
   }
   if (!existsSync(CHECK_SCRIPT)) {
@@ -265,15 +279,17 @@ async function installOrUpdate({ yes, dryRun, force }) {
 
   if (installed === 'not installed') {
     console.log(`Done. chomik ${VERSION} is installed.\n`);
-    console.log('chomik just moved in.');
-    console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${explainFrom('.claude/skills/chomik/README.md')}`);
+    console.log('chomik just moved in.\n');
+    console.log('First time with chomik? Paste this into a new session of your coding agent:\n');
+    console.log(`${indented(explainFrom('.claude/skills/chomik/README.md'))}\n`);
     console.log('Then type /chomik there to set it up.');
   } else {
     console.log(`Done. chomik is now ${VERSION}.`);
     console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.\n');
     const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
-    console.log('chomik learned some new tricks. Curious which? Paste this into a new session of your coding agent:');
-    console.log(`  Read .claude/skills/chomik/CHANGELOG.md and tell me briefly what changed ${since} and what it means for this project. Do not change anything.`);
+    console.log('chomik learned some new tricks.\n');
+    console.log('Curious which? Paste this into a new session of your coding agent:\n');
+    console.log(indented(`Read .claude/skills/chomik/CHANGELOG.md and tell me briefly what changed ${since} and what it means for this project. Do not change anything.`));
   }
   return 0;
 }

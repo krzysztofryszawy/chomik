@@ -5,6 +5,11 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.10] - unreleased
 
+### Changed
+
+- Prompts to paste into your coding agent are wrapped and set apart by blank
+  lines, so they stay readable in a terminal.
+
 ## [0.1.9] - 2026-11-08
 
 ### Changed
