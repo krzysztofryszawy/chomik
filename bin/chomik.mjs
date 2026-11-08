@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -40,7 +40,7 @@ Commands:
                  due reminders do not make it fail
 
 Options:
-  --yes          Do not ask; required when not running in a terminal
+  -y, --yes      Do not ask; required when not running in a terminal
   --dry-run      Show the plan and change nothing
   --force        Also overwrite edits that are not committed, or a newer chomik
   -h, --help     Show help
@@ -54,15 +54,17 @@ const args = process.argv.slice(2);
 const command = args[0] === 'check' ? 'check' : null;
 const options = command ? args.slice(1) : args;
 const has = (flag) => options.includes(flag);
-const allowed = command ? ['--help', '-h'] : ['--yes', '--dry-run', '--force', '--help', '-h', '--version'];
+const allowed = command ? ['--help', '-h'] : ['--yes', '-y', '--dry-run', '--force', '--help', '-h', '--version'];
 const unknown = options.find((a) => !allowed.includes(a));
 const CHECK_SCRIPT = join('.chomik', 'looking-for-messages-from-the-past.mjs');
 
 try {
   if (unknown) {
     console.error(`chomik: unknown argument "${unknown}" in chomik ${VERSION}.`);
-    console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.join(' ')}\n`);
-    console.error(HELP);
+    const near = closest(unknown, command ? allowed : ['check', ...allowed]);
+    if (near) console.error(`Did you mean "${near}"?`);
+    else console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.join(' ')}`);
+    console.error('Help: npx chomik --help');
     process.exitCode = 1;
   } else if (has('--help') || has('-h')) {
     console.log(HELP);
@@ -75,7 +77,7 @@ try {
   } else if (command === 'check') {
     process.exitCode = check();
   } else {
-    process.exitCode = await installOrUpdate({ yes: has('--yes'), dryRun: has('--dry-run'), force: has('--force') });
+    process.exitCode = await installOrUpdate({ yes: has('--yes') || has('-y'), dryRun: has('--dry-run'), force: has('--force') });
   }
 } catch (error) {
   console.error(`chomik: ${error.message}`);
@@ -101,7 +103,13 @@ function check() {
     return 1;
   }
   if (!existsSync(CHECK_SCRIPT)) {
-    console.error('chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.');
+    const reminders = existsSync('.chomik') ? readdirSync('.chomik').filter((name) => name.endsWith('.md')).length : 0;
+    if (reminders) {
+      console.error(`chomik's check script is missing from .chomik/, so ${reminders === 1 ? '1 reminder there is' : `${reminders} reminders there are`} not checked.`);
+      console.error('To restore it, type /chomik in your coding agent.');
+    } else {
+      console.error('chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.');
+    }
     return 1;
   }
   if (lstatSync(CHECK_SCRIPT).isSymbolicLink() || lstatSync('.chomik').isSymbolicLink()) {
@@ -176,6 +184,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   if (installed === 'not installed') console.log(`Installing chomik ${VERSION} in this project.`);
+  else if (installed === VERSION) console.log(`Restoring missing chomik ${VERSION} files in this project.`);
   else if (installed === 'edited') console.log(`Updating chomik in this project to ${VERSION} (some of its files were edited here).`);
   else console.log(`Updating chomik in this project: ${installed} -> ${VERSION}.`);
   console.log('Plan:');
@@ -183,7 +192,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     if (p.action === 'create') console.log(`  create   ${p.target}`);
     if (p.action === 'update') console.log(`  update   ${p.target}`);
     if (p.action === 'replace') {
-      console.log(`  replace  ${p.target} (edited here; ${p.committed ? 'your committed changes stay in git history' : 'changes are NOT committed'})`);
+      console.log(`  replace  ${p.target} (edited here; ${p.committed ? 'your committed changes stay in git history' : existsSync('.git') ? 'changes are NOT committed' : 'this project has no git to keep them'})`);
     }
   }
   console.log('Nothing else is changed. No dependencies are added.');
@@ -198,7 +207,9 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.error('');
     console.error('chomik: not updating, because these edits would be lost for good:');
     for (const p of atRisk) console.error(`  ${p.target}`);
-    console.error('Commit them (or stash them) and run again, or add --force to overwrite.');
+    console.error(existsSync('.git')
+      ? 'Commit them (or stash them) and run again, or add --force to overwrite.'
+      : 'Copy them somewhere safe and run again, or add --force to overwrite.');
     console.error('Nothing was changed.');
     return 1;
   }
@@ -282,6 +293,25 @@ function sha256(buffer) {
 }
 
 // Read-only check: git reports nothing for the path only when it is tracked and committed as is.
+// Only for typos, so a distance of two edits at most.
+function closest(word, candidates) {
+  const distance = (a, b) => {
+    const row = Array.from({ length: b.length + 1 }, (_, i) => i);
+    for (let i = 1; i <= a.length; i++) {
+      let previous = row[0];
+      row[0] = i;
+      for (let j = 1; j <= b.length; j++) {
+        const current = row[j];
+        row[j] = Math.min(row[j] + 1, row[j - 1] + 1, previous + (a[i - 1] === b[j - 1] ? 0 : 1));
+        previous = current;
+      }
+    }
+    return row[b.length];
+  };
+  const best = candidates.map((c) => [c, distance(word, c)]).sort((x, y) => x[1] - y[1])[0];
+  return best && best[1] <= 2 ? best[0] : '';
+}
+
 function isCommittedInGit(path) {
   try {
     const status = execFileSync('git', ['status', '--porcelain', '--', path], {

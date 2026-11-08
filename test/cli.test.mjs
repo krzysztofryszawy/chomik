@@ -100,9 +100,12 @@ test('edits in a project without git block the update', () => {
   const root = project();
   run(root, ['--yes']);
   writeFileSync(skillFile(root), 'my edit');
-  const { code, stderr } = run(root, ['--yes']);
+  const { code, stdout, stderr } = run(root, ['--yes']);
   assert.equal(code, 1);
+  assert.match(stdout, /edited here; this project has no git to keep them/);
   assert.match(stderr, /would be lost for good/);
+  assert.match(stderr, /Copy them somewhere safe and run again, or add --force to overwrite\./);
+  assert.doesNotMatch(stderr, /stash/);
   assert.equal(readFileSync(skillFile(root), 'utf8'), 'my edit');
 });
 
@@ -385,8 +388,39 @@ test('--version prints the package version', () => {
 test('an unknown argument such as the old "init" fails on stderr', () => {
   const { code, stdout, stderr } = run(project(), ['init']);
   assert.equal(code, 1);
-  assert.match(stderr, new RegExp(`unknown argument "init" in chomik ${VERSION.replaceAll('.', '\\.')}\\.\nIf it comes from a newer chomik, try: npx chomik@latest init\n`));
+  assert.equal(stderr, `chomik: unknown argument "init" in chomik ${VERSION}.\nIf it comes from a newer chomik, try: npx chomik@latest init\nHelp: npx chomik --help\n`);
   assert.equal(stdout, '');
+});
+
+test('a typo suggests the closest command or option', () => {
+  for (const [typo, meant] of [['chek', 'check'], ['--hepl', '--help'], ['--dryrun', '--dry-run']]) {
+    const { code, stderr } = run(project(), [typo]);
+    assert.equal(code, 1, typo);
+    assert.equal(stderr, `chomik: unknown argument "${typo}" in chomik ${VERSION}.\nDid you mean "${meant}"?\nHelp: npx chomik --help\n`, typo);
+  }
+});
+
+test('-y works like --yes', () => {
+  const root = project();
+  assert.equal(run(root, ['-y']).code, 0);
+  assert.ok(existsSync(skillFile(root)));
+});
+
+test('a deleted skill file is restored with a clear message', () => {
+  const root = project();
+  run(root, ['--yes']);
+  rmSync(join(root, SKILL_DIR, 'setup.md'));
+  assert.match(run(root, ['--dry-run']).stdout, new RegExp(`^Restoring missing chomik ${VERSION.replaceAll('.', '\\.')} files in this project\\.`));
+});
+
+test('check says how many reminders are unchecked when the check script is missing', () => {
+  const root = project();
+  run(root, ['--yes']);
+  mkdirSync(join(root, '.chomik'));
+  writeFileSync(join(root, '.chomik', `${new Date().toISOString().slice(0, 10)}-x.md`), 'x');
+  const { code, stderr } = run(root, ['check']);
+  assert.equal(code, 1);
+  assert.equal(stderr, "chomik's check script is missing from .chomik/, so 1 reminder there is not checked.\nTo restore it, type /chomik in your coding agent.\n");
 });
 
 test('released-files.json matches the files of every release tag in this repository', () => {

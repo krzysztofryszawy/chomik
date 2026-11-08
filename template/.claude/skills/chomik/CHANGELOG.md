@@ -27,6 +27,13 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- A typo in a command or option suggests the closest one ("Did you mean
+  check?") instead of printing the whole help; `-y` works like `--yes`.
+- Without git, the installer no longer suggests committing or stashing.
+- A deleted skill file is restored with "Restoring missing chomik files" instead
+  of "0.1.6 -> 0.1.6".
+- When the check script is missing but reminders are there, `npx chomik check`
+  says how many reminders are not checked.
 - With no reminders yet, the check points to the skill's README, which explains
   reminders, instead of the installer's help.
 - Without GitHub, setup says that putting the project on GitHub is up to you,
