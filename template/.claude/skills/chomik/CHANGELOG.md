@@ -11,6 +11,8 @@ What changed in chomik, newest first. chomik follows
   without GitHub, and where to read more before installing.
 - The install plan says what `/chomik` will add later, and whether the project is
   on GitHub yet. A dry run says how to install for real.
+- Without a terminal, the installer shows the full command with `--yes` and says
+  that nothing was changed.
 
 ## [0.1.6] - 2026-11-08
 

@@ -187,7 +187,9 @@ async function installOrUpdate({ yes, dryRun, force }) {
 
   if (!yes) {
     if (!process.stdin.isTTY) {
-      console.error('chomik: run this in a terminal to confirm, or add --yes.');
+      console.error('chomik: run this in a terminal to confirm, or confirm in the command itself:');
+      console.error('  npx chomik@latest --yes');
+      console.error('Nothing was changed.');
       return 1;
     }
     const rl = createInterface({ input: process.stdin, output: process.stdout });

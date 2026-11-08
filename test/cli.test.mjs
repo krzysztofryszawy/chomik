@@ -148,7 +148,7 @@ test('without a terminal and without --yes nothing is written', () => {
   const root = project();
   const { code, stderr } = run(root, []);
   assert.equal(code, 1);
-  assert.match(stderr, /add --yes/);
+  assert.equal(stderr, 'chomik: run this in a terminal to confirm, or confirm in the command itself:\n  npx chomik@latest --yes\nNothing was changed.\n');
   assert.equal(existsSync(join(root, '.claude')), false);
 });
 
