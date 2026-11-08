@@ -17,12 +17,14 @@ created with an agent and checked deterministically in CI.
   `test: …`, `chore: …`) with the same type as the branch. The squash merge uses
   that title, so `main` reads as a changelog.
 - Releases: bump `version` in `package.json` (and in the first comment of the copied
-  check script and `chomik-workflow.yml`; a test checks), push a tag `v<version>`. The publish
+  check script and `chomik-workflow.yml`; a test checks), date its entry in
+  `template/.claude/skills/chomik/CHANGELOG.md`, push a tag `v<version>`. The publish
   workflow runs `npm stage publish`; the owner approves the version on npmjs.com
   with 2FA. Nothing is published from a local machine. Right after a release, add its
   skill file hashes to `bin/released-files.json` (a test checks every `v*` tag)
-  and bump `version` to the next one, so new work is never mistaken for the
-  released version.
+  and bump `version` to the next one, with a new `unreleased` changelog entry, so
+  new work is never mistaken for the released version. The changelog is for
+  users: what changed in behavior, not a list of commits.
 - The earlier history and the old npm learning demo live in the private repository
   `krzysztofryszawy/chomik-prototype`.
 - Run tests with `npm test` (built-in `node:test`, no dependencies).

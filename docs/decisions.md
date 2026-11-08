@@ -6,52 +6,50 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 ## 2026-11-08
 
 - **An update says what changed, and the skill updates its copies.** After an
-  update, the installer prints a prompt for the agent with the GitHub comparison
-  of the old and new tags, whose commit titles are the changelog. The installer
+  update, the installer prints a prompt for the agent to read the changelog
+  since the old version. The installer
   writes only the skill, so on the next `/chomik` the skill compares the version
   in the first comment of the copied check script and `chomik.yml` with its own
   and proposes replacing them. Why: the copies are what CI runs, and an old copy
   could misread reminders written by the new skill.
-
+- **A changelog file, installed with the skill.** `CHANGELOG.md` in the skill
+  folder follows Keep a Changelog: written for users, newest first, one entry
+  per version. The agent reads it locally after an update, with no network and
+  no links with parameters, and it always matches the installed version. Why:
+  Keep a Changelog advises against commit logs as changelogs, since they are
+  full of noise; this replaces using `main`'s history as the changelog.
 - **First contact comes with a prompt for the agent.** After the first install,
   and from `npx chomik check` in a project without chomik, chomik prints one
   ready prompt: read the repository and explain with its examples what chomik
   does and how it could help here, changing nothing. `--help` gives one example.
   Why: one good example says more than a description, and the agent can relate
   the examples to the developer's project.
-
 - **`npx chomik check` runs the check by hand, on trial until 0.2.0.** It runs
   the project's own copy of the check script, the file CI runs, so both give
   the same answer; it refuses a symbolic link. Before 0.2.0 it is decided whether
   it stays; after that it stays, or remains as a stub that says what to use.
   Why: `node .chomik/looking-for-messages-from-the-past.mjs` is too long to type
   again and again, and nothing may require setup from the user.
-
 - **The beta stays 0.2.0, not 1.0.0.** Why: chomik is not yet ready for a stable
   promise; 1.0.0 comes when it is.
-
 - **An unknown `npx chomik` argument suggests the latest version.** It still fails
   on stderr with exit code 1, and now names the installed version and suggests
   `npx chomik@latest` with the same arguments. Why: an older chomik cached by npx
   cannot know commands added later, so the most it can do is point to them.
-
 - **The files copied into a project name the chomik version.** The first comment
   of the check script and of `chomik.yml` says, for example, `chomik 0.1.6`; a
   test keeps it equal to `package.json`. Why: these copies stay in other
   repositories for years, and the version is the first thing needed to help.
-
 - **A reminder the check script does not understand fails the build.** An
   unknown format version or condition, before or on its date, is reported with
   `npx chomik@latest` as the fix, and fails like an invalid file (exit code 2)
   on the main branch. Why: an old copy of the script lives on in a repository;
   skipping what it does not understand could hide a reminder for good.
-
 - **Reminders start with a YAML header: `chomik: 1` and `condition: date`.** The
   check script reads only flat `key: value` lines and never prints the header. A
   reminder without a header is format 1. Why: a standard header that agents write
   reliably, readable without dependencies and extensible to other conditions; a
   hidden HTML comment would be a custom syntax.
-
 - **Versioning follows what lives longest.** chomik's interfaces live for very
   different times: `npx chomik` commands and skill files are replaced on update,
   while the check script copied to `.chomik/`, the reminder format and the job in
@@ -62,7 +60,6 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   the public interface is declared, data outlives code, and RFC 9413 shows that
   silent tolerance entrenches errors. For chomik the worst failure is a reminder
   that silently never shows.
-
 - **The check always says something.** With nothing due, it says there are no
   reminders yet, with how to leave one, or when the next one is due. Counts and
   dates come from file names only. Exit codes are unchanged. Why: a silent pass
@@ -201,7 +198,7 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   questions, one of which the agent could have answered by reading `package.json`.
 - **Branch and commit convention:** `type/short-description` branches and
   Conventional Commits pull request titles. Why: squash merges turn titles into
-  `main`'s history, which then doubles as the release changelog.
+  a readable `main` history. The changelog for users is `CHANGELOG.md`.
 - **The clean start happened early, before the first release.** The prototype
   repository was renamed to `chomik-prototype` and kept private; this repository
   starts with one clean commit and stays private until the release. From now on

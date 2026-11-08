@@ -66,7 +66,8 @@ agent, must be able to verify quickly that it is safe.
 - [ ] Code comments appear only where something is deliberate or non-obvious,
       especially security choices.
 - [ ] Tests run publicly in CI on every change.
-- [ ] Every release has a changelog entry describing what changed in behavior.
+- [ ] Every release has an entry in the skill's `CHANGELOG.md` describing what
+      changed in behavior.
 - [ ] Publicly verifiable signals, to confirm when set up: npm provenance
       (`npm audit signatures`), OpenSSF Scorecard for repository practices,
       GitHub code scanning, secret scanning and private vulnerability reporting,

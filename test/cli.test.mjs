@@ -44,8 +44,8 @@ test('npx chomik --yes installs exactly the two skill files', () => {
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik and explain with its examples .*Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
   assert.match(stdout, /Feel free to share chomik with your team/);
-  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
-  for (const file of ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
+  assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', SCRIPT, 'chomik-workflow.yml'].sort());
+  for (const file of ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
   assert.deepEqual(readdirSync(root).sort(), ['.claude', 'package.json']);
 });
 
@@ -76,7 +76,7 @@ test('an unedited older release is updated and shows the versions', () => {
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Updating chomik in this project: ${version} -> `));
-  assert.match(stdout, new RegExp(`\\n\\nchomik learned some new tricks\\. Curious which\\? Paste this into a new session of your coding agent:\\n {2}Read https://github\\.com/krzysztofryszawy/chomik/compare/v${version}\\.\\.\\.v${VERSION.replaceAll('.', '\\.')} and tell me briefly what changed .*Do not change anything\\.\\n$`));
+  assert.match(stdout, new RegExp(`\\n\\nchomik learned some new tricks\\. Curious which\\? Paste this into a new session of your coding agent:\\n {2}Read \\.claude/skills/chomik/CHANGELOG\\.md and tell me briefly what changed since chomik ${version} and what it means .*Do not change anything\\.\\n$`));
   assert.match(stdout, /update\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.ok(readFileSync(skillFile(root)).equals(template('SKILL.md')));
 });
@@ -257,6 +257,10 @@ test('released-files.json matches the files of every release tag in this reposit
   }
 });
 
+
+test('the changelog has an entry for the current version', () => {
+  assert.match(template('CHANGELOG.md').toString('utf8'), new RegExp(`^## \\[${VERSION.replaceAll('.', '\\.')}\\] - `, 'm'));
+});
 
 test('the files copied into a project name the current chomik version', () => {
   for (const file of [SCRIPT, 'chomik-workflow.yml']) assert.match(template(file).toString('utf8').split('\n').slice(0, 2).join('\n'), new RegExp(`🐹 chomik ${VERSION.replaceAll('.', '\\.')}[ :]`));

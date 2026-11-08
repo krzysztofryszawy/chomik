@@ -13,7 +13,7 @@ const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-fil
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
 const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skills', 'chomik')];
 const TARGET = TARGET_DIRS.at(-1);
-const FILES = ['SKILL.md', 'setup.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
+const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
 const FIRST_TIME_PROMPT = 'Read https://github.com/krzysztofryszawy/chomik and explain with its examples what chomik does and how it could help in this project. Do not change anything.';
 // The same two lines open the README; a test keeps them equal.
@@ -178,9 +178,9 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${FIRST_TIME_PROMPT}`);
     console.log('Then type /chomik there to set it up.');
   } else {
-    const changes = /^\d/.test(installed) ? `compare/v${installed}...v${VERSION}` : `commits/v${VERSION}`;
+    const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
     console.log('chomik learned some new tricks. Curious which? Paste this into a new session of your coding agent:');
-    console.log(`  Read https://github.com/krzysztofryszawy/chomik/${changes} and tell me briefly what changed in chomik and what it means for this project. Do not change anything.`);
+    console.log(`  Read .claude/skills/chomik/CHANGELOG.md and tell me briefly what changed ${since} and what it means for this project. Do not change anything.`);
   }
   return 0;
 }
