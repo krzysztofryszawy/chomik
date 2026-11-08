@@ -42,7 +42,7 @@ test('npx chomik --yes installs exactly the two skill files', () => {
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
-  assert.match(stdout, /\n\nchomik just moved in\. Say hi: start a new session of your coding agent in this project and type \/chomik\.\n$/);
+  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik and explain with its examples .*Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
   assert.match(stdout, /Feel free to share chomik with your team/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort());
   for (const file of ['SKILL.md', 'setup.md', 'README.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
@@ -189,11 +189,25 @@ test('check runs the project\'s check script and passes outside CI', () => {
   assert.match(stdout, /^chomik: no reminders in \.chomik\/ yet\./);
 });
 
-test('check without chomik set up fails and says how to set it up', () => {
+test('check in a project without chomik introduces it with a prompt for an agent', () => {
   const { code, stdout, stderr } = run(project(), ['check']);
   assert.equal(code, 1);
   assert.equal(stdout, '');
+  assert.match(stderr, /^chomik is not in this project yet\.\n\nBulletproof reminders/);
+  assert.match(stderr, /Give chomik a chance to impress you: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
+});
+
+test('check with the skill installed but not set up says how to finish', () => {
+  const root = project();
+  run(root, ['--yes']);
+  const { code, stderr } = run(root, ['check']);
+  assert.equal(code, 1);
   assert.match(stderr, /not set up in this project yet\. To set it up, type \/chomik/);
+});
+
+test('the check pitch opens the README word for word', () => {
+  const pitch = /const PITCH = `([^`]*)`/.exec(readFileSync(BIN, 'utf8'))[1];
+  assert.ok(readFileSync('README.md', 'utf8').includes(`\n\n${pitch}\n\n`));
 });
 
 test('check refuses a check script that is a symbolic link', () => {

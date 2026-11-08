@@ -15,6 +15,11 @@ const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skil
 const TARGET = TARGET_DIRS.at(-1);
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
+const FIRST_TIME_PROMPT = 'Read https://github.com/krzysztofryszawy/chomik and explain with its examples what chomik does and how it could help in this project. Do not change anything.';
+// The same two lines open the README; a test keeps them equal.
+const PITCH = `Bulletproof reminders for things that really matter. A message from the past
+turns the build red on a chosen date, with everything the team needs to act.`;
+
 const HELP = `Usage: npx chomik@latest [options]
        npx chomik check
 
@@ -22,6 +27,9 @@ Installs chomik in this project, or updates it: run the same command again.
 Writes only .claude/skills/chomik/. Shows the plan and asks before writing, and
 never overwrites edits that are not committed to git, unless you use --force.
 Then type /chomik in Claude Code or GitHub Copilot.
+
+Example: an API key expires in a year. A week before, the main-branch build
+turns red with a ready prompt for your coding agent.
 
 Commands:
   check          Show reminders that are due, the same check CI runs; never fails
@@ -66,6 +74,12 @@ try {
 
 // Runs the project's own copy, the same file CI runs, so both give the same answer.
 function check() {
+  if (!existsSync(CHECK_SCRIPT) && !existsSync(join(TARGET, 'SKILL.md'))) {
+    console.error(`chomik is not in this project yet.\n\n${PITCH}\nBuilt for coding agents.\n`);
+    console.error('Give chomik a chance to impress you: npx chomik@latest');
+    console.error(`Curious first? Paste this into your coding agent:\n  ${FIRST_TIME_PROMPT}`);
+    return 1;
+  }
   if (!existsSync(CHECK_SCRIPT)) {
     console.error('chomik: not set up in this project yet. To set it up, type /chomik in your coding agent.');
     return 1;
@@ -159,8 +173,13 @@ async function installOrUpdate({ yes, dryRun, force }) {
   console.log(installed === 'not installed' ? `Done. chomik ${VERSION} is installed.` : `Done. chomik is now ${VERSION}.`);
   console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.');
   console.log('');
-  const greeting = installed === 'not installed' ? 'chomik just moved in.' : 'chomik learned some new tricks.';
-  console.log(`${greeting} Say hi: start a new session of your coding agent in this project and type /chomik.`);
+  if (installed === 'not installed') {
+    console.log('chomik just moved in.');
+    console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${FIRST_TIME_PROMPT}`);
+    console.log('Then type /chomik there to set it up.');
+  } else {
+    console.log('chomik learned some new tricks. Say hi: start a new session of your coding agent in this project and type /chomik.');
+  }
   return 0;
 }
 
