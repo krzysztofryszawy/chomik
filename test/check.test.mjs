@@ -67,7 +67,7 @@ test('the prompt comes first, then the human part, each between clear markers', 
   const promptEnd = lines.indexOf('===== END OF PROMPT =====');
   const human = lines.indexOf('===== FOR HUMANS =====');
   const humanEnd = lines.indexOf('===== END =====');
-  assert.deepEqual(lines.slice(prompt + 1, promptEnd), ['AGENT-PROMPT-LINE']);
+  assert.deepEqual(lines.slice(prompt + 1, promptEnd), [`This reminder is in .chomik/${isoDay(0)}-qs.md.`, 'AGENT-PROMPT-LINE']);
   assert.ok(promptEnd < human && human < humanEnd);
   assert.ok(lines.slice(human, humanEnd).includes('qs pinned at 6.13.0 because of a regression in 6.14.'));
 });
@@ -110,7 +110,7 @@ test('a code block inside the prompt does not cut the prompt short', () => {
   const text = HEADER + '# x\n\n## Prompt\n\n```text\nline one\n```bash\nls\n```\nnever push to main\n```\n';
   const lines = check(project({ [`${isoDay(0)}-x.md`]: text })).out.split('\n');
   const prompt = lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT ====='));
-  assert.deepEqual(prompt, ['line one', '```bash', 'ls', '```', 'never push to main']);
+  assert.deepEqual(prompt, [`This reminder is in .chomik/${isoDay(0)}-x.md.`, 'line one', '```bash', 'ls', '```', 'never push to main']);
 });
 
 test('a heading that only starts with "Prompt" stays in the part for humans', () => {
@@ -138,7 +138,7 @@ test('the YAML header is not printed', () => {
   assert.doesNotMatch(out, /chomik: 1|condition: date/);
   const lines = out.split('\n');
   assert.equal(lines[lines.indexOf('===== FOR HUMANS =====') + 1], '# qs pin');
-  assert.deepEqual(lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT =====')), ['AGENT-PROMPT-LINE']);
+  assert.deepEqual(lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT =====')), [`This reminder is in .chomik/${isoDay(0)}-qs.md.`, 'AGENT-PROMPT-LINE']);
 });
 
 test('a reminder without a Prompt section shows only the human part', () => {

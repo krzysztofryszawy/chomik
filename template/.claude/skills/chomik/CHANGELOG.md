@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The check adds the reminder's current path at the top of its prompt, so the
+  prompt stays right after the file is renamed to a new date.
 - When a secret is pasted into the conversation, the agent says it is now there
   and may need rotating.
 - With nothing in `.chomik/`, the check says "no reminders right now", which also

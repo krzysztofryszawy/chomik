@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **The check, not the agent, names a reminder's file in its prompt.** It prints
+  the current path as the first line of the prompt, and the skill leaves its own
+  file name out. Why: renaming the file is the documented way to move a date, so
+  a path written into the prompt went stale and sent the next agent to a file
+  that no longer existed.
 - **Support links only, once GitHub Sponsors is live.** A sponsor button, the
   npm `funding` field and one discreet README line; the tool itself never asks
   for support. Why: chomik's core stays free and open, and a link to a profile

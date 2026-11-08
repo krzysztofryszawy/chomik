@@ -80,8 +80,9 @@ the file to a new date and add a line below explaining why.
 ````
 
 Everything between the header and `## Prompt` is printed in CI for humans, so
-keep it short. The prompt must let any agent pick the reminder up cold. It asks
-the agent to:
+keep it short. The prompt must let any agent pick the reminder up cold. The check
+adds the reminder's current path above it, and the file may be renamed to a new
+date, so the prompt never names its own file. The prompt asks the agent to:
 
 - explain the situation to the user first, then work with them, saying what it
   is doing and why;

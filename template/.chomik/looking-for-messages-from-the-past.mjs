@@ -80,7 +80,7 @@ function run() {
     if (prompt) {
       lines.push('Paste the prompt below into a coding agent session in this repository.');
       lines.push('To read yourself what needs to be done, see FOR HUMANS below the prompt.');
-      lines.push('', '===== PROMPT =====', prompt, '===== END OF PROMPT =====');
+      lines.push('', '===== PROMPT =====', `This reminder is in ${join(DIR, name)}.`, prompt, '===== END OF PROMPT =====');
     }
     lines.push('', '===== FOR HUMANS =====', humanPart(text, join(DIR, name)), '===== END =====');
     section(lines);

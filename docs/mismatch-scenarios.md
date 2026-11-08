@@ -58,6 +58,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Due, invalid and newer reminders together | All reported, exit 2 in CI | ✅ automated |
 | Other files or folders in `.chomik/` (`.MD`, `.md.bak`, subfolder, symbolic link, empty file) | Each reported with its reason, exit 2 in CI | ✅ automated |
 | Code block inside the prompt, heading starting with "Prompt", byte order mark | Nothing cut or misread | ✅ automated |
+| Reminder renamed to a new date | The prompt shows the file's current path | ✅ automated |
 | Check script missing, reminders still there | Says how many reminders are not checked | ✅ automated |
 
 ## Skill: agent runs
