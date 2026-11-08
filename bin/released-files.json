@@ -40,5 +40,13 @@
     "CHANGELOG.md": "16d21f3af5695fa4ea7867c8373f55d5cba27095618839cf9488c66701881aea",
     "looking-for-messages-from-the-past.mjs": "112e004a7f4a909734961ff4cd4674dddf402fe3b7c6827d403511e72784ac95",
     "chomik-workflow.yml": "d2d93c0011348f91bc69ce4e57f32ce37d17642926848d870bd92ba42eb54eda"
+  },
+  "0.1.7": {
+    "SKILL.md": "643f48453db484c30bad04b579210b4b4b686a92297aab4c2cc59421b9547578",
+    "setup.md": "fabf4cd42aae0a4646aefa8ac76accccc0106ebe7acb33dbb73319eefd403178",
+    "README.md": "2f6c0ed3c83c0fda30b573b13d168898a16ab17eaad10cc0240c8b866b6d36c8",
+    "CHANGELOG.md": "2a52a83eb03339f885e11f56f53e08144d81f037a416b90eb8208201d67e2d3f",
+    "looking-for-messages-from-the-past.mjs": "974edc63b132118ae8889ea885b91d8e0652ec534c5f599f1971addd07f83918",
+    "chomik-workflow.yml": "a0ce38470da4f762fd4786c1c245e1e6c9b73c48da50de6646fb7b31ed513668"
   }
 }
