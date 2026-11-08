@@ -164,6 +164,11 @@ async function installOrUpdate({ yes, dryRun, force }) {
     }
   }
   console.log('Nothing else is changed. No dependencies are added.');
+  if (installed === 'not installed') {
+    console.log('Then /chomik in your coding agent sets chomik up with you: it copies the check');
+    console.log('script to .chomik/ and, on GitHub, adds .github/workflows/chomik.yml.');
+    if (!onGitHub()) console.log('This project is not on GitHub yet; chomik can work locally until it is.');
+  }
 
   const atRisk = plan.filter((p) => p.action === 'replace' && !p.committed);
   if (atRisk.length && !force) {
@@ -176,7 +181,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   if (dryRun) {
-    console.log('Dry run: nothing was changed.');
+    console.log('Dry run: nothing was changed. To install, run the same command without --dry-run.');
     return 0;
   }
 
@@ -225,6 +230,13 @@ function installedVersion() {
   });
   if (matching.length === 0) return 'edited';
   return matching.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).at(-1);
+}
+
+// Read-only, like the skill's own check: an "origin" remote on github.com.
+function onGitHub() {
+  if (!existsSync(join('.git', 'config'))) return false;
+  const origin = /\[remote "origin"\]([^[]*)/.exec(readFileSync(join('.git', 'config'), 'utf8'));
+  return Boolean(origin && /^\s*url\s*=.*github\.com[:/]/m.test(origin[1]));
 }
 
 function releasedVersionOf(file, hash) {

@@ -131,8 +131,17 @@ test('--dry-run shows the plan and writes nothing', () => {
   const { code, stdout } = run(root, ['--dry-run']);
   assert.equal(code, 0);
   assert.match(stdout, /create/);
-  assert.match(stdout, /Dry run: nothing was changed/);
+  assert.match(stdout, /Then \/chomik in your coding agent sets chomik up with you/);
+  assert.match(stdout, /This project is not on GitHub yet; chomik can work locally until it is\./);
+  assert.match(stdout, /Dry run: nothing was changed\. To install, run the same command without --dry-run\.\n$/);
   assert.equal(existsSync(join(root, '.claude')), false);
+});
+
+test('the plan does not warn about GitHub in a project on GitHub', () => {
+  const root = project({ git: true });
+  gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
+  const { stdout } = run(root, ['--dry-run']);
+  assert.doesNotMatch(stdout, /not on GitHub/);
 });
 
 test('without a terminal and without --yes nothing is written', () => {

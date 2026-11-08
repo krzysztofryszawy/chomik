@@ -9,6 +9,8 @@ What changed in chomik, newest first. chomik follows
 
 - `--help` says which files the agent adds during setup, that chomik also works
   without GitHub, and where to read more before installing.
+- The install plan says what `/chomik` will add later, and whether the project is
+  on GitHub yet. A dry run says how to install for real.
 
 ## [0.1.6] - 2026-11-08
 
