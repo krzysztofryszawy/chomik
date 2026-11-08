@@ -36,3 +36,10 @@ Follow these steps exactly; CI configuration breaks easily.
      two marker comments, so it runs every night and on push by itself.
 4. Say that chomik is ready, list the files to commit, and that next time
    `/chomik` with a short description is all it takes.
+
+The steps above are the full flow; describe it as such. Only if the developer
+does not want the CI part, now or at all, or the project is not on GitHub and
+they ask how to use chomik anyway, offer local use: copy only the check script
+as in step 3 and point to "Use it locally" in README.md. Moving to CI later is
+this setup from step 1; the script is replaced with the same file and reminders
+already in `.chomik/` stay as they are.

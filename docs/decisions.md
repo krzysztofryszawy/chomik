@@ -3,6 +3,20 @@
 Newest first. Each entry records what was decided and why. The current state of
 the convention is in [message-from-the-past.md](message-from-the-past.md).
 
+## 2026-11-08
+
+- **Local use is an option, not the pitch.** Setup always describes the full
+  flow with CI. Only when the developer does not want CI or has no GitHub, the
+  skill copies just the check script, which is run by hand; no hooks, npm
+  scripts or schedules. Moving to CI later is the normal setup and keeps existing
+  reminders. Why: some developers want to understand chomik locally first, and
+  without a defined option the agent improvised, proposing a git hook.
+- **The skill stays short; the details live in its README.** `SKILL.md` and
+  `setup.md` hold only what the agent needs every time. Questions they do not
+  cover are answered from `.claude/skills/chomik/README.md`, never improvised.
+  Why: a long skill dilutes the essential instructions, and the README is
+  installed next to it, so the agent can always read it.
+
 ## 2026-11-07
 
 - **London kept, Barcelona (check code as an external GitHub Action) rejected.**
@@ -42,8 +56,8 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 - **A project without a daily build gets its own small workflow.** The skill
   proposes `.github/workflows/chomik.yml`, copied from a template shipped with
   the skill (actions pinned to a commit SHA), that only runs the check every day,
-  on push to the default branch and on demand. Manual checks only, other CI
-  systems, git hooks and npm scripts were rejected. GitHub notifies the person
+  on push to the default branch and on demand. Other CI systems, git hooks and
+  npm scripts were rejected; manual checks became the local option on 2026-11-08. GitHub notifies the person
   who created a scheduled workflow, which in a small project is the author.
 - **Language:** conversation in English by default and in the developer's
   language once they use it; reminder files always in English. Kept to one

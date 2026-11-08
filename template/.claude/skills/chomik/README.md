@@ -15,11 +15,25 @@ turns the build red on a chosen date, with everything the team needs to act.
 - To handle a reminder, resolve the problem and delete its file, or rename the
   file to a new date and add a line explaining why. No agent is required.
 
+## Use it locally
+
+The full flow needs GitHub Actions. To try chomik without it, the project needs
+only `.chomik/looking-for-messages-from-the-past.mjs`; ask `/chomik` to set it up
+locally. Reminders are written the same way.
+
+- Check by hand in the project root:
+  `node .chomik/looking-for-messages-from-the-past.mjs`. It prints the reminders
+  that are due and never fails locally.
+- Nothing runs on its own and nobody else is reminded. By design there are no
+  git hooks, npm scripts or scheduled jobs.
+- To move to the full flow, type `/chomik` and ask to set up CI. Existing
+  reminders stay as they are.
+
 ## Files that belong to chomik
 
 - `.claude/skills/chomik/` (this folder)
 - `.chomik/`: the check script and the reminders
-- `.github/workflows/chomik.yml`
+- `.github/workflows/chomik.yml` (not in local use)
 - in a project with a daily build, two lines in that build workflow: the job
   `looking-for-messages-from-the-past`, which calls `chomik.yml`
 

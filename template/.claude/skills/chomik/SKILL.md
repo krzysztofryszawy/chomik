@@ -16,6 +16,11 @@ set up in this project yet: follow [setup.md](setup.md) first. Setup is a step o
 its own; continue to a reminder only if the developer has already said what to
 remember.
 
+Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
+[README.md](README.md) describes; to move it to CI, follow setup.md. For anything
+this file does not cover, rely on README.md instead of inventing setups such as
+git hooks or npm scripts.
+
 ## Creating a reminder
 
 Work out the reminder from what the developer said and from the current session;
@@ -79,4 +84,4 @@ prompt must let any agent pick the reminder up cold. It asks the agent to:
 ## Done
 
 List the paths written or changed, and remind the developer to commit them with
-their work.
+their work. In local use, also give the command to check by hand.
