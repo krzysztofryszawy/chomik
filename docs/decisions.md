@@ -95,11 +95,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   full of noise; this replaces using `main`'s history as the changelog.
 - **First contact comes with a prompt for the agent.** After the first install,
   and from `npx chomik check` in a project without chomik, chomik prints one
-  ready prompt: read the repository and explain with its examples what chomik
-  does, point out what here is worth never forgetting, and say chomik will help
-  set up the first reminder, changing nothing. `--help` gives one example. Why:
-  one good example says more than a description, and asking the agent to judge
-  whether chomik helps made it talk people out of installing in a young project.
+  ready prompt: read the README and say in at most four short sentences what
+  chomik does, with one example and without searching the project, ending with
+  an offer to help set up the first reminder. `--help` gives one example. Why:
+  one good example says more than a description. Asking the agent to relate
+  chomik to the project gave a long report, and talked people out of installing
+  in a young project.
 - **`npx chomik check` runs the check by hand, on trial until 0.2.0.** It runs
   the project's own copy of the check script, the file CI runs, so both give
   the same answer; it refuses a symbolic link. Before 0.2.0 it is decided whether

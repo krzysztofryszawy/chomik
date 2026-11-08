@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The first-time prompt for your coding agent asks for a four-sentence explanation
+  with one example, without searching your project.
 - Prompts to paste into your coding agent are wrapped and set apart by blank
   lines, so they stay readable in a terminal.
 
