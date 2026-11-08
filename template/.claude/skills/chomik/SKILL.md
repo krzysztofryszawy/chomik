@@ -97,7 +97,8 @@ the agent to:
   after the developer confirms.
 - Never commit, push or open pull requests.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
-  customer data.
+  customer data. If the developer pastes one, say in half a sentence that it is
+  now in this conversation and may need rotating.
 - Look at files with file-reading tools rather than shell commands.
 - Reply in the developer's language; reminder files are in English.
 

@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- When a secret is pasted into the conversation, the agent says it is now there
+  and may need rotating.
 - With nothing in `.chomik/`, the check says "no reminders right now", which also
   fits after you have handled one.
 - The README shows how to see a reminder as it will look on its date.
