@@ -31,8 +31,8 @@ release. Recorded on 2026-11-05.
 - [ ] Writes only inside the project folder and does not follow symbolic links
       that lead outside it.
 - [ ] Touches only chomik's own files; never overwrites other existing files.
-- [ ] Shows the plan, including the exact `package.json` line it adds, and asks
-      for confirmation before writing anything.
+- [ ] Shows the plan, listing every file it creates or updates, and asks for
+      confirmation before writing anything.
 
 ## Publishing
 
