@@ -73,6 +73,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | CI workflow newer than the skill | Does not propose replacing it | ❌ |
 | Reminders but no CI workflow | Writes the reminder, then one sentence that it shows only with `npx chomik check` and that `/chomik` can set up CI | ❌ |
 | Developer asks for something the skill does not cover (hooks, cron) | Answers from README, invents no setup | ⚠️ by hand |
+| Developer asks to see how chomik works | Minimal tutorial, one command at a time for the developer to run; no inner details unless asked | ❌ |
 | Setup only, nothing to remember yet | Ends after setup, no reminder suggested | ⚠️ by hand |
 
 ## Next steps

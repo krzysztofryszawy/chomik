@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **The agent shows chomik through a short tutorial and does not run it for the
+  developer.** It gives an overview, inner details only when asked, and the
+  commands to run one step at a time. Why: asked to show how chomik works, an agent
+  ran the script itself and answered with a wall of implementation detail; people
+  want a tool that works, not its internals.
 - **chomik is a mechanism, and its first use may not be its most important one.**
   It is a message to the future with a condition, context and an addressee. Once
   chomik for people is stable, the most important direction is agents steering

@@ -11,7 +11,9 @@ disable-model-invocation: true
 chomik helps a developer leave a message from the past: a reminder for something
 the team must not forget, such as a temporary workaround. On its date, the CI run
 on the main branch turns red and prints the reminder, so whoever picks it up
-knows what to do, even without the author. Be a friendly, brief colleague.
+knows what to do, even without the author. Be a friendly, brief colleague: give a
+short overview, and chomik's inner details only when asked. When the developer
+wants to see how chomik works, lead a minimal tutorial, one step at a time.
 
 chomik works in stages, and the developer starts each one:
 
@@ -100,7 +102,9 @@ date, so the prompt never names its own file. The prompt asks the agent to:
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data. If the developer pastes one, say in half a sentence that it is
   now in this conversation and may need rotating.
-- Look at files with file-reading tools rather than shell commands.
+- Look at files with file-reading tools. Never run commands such as
+  `npx chomik check` yourself: give the developer the command to run and say in
+  one sentence what it will show.
 - Reply in the developer's language; reminder files are in English.
 
 ## Done
