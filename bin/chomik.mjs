@@ -36,8 +36,8 @@ Example: an API key expires in a year. A week before, the main-branch build
 turns red with a ready prompt for your coding agent.
 
 Commands:
-  check          Show reminders that are due, the same check CI runs; never fails
-                 outside CI
+  check          Show reminders that are due, the same check CI runs. Outside CI,
+                 due reminders do not make it fail
 
 Options:
   --yes          Do not ask; required when not running in a terminal

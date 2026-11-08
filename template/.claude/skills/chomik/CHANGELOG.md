@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- `--help` and the README no longer say that `npx chomik check` never fails
+  outside CI: only due reminders do not make it fail there.
 - `--help` says which files the agent adds during setup, that chomik also works
   without GitHub, and where to read more before installing.
 - The install plan says what `/chomik` will add later, and whether the project is

@@ -52,7 +52,8 @@ only `.chomik/looking-for-messages-from-the-past.mjs`; ask `/chomik` to set it u
 locally. Reminders are written the same way.
 
 - Check by hand in the project root: `npx chomik check`. It prints the reminders
-  that are due, or when the next one is due, and never fails locally.
+  that are due, or when the next one is due. Locally, due reminders do not make
+  it fail.
 - Nothing runs on its own and nobody else is reminded. By design there are no
   git hooks, npm scripts or scheduled jobs.
 - To move to the full flow, type `/chomik` and ask to set up CI. Existing
