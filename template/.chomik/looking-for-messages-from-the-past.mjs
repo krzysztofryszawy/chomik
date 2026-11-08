@@ -136,7 +136,7 @@ function understood(header) {
 
 function nothingDue(waiting) {
   if (waiting.length === 0) {
-    console.log(`chomik: no reminders in ${DIR}/ yet.`);
+    console.log(`chomik: no reminders in ${DIR}/ right now.`);
     console.log('To leave one, type /chomik in your coding agent. More: .claude/skills/chomik/README.md');
   } else {
     const next = waiting[0].slice(0, 10);

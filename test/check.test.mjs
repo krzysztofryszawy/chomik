@@ -31,7 +31,7 @@ const HEADER = '---\nchomik: 1\ncondition: date\n---\n\n';
 const body = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\n```text\nAGENT-PROMPT-LINE\n```\n';
 const reminder = HEADER + body;
 
-const noReminders = 'chomik: no reminders in .chomik/ yet.\nTo leave one, type /chomik in your coding agent. More: .claude/skills/chomik/README.md\n';
+const noReminders = 'chomik: no reminders in .chomik/ right now.\nTo leave one, type /chomik in your coding agent. More: .claude/skills/chomik/README.md\n';
 
 test('no .chomik folder: passes and says there are no reminders', () => {
   const { code, out } = check(project(null), { ci: true });

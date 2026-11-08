@@ -29,8 +29,8 @@ The installer keeps the check script in `.chomik/` up to date. The CI workflow
 it is older than `chomik-workflow.yml` in this folder, chomik was updated: first
 propose replacing it as in step 3 of setup.md, and wait for a yes.
 
-Without `.github/workflows/chomik.yml`, reminders show only when someone runs
-`npx chomik check`: a stopgap for trying chomik, not how it is meant to work. So
+Without `.github/workflows/chomik.yml`, chomik runs in a temporary mode with
+limited features: reminders show only when someone runs `npx chomik check`. So
 after writing a reminder there, say so in one sentence and that `/chomik` can set
 up CI. For anything this file does not cover, rely on [README.md](README.md)
 instead of inventing setups such as git hooks or npm scripts.

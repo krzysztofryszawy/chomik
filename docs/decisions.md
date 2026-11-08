@@ -28,7 +28,7 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   the script, and an extra agent step; `npx husky init` likewise writes its files
   straight into the project. The CI workflow stays with the agent, since setting
   it up needs decisions.
-- **Working without CI is a stopgap, not a mode.** Setup always aims at CI; the
+- **Working without CI is a temporary mode with limited features.** Setup always aims at CI; the
   skill and `npx chomik check` say plainly when reminders will show only by hand.
   Why: chomik's point is a reminder that fires on its own.
 - **chomik presents itself as an Agent Skill.** npm keywords and description,

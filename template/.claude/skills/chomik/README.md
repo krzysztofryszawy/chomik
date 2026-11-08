@@ -53,7 +53,7 @@ has a part for humans.
 
 ## Use it locally
 
-A stopgap for trying chomik before it goes into CI, not how it is meant to work.
+A temporary mode with limited features, for trying chomik before it goes into CI.
 The installer has already put the check script in `.chomik/`, and reminders are
 written the same way.
 

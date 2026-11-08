@@ -203,7 +203,7 @@ test('check runs the project\'s check script and passes outside CI', () => {
   writeFileSync(join(root, '.chomik', SCRIPT), scriptTemplate());
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
-  assert.match(stdout, /^chomik: no reminders in \.chomik\/ yet\./);
+  assert.match(stdout, /^chomik: no reminders in \.chomik\/ right now\./);
 });
 
 test('check in a project without chomik introduces it with a prompt for an agent', () => {
@@ -249,7 +249,7 @@ test('check adds nothing when chomik, its script and its workflow match', () => 
   setUp(root);
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
-  assert.match(stdout, /^chomik: no reminders in \.chomik\/ yet\.\nTo leave one, .*\n$/);
+  assert.match(stdout, /^chomik: no reminders in \.chomik\/ right now\.\nTo leave one, .*\n$/);
 });
 
 test('check works right after install and says when CI is not set up', () => {
