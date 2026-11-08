@@ -3,6 +3,8 @@
 What changed in chomik, newest first. chomik follows
 [Semantic Versioning](https://semver.org/); versions 0.1.x are test versions.
 
+## [0.1.9] - unreleased
+
 ## [0.1.8] - 2026-11-08
 
 ### Changed
