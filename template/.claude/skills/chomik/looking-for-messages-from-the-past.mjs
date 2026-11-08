@@ -27,12 +27,13 @@ function run() {
   try {
     entries = readdirSync(DIR, { withFileTypes: true });
   } catch (error) {
-    if (error.code === 'ENOENT') return 0;
+    if (error.code === 'ENOENT') return nothingDue([]);
     throw error;
   }
 
   const today = new Date().toISOString().slice(0, 10);
   const due = [];
+  const waiting = [];
   const invalid = [];
 
   // Symbolic links and folders are skipped on purpose, so the check never reads outside .chomik.
@@ -42,10 +43,12 @@ function run() {
       invalid.push(entry.name);
     } else if (entry.name.slice(0, 10) <= today) {
       due.push(entry.name);
+    } else {
+      waiting.push(entry.name);
     }
   }
 
-  if (due.length === 0 && invalid.length === 0) return 0;
+  if (due.length === 0 && invalid.length === 0) return nothingDue(waiting);
 
   if (inActions) {
     if (due.length) console.log('::error title=chomik::chomik sent a message from the past');
@@ -93,6 +96,20 @@ function run() {
 
   if (!enforce) return 0;
   return invalid.length ? 2 : 1;
+}
+
+function nothingDue(waiting) {
+  if (waiting.length === 0) {
+    console.log(`chomik: no reminders in ${DIR}/ yet.`);
+    console.log('To leave one, type /chomik in your coding agent. Help: npx chomik@latest --help');
+  } else {
+    const next = waiting[0].slice(0, 10);
+    console.log('chomik found no messages from the past for today.');
+    console.log(waiting.length === 1
+      ? `1 reminder is waiting; it is due on ${next}.`
+      : `${waiting.length} reminders are waiting; the next one is due on ${next}.`);
+  }
+  return 0;
 }
 
 function humanPart(text) {

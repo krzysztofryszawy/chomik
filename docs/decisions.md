@@ -5,6 +5,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **The check always says something.** With nothing due, it says there are no
+  reminders yet, with how to leave one, or when the next one is due. Counts and
+  dates come from file names only. Exit codes are unchanged. Why: a silent pass
+  looks broken to someone trying chomik for the first time.
 - **Local use is an option, not the pitch.** Setup always aims at the full flow
   with CI; without GitHub it asks whether to set that up first or go without CI
   for now. Only when the developer chooses to go without CI, the skill copies

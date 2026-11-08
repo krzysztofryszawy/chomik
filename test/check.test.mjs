@@ -29,16 +29,24 @@ function check(root, { ci = false, ref = 'main', refType = 'branch', args = ['--
 
 const reminder = '# qs pin\n\nqs pinned at 6.13.0 because of a regression in 6.14.\n\n## Prompt\n\n```text\nAGENT-PROMPT-LINE\n```\n';
 
-test('no .chomik folder: silent pass', () => {
+const noReminders = 'chomik: no reminders in .chomik/ yet.\nTo leave one, type /chomik in your coding agent. Help: npx chomik@latest --help\n';
+
+test('no .chomik folder: passes and says there are no reminders', () => {
   const { code, out } = check(project(null), { ci: true });
   assert.equal(code, 0);
-  assert.equal(out, '');
+  assert.equal(out, noReminders);
 });
 
-test('reminder in the future: silent pass', () => {
+test('one reminder in the future: passes and says when it is due', () => {
   const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: reminder }), { ci: true });
   assert.equal(code, 0);
-  assert.equal(out, '');
+  assert.equal(out, `chomik found no messages from the past for today.\n1 reminder is waiting; it is due on ${isoDay(30)}.\n`);
+});
+
+test('several reminders in the future: passes and names the next date', () => {
+  const { code, out } = check(project({ [`${isoDay(40)}-b.md`]: reminder, [`${isoDay(10)}-a.md`]: reminder }));
+  assert.equal(code, 0);
+  assert.equal(out, `chomik found no messages from the past for today.\n2 reminders are waiting; the next one is due on ${isoDay(10)}.\n`);
 });
 
 test('due today in CI on the configured branch: fails with exit code 1', () => {
@@ -103,7 +111,7 @@ test('invalid file name or impossible date in CI on the branch: exit code 2', ()
 test('non-Markdown files in .chomik are ignored', () => {
   const { code, out } = check(project({ 'looking-for-messages-from-the-past.mjs': '', 'notes.txt': '' }), { ci: true });
   assert.equal(code, 0);
-  assert.equal(out, '');
+  assert.equal(out, noReminders);
 });
 
 test('symbolic links are not followed', () => {
