@@ -60,7 +60,7 @@ function run() {
   if (token) console.log(`::stop-commands::${token}`);
 
   for (const name of due) {
-    const text = readFileSync(join(DIR, name), 'utf8').replace(/\r\n/g, '\n');
+    const { body: text } = parse(readFileSync(join(DIR, name), 'utf8'));
     const prompt = promptPart(text);
     if (name !== due[0]) console.log('');
     console.log(`chomik sent a message from the past: ${join(DIR, name)}`);
@@ -110,6 +110,21 @@ function nothingDue(waiting) {
       : `${waiting.length} reminders are waiting; the next one is due on ${next}.`);
   }
   return 0;
+}
+
+// A reminder may start with a YAML header such as "chomik: 1" and "condition: date";
+// only flat "key: value" lines are read. Without a header it is format 1.
+function parse(raw) {
+  const lines = raw.replace(/\r\n/g, '\n').split('\n');
+  const header = {};
+  if (lines[0] !== '---') return { header, body: lines.join('\n') };
+  const end = lines.indexOf('---', 1);
+  if (end === -1) return { header, body: lines.join('\n') };
+  for (const line of lines.slice(1, end)) {
+    const match = /^([A-Za-z][\w-]*):\s*(.*?)\s*$/.exec(line);
+    if (match) header[match[1]] = match[2];
+  }
+  return { header, body: lines.slice(end + 1).join('\n') };
 }
 
 function humanPart(text) {

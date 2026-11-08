@@ -39,6 +39,11 @@ Write `.chomik/YYYY-MM-DD-<name>.md` in English, where the date is the review
 date and `<name>` uses lowercase letters, digits and hyphens:
 
 ````markdown
+---
+chomik: 1
+condition: date
+---
+
 # <What to revisit, in one line>
 
 Message from the past · <author> · <PR, task or branch> · created <YYYY-MM-DD>
@@ -65,7 +70,7 @@ the file to a new date and add a line below explaining why.
 ```
 ````
 
-Everything above `## Prompt` is printed in CI for humans, so keep it short. The
+Everything between the header and `## Prompt` is printed in CI for humans, so keep it short. The
 prompt must let any agent pick the reminder up cold. It asks the agent to:
 
 - explain the situation to the user first, then work with them, saying what it

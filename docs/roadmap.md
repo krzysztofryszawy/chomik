@@ -36,6 +36,7 @@ red run, handling by someone else.
 Cheap now, expensive once reminders live in other people's repositories. In order:
 
 1. A format version in every reminder, so new code can tell old formats apart.
+   Done: a YAML header with `chomik: 1` and `condition: date`.
 2. An old check script that meets a reminder it does not understand fails loudly
    in CI and says to update chomik; it never skips a reminder silently.
 3. The chomik version in a comment in the copied check script and in

@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Reminders start with a YAML header: `chomik: 1` and `condition: date`.** The
+  check script reads only flat `key: value` lines and never prints the header. A
+  reminder without a header is format 1. Why: a standard header that agents write
+  reliably, readable without dependencies and extensible to other conditions; a
+  hidden HTML comment would be a custom syntax.
+
 - **Versioning follows what lives longest.** chomik's interfaces live for very
   different times: `npx chomik` commands and skill files are replaced on update,
   while the check script copied to `.chomik/`, the reminder format and the job in

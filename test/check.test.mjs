@@ -70,6 +70,15 @@ test('the prompt comes first, then the human part, each between clear markers', 
   assert.ok(lines.slice(human, humanEnd).includes('qs pinned at 6.13.0 because of a regression in 6.14.'));
 });
 
+test('the YAML header is not printed', () => {
+  const withHeader = `---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
+  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: withHeader }));
+  assert.doesNotMatch(out, /chomik: 1|condition: date/);
+  const lines = out.split('\n');
+  assert.equal(lines[lines.indexOf('===== FOR HUMANS =====') + 1], '# qs pin');
+  assert.deepEqual(lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT =====')), ['AGENT-PROMPT-LINE']);
+});
+
 test('a reminder without a Prompt section shows only the human part', () => {
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: '# qs pin\n\nNo prompt here.\n' }));
   assert.match(out, /No prompt here/);

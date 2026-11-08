@@ -124,8 +124,8 @@ agent. The first line tells the team at the daily meeting what happened. The
 human part below is enough to handle the reminder without an agent.
 
 ## Still To Decide
-- The generic storage format and how multiple messages are organized. Include a
-  condition type field now, even though only dates are supported at first.
+- How multiple messages are organized. The format version and condition type
+  are in each reminder's YAML header (`chomik: 1`, `condition: date`).
 - Supported nonblocking notification modes and their delivery mechanisms.
 - How authors declare and validate environment scope and blocking behavior.
 - The reusable creation workflow and skills for Copilot and Claude Code, sharing
