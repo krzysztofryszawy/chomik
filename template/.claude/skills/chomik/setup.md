@@ -2,8 +2,8 @@
 
 The installer has already put the check script in `.chomik/`; setup connects it
 to CI. Follow these steps exactly; CI configuration breaks easily. If the
-developer prefers to go without CI for now, skip steps 2 and 3; "Use it locally"
-in README.md says what that means.
+developer declines CI for now, skip steps 2 and 3; "Use it locally" in README.md
+says what that means.
 
 1. This is usually the developer's first contact with chomik, so open with one
    sentence on what it is for, then say you are checking how CI runs, read-only.
@@ -15,9 +15,11 @@ in README.md says what that means.
    themselves before coming back with `/chomik`, or go without CI for now.
 2. Look for the daily build: a workflow with a `schedule` trigger. Scheduled
    workflows run only on the default branch, so that is the branch to use.
-3. Propose the setup in one message and confirm once. Mention anything that may
-   surprise the developer, for example an `origin` that is not their repository.
-   Then:
+3. Propose the setup in two or three plain sentences and confirm once: this is a
+   one-time step that adds one workflow file, plus two lines in the daily build
+   if there is one, and after it chomik checks by itself every day. Leave out how
+   it works unless asked, and mention only what would really surprise the
+   developer, for example an `origin` that is not their repository. Then:
    - Copy `chomik-workflow.yml` from this folder to
      `.github/workflows/chomik.yml`, with `BRANCH` replaced by the default
      branch.

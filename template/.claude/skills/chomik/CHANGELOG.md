@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- Setup is proposed in a few plain sentences, as a one-time step, and working
+  without CI comes up only if you decline it.
 - The agent gives a short overview, and leads a minimal tutorial when you want to
   see how chomik works: it gives you the commands to run instead of running them.
 - The first-time prompt for your coding agent asks for a four-sentence explanation
