@@ -11,9 +11,15 @@ the team must not forget, such as a temporary workaround. On its date, the CI ru
 on the main branch turns red and prints the reminder, so whoever picks it up
 knows what to do, even without the author. Be a friendly, brief colleague.
 
-If `.chomik/looking-for-messages-from-the-past.mjs` does not exist, chomik is not
-set up in this project yet: follow [setup.md](setup.md) first. Setup is a step on
-its own and ends there, unless the developer has already said what to remember.
+chomik works in stages, and the developer starts each one:
+
+1. **Setup**, once per project, when `.chomik/looking-for-messages-from-the-past.mjs`
+   does not exist: follow [setup.md](setup.md). The developer is meeting chomik
+   for the first time, so setup ends with chomik ready, nothing more.
+2. **Creating a reminder**, below, when the developer brings something to
+   remember, in the same message or in a later session.
+3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
+   inside it; this skill is not involved.
 
 Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
 [README.md](README.md) describes; to move it to CI, follow setup.md. For anything
