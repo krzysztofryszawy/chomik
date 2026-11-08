@@ -71,12 +71,8 @@ test('an unedited older release is updated and shows the versions', () => {
     }
   })();
   if (!tag) return;
-  const oldFile = (file) => execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`]);
-  if (oldFile('SKILL.md').equals(template('SKILL.md'))) return;
-  const root = project();
-  mkdirSync(join(root, SKILL_DIR), { recursive: true });
-  const oldFiles = Object.keys(RELEASED[tag.slice(1)]);
-  for (const file of oldFiles) writeFileSync(join(root, SKILL_DIR, file), oldFile(file));
+  if (releasedFile(tag, 'SKILL.md').equals(template('SKILL.md'))) return;
+  const root = withRelease(project(), tag);
   const version = tag.slice(1).replaceAll('.', '\\.');
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
@@ -293,12 +289,8 @@ test('check says when a newer chomik is out than the skill in the project', () =
     }
   })();
   if (!tag || tag.slice(1) === VERSION) return;
-  const root = project();
-  mkdirSync(join(root, SKILL_DIR), { recursive: true });
-  for (const file of Object.keys(RELEASED[tag.slice(1)])) {
-    writeFileSync(join(root, SKILL_DIR, file), releasedFile(tag, file));
-  }
-  mkdirSync(join(root, '.chomik'));
+  const root = withRelease(project(), tag);
+  mkdirSync(join(root, '.chomik'), { recursive: true });
   writeFileSync(join(root, '.chomik', SCRIPT), scriptTemplate());
   const { stdout } = run(root, ['check']);
   assert.match(stdout, new RegExp(`\\n\\nchomik ${VERSION.replaceAll('.', '\\.')} is out; this project has ${tag.slice(1).replaceAll('.', '\\.')}\\. To update: npx chomik@latest\\n$`));
@@ -323,10 +315,22 @@ function releasedFile(tag, file) {
 
 function withRelease(root, tag) {
   mkdirSync(join(root, SKILL_DIR), { recursive: true });
+  const scriptInSkill = releasedFromSkillFolder(tag, SCRIPT);
   for (const file of Object.keys(RELEASED[tag.slice(1)])) {
-    writeFileSync(join(root, SKILL_DIR, file), releasedFile(tag, file));
+    const dir = file === SCRIPT && !scriptInSkill ? '.chomik' : SKILL_DIR;
+    mkdirSync(join(root, dir), { recursive: true });
+    writeFileSync(join(root, dir, file), releasedFile(tag, file));
   }
   return root;
+}
+
+function releasedFromSkillFolder(tag, file) {
+  try {
+    execFileSync('git', ['cat-file', '-e', `${tag}:template/.claude/skills/chomik/${file}`], { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 test('every older release is recognized and updated', () => {
