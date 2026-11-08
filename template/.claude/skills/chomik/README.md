@@ -36,8 +36,8 @@ For dates you cannot afford to miss. Three typical cases:
 ### Do I need GitHub?
 
 For the full flow, yes: GitHub Actions checks every day and turns the build red.
-Without it, chomik works locally: reminders are written the same way and
-`npx chomik check` shows the ones that are due. Moving to GitHub later keeps
+Without it you can only try chomik: reminders are written the same way, but
+they show only when you run `npx chomik check`. Moving to GitHub later keeps
 your reminders.
 
 ### Do I need a coding agent?
@@ -47,23 +47,24 @@ Handling a reminder does not need one: each has a part for humans.
 
 ## Use it locally
 
-The full flow needs GitHub Actions. To try chomik without it, the project needs
-only `.chomik/looking-for-messages-from-the-past.mjs`; ask `/chomik` to set it up
-locally. Reminders are written the same way.
+A stopgap for trying chomik before it goes into CI, not how it is meant to work.
+The installer has already put the check script in `.chomik/`, and reminders are
+written the same way.
 
 - Check by hand in the project root: `npx chomik check`. It prints the reminders
   that are due, or when the next one is due. Locally, due reminders do not make
   it fail.
 - Nothing runs on its own and nobody else is reminded. By design there are no
   git hooks, npm scripts or scheduled jobs.
-- To move to the full flow, type `/chomik` and ask to set up CI. Existing
-  reminders stay as they are.
+- For the full flow, type `/chomik` and ask to set up CI. Existing reminders stay
+  as they are.
 
 ## Files that belong to chomik
 
 - `.claude/skills/chomik/` (this folder)
-- `.chomik/`: the check script and the reminders, nothing else; the check
-  reports anything else there, so no reminder is lost unnoticed
+- `.chomik/`: the check script, written by the installer, and the reminders,
+  nothing else; the check reports anything else there, so no reminder is lost
+  unnoticed
 - `.github/workflows/chomik.yml` (not in local use)
 - in a project with a daily build, two lines in that build workflow: the job
   `looking-for-messages-from-the-past`, which calls `chomik.yml`

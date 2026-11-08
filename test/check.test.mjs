@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
-const SCRIPT = resolve('template/.claude/skills/chomik/looking-for-messages-from-the-past.mjs');
+const SCRIPT = resolve('template/.chomik/looking-for-messages-from-the-past.mjs');
 
 function isoDay(offsetDays) {
   return new Date(Date.now() + offsetDays * 86_400_000).toISOString().slice(0, 10);

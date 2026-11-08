@@ -15,23 +15,25 @@ knows what to do, even without the author. Be a friendly, brief colleague.
 
 chomik works in stages, and the developer starts each one:
 
-1. **Setup**, once per project, when `.chomik/looking-for-messages-from-the-past.mjs`
-   does not exist: follow [setup.md](setup.md). The developer is meeting chomik
-   for the first time, so setup ends with chomik ready, nothing more.
+1. **Setup**, connecting chomik to CI: follow [setup.md](setup.md) when
+   `.github/workflows/chomik.yml` does not exist and `.chomik/` has no reminders
+   yet, or when the developer asks for CI. On first contact, setup ends with
+   chomik ready, nothing more.
 2. **Creating a reminder**, below, when the developer brings something to
    remember, in the same message or in a later session.
 3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
    inside it; this skill is not involved.
 
-The copies setup made, `.chomik/looking-for-messages-from-the-past.mjs` and
-`.github/workflows/chomik.yml`, name their chomik version in the first comment.
-If it is older than in the same files in this folder, chomik was updated: first
-propose replacing them as in step 3 of setup.md, and wait for a yes.
+The installer keeps the check script in `.chomik/` up to date. The CI workflow
+`.github/workflows/chomik.yml` names its chomik version in the first comment; if
+it is older than `chomik-workflow.yml` in this folder, chomik was updated: first
+propose replacing it as in step 3 of setup.md, and wait for a yes.
 
-Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
-[README.md](README.md) describes; to move it to CI, follow setup.md. For anything
-this file does not cover, rely on README.md instead of inventing setups such as
-git hooks or npm scripts.
+Without `.github/workflows/chomik.yml`, reminders show only when someone runs
+`npx chomik check`: a stopgap for trying chomik, not how it is meant to work. So
+after writing a reminder there, say so in one sentence and that `/chomik` can set
+up CI. For anything this file does not cover, rely on [README.md](README.md)
+instead of inventing setups such as git hooks or npm scripts.
 
 ## Creating a reminder
 

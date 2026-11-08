@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
@@ -9,12 +9,20 @@ const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const PACKAGE = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'package.json'), 'utf8'));
 const VERSION = PACKAGE.version;
 const MIN_NODE = Number(/\d+/.exec(PACKAGE.engines.node)[0]);
-// SHA-256 of the skill files in every released version, to recognize files nobody edited.
+// SHA-256 of chomik's files in every released version, to recognize files nobody edited.
 const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-files.json'), 'utf8'));
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
 const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skills', 'chomik')];
 const TARGET = TARGET_DIRS.at(-1);
-const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
+const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
+const SCRIPT = 'looking-for-messages-from-the-past.mjs';
+const CHECK_SCRIPT = join('.chomik', SCRIPT);
+// Up to 0.1.7 the script also sat in the skill folder and the agent copied it to .chomik/.
+const OLD_SCRIPT_COPY = join(TARGET, SCRIPT);
+const OWN_FILES = [
+  ...FILES.map((file) => ({ key: file, source: join(SOURCE, file), target: join(TARGET, file) })),
+  { key: SCRIPT, source: join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT), target: CHECK_SCRIPT, note: ' (the check CI runs)' },
+];
 
 const explainFrom = (where) => `Read ${where} and explain with its examples what chomik does and how it could help in this project. Do not change anything.`;
 // The same two lines open the README; a test keeps them equal.
@@ -25,13 +33,14 @@ const HELP = `Usage: npx chomik@latest [options]
        npx chomik check
 
 Installs chomik in this project, or updates it: run the same command again.
-The installer writes only .claude/skills/chomik/, the skill your coding agent
-reads. It shows the plan and asks before writing, and never overwrites edits
-that are not committed to git, unless you use --force.
+The installer writes only chomik's own files: .claude/skills/chomik/, the skill
+your coding agent reads, and the check script in .chomik/. It shows the plan and
+asks before writing, and never overwrites edits that are not committed to git,
+unless you use --force.
 
-Then type /chomik in Claude Code or GitHub Copilot. The agent sets chomik up
-with you and, after you confirm, adds .chomik/ and, on GitHub,
-.github/workflows/chomik.yml. Not on GitHub? chomik also works locally.
+Then type /chomik in Claude Code or GitHub Copilot. The agent sets up CI with
+you and, after you confirm, adds .github/workflows/chomik.yml. Not on GitHub
+yet? Try chomik with npx chomik check until it is.
 
 Example: an API key expires in a year. A week before, the main-branch build
 turns red with a ready prompt for your coding agent.
@@ -57,7 +66,6 @@ const options = command ? args.slice(1) : args;
 const has = (flag) => options.includes(flag);
 const allowed = command ? ['--help', '-h'] : ['--yes', '-y', '--dry-run', '--force', '--help', '-h', '--version'];
 const unknown = options.find((a) => !allowed.includes(a));
-const CHECK_SCRIPT = join('.chomik', 'looking-for-messages-from-the-past.mjs');
 
 try {
   // npm only warns about "engines", so chomik checks Node itself before doing anything.
@@ -111,12 +119,9 @@ function check() {
   }
   if (!existsSync(CHECK_SCRIPT)) {
     const reminders = existsSync('.chomik') ? readdirSync('.chomik').filter((name) => name.endsWith('.md')).length : 0;
-    if (reminders) {
-      console.error(`chomik's check script is missing from .chomik/, so ${reminders === 1 ? '1 reminder there is' : `${reminders} reminders there are`} not checked.`);
-      console.error('To restore it, type /chomik in your coding agent.');
-    } else {
-      console.error('chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.');
-    }
+    const unchecked = reminders === 1 ? ', so 1 reminder there is not checked' : reminders ? `, so ${reminders} reminders there are not checked` : '';
+    console.error(`chomik's check script is missing from .chomik/${unchecked}.`);
+    console.error('To restore it, run: npx chomik@latest');
     return 1;
   }
   if (lstatSync(CHECK_SCRIPT).isSymbolicLink() || lstatSync('.chomik').isSymbolicLink()) {
@@ -129,18 +134,29 @@ function check() {
   return status;
 }
 
-// Three versions can differ: this package, the skill and the copies setup made.
-// Only the first mismatch is named; fixing it leads to the next one.
+// One line at most, the first that applies: a newer chomik, a check script older than
+// the skill, no CI at all, or a CI workflow older than the skill.
 function versionHint() {
   const skill = installedVersion();
-  if (!/^\d/.test(skill)) return '';
-  if (newer(VERSION, skill)) return `chomik ${VERSION} is out; this project has ${skill}. To update: npx chomik@latest`;
-  const stamp = /🐹 chomik (\d+\.\d+\.\d+)/.exec(readFileSync(CHECK_SCRIPT, 'utf8').split('\n').slice(0, 2).join('\n'));
-  const copies = stamp ? stamp[1] : 'an older version';
-  if (!stamp || newer(skill, copies)) {
-    return `chomik was updated, but its check script in .chomik/ is still ${copies}. To update it, type /chomik in your coding agent.`;
+  if (/^\d/.test(skill) && newer(VERSION, skill)) return `chomik ${VERSION} is out; this project has ${skill}. To update: npx chomik@latest`;
+  const script = stampOf(CHECK_SCRIPT);
+  if (/^\d/.test(skill) && (!script || newer(skill, script))) {
+    return `The check script in .chomik/ is older than chomik ${skill} here. To update it, run: npx chomik@latest`;
+  }
+  const workflow = join('.github', 'workflows', 'chomik.yml');
+  if (!existsSync(workflow)) {
+    return 'CI is not set up, so reminders show only when you run this. To set it up, type /chomik in your coding agent.';
+  }
+  const ci = stampOf(workflow);
+  if (/^\d/.test(skill) && (!ci || newer(skill, ci))) {
+    return `chomik was updated, but .github/workflows/chomik.yml is still ${ci || 'an older version'}. To update it, type /chomik in your coding agent.`;
   }
   return '';
+}
+
+function stampOf(file) {
+  const stamp = /🐹 chomik (\d+\.\d+\.\d+)/.exec(readFileSync(file, 'utf8').split('\n').slice(0, 2).join('\n'));
+  return stamp ? stamp[1] : '';
 }
 
 function newer(a, b) {
@@ -154,7 +170,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   // Refuse symbolic links on the way, so chomik never writes outside the project.
-  for (const path of [...TARGET_DIRS, ...FILES.map((f) => join(TARGET, f))]) {
+  for (const path of [...TARGET_DIRS, '.chomik', OLD_SCRIPT_COPY, ...OWN_FILES.map((f) => f.target)]) {
     if (isLink(path)) {
       console.error(`chomik: ${path} is a symbolic link; refusing to write through it.`);
       return 1;
@@ -172,17 +188,21 @@ async function installOrUpdate({ yes, dryRun, force }) {
 
   const installed = installedVersion();
   const plan = [];
-  for (const file of FILES) {
-    const source = readFileSync(join(SOURCE, file));
-    const target = join(TARGET, file);
+  for (const { key, source: from, target, note = '' } of OWN_FILES) {
+    const source = readFileSync(from);
     if (!existsSync(target)) {
-      plan.push({ target, source, action: 'create' });
+      plan.push({ target, source, note, action: 'create' });
       continue;
     }
     const current = readFileSync(target);
     if (current.equals(source)) continue;
-    const from = releasedVersionOf(file, sha256(current));
-    plan.push(from ? { target, source, action: 'update', from } : { target, source, action: 'replace', committed: isCommittedInGit(target) });
+    plan.push(releasedVersionOf(key, sha256(current))
+      ? { target, source, note, action: 'update' }
+      : { target, source, note, action: 'replace', committed: isCommittedInGit(target) });
+  }
+  if (existsSync(OLD_SCRIPT_COPY)) {
+    const edited = !releasedVersionOf(SCRIPT, sha256(readFileSync(OLD_SCRIPT_COPY)));
+    plan.push({ target: OLD_SCRIPT_COPY, note: ', no longer needed here', action: 'remove', edited, committed: edited && isCommittedInGit(OLD_SCRIPT_COPY) });
   }
 
   if (plan.length === 0) {
@@ -195,21 +215,21 @@ async function installOrUpdate({ yes, dryRun, force }) {
   else if (installed === 'edited') console.log(`Updating chomik in this project to ${VERSION} (some of its files were edited here).`);
   else console.log(`Updating chomik in this project: ${installed} -> ${VERSION}.`);
   console.log('Plan:');
+  const keep = (p) => (p.committed ? 'your committed changes stay in git history' : existsSync('.git') ? 'changes are NOT committed' : 'this project has no git to keep them');
   for (const p of plan) {
-    if (p.action === 'create') console.log(`  create   ${p.target}`);
-    if (p.action === 'update') console.log(`  update   ${p.target}`);
-    if (p.action === 'replace') {
-      console.log(`  replace  ${p.target} (edited here; ${p.committed ? 'your committed changes stay in git history' : existsSync('.git') ? 'changes are NOT committed' : 'this project has no git to keep them'})`);
-    }
+    if (p.action === 'create') console.log(`  create   ${p.target}${p.note}`);
+    if (p.action === 'update') console.log(`  update   ${p.target}${p.note}`);
+    if (p.action === 'replace') console.log(`  replace  ${p.target} (edited here; ${keep(p)})`);
+    if (p.action === 'remove') console.log(`  remove   ${p.target} (${p.edited ? `edited here; ${keep(p)}` : 'an old copy'}${p.note})`);
   }
   console.log('Nothing else is changed. No dependencies are added.');
   if (installed === 'not installed') {
-    console.log('Then /chomik in your coding agent sets chomik up with you: it copies the check');
-    console.log('script to .chomik/ and, on GitHub, adds .github/workflows/chomik.yml.');
-    if (!onGitHub()) console.log('This project is not on GitHub yet; chomik can work locally until it is.');
+    console.log('Then /chomik in your coding agent sets up CI with you: on GitHub, it adds');
+    console.log('.github/workflows/chomik.yml.');
+    if (!onGitHub()) console.log('This project is not on GitHub yet; until it is, try chomik with npx chomik check.');
   }
 
-  const atRisk = plan.filter((p) => p.action === 'replace' && !p.committed);
+  const atRisk = plan.filter((p) => (p.action === 'replace' || (p.action === 'remove' && p.edited)) && !p.committed);
   if (atRisk.length && !force) {
     console.error('');
     console.error('chomik: not updating, because these edits would be lost for good:');
@@ -243,8 +263,14 @@ async function installOrUpdate({ yes, dryRun, force }) {
     }
   }
 
-  mkdirSync(TARGET, { recursive: true });
-  for (const p of plan) writeFileSync(p.target, p.source);
+  for (const p of plan) {
+    if (p.action === 'remove') {
+      rmSync(p.target);
+    } else {
+      mkdirSync(dirname(p.target), { recursive: true });
+      writeFileSync(p.target, p.source);
+    }
+  }
 
   if (installed === 'not installed') {
     console.log(`Done. chomik ${VERSION} is installed.\n`);

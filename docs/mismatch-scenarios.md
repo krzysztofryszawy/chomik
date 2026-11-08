@@ -32,14 +32,17 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
 | Node older than `engines` in `package.json` | Stop before anything else, name the Node needed | ✅ automated, with a faked version |
 
-## Check: package, skill and copies
+## Check: package, skill, script and workflow
 
 | Scenario | Expected | Test |
 |---|---|---|
-| Skill and copies match | No extra line | ✅ automated |
-| Copies older than the skill | "check script in .chomik/ is still X; type /chomik" | ✅ automated |
-| Copies without a version comment (before 0.1.6) | "still an older version" | ✅ automated |
-| Copies newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
+| Skill, script and workflow match | No extra line | ✅ automated |
+| No CI workflow | One line: CI is not set up; type /chomik | ✅ automated |
+| Check script older than the skill | "older than chomik X; run npx chomik@latest" | ✅ automated |
+| CI workflow older than the skill | ".github/workflows/chomik.yml is still X; type /chomik" | ✅ automated |
+| Check script without a version comment (before 0.1.6) | Treated as older | ✅ automated |
+| Check script newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
+| Update from 0.1.7 or older | Script in `.chomik/` updated, old copy in the skill folder removed, reminders untouched | ✅ automated |
 | Package newer than the skill | "X is out; this project has Y" | ✅ automated |
 | Package older than the skill (stale npx cache) | No hint | ✅ automated, as an unknown skill |
 | Skill edited, so its version is unknown | No hint | ✅ automated |
@@ -64,8 +67,9 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | GitHub, no workflows | Proposes a standalone `chomik.yml` | ⚠️ by hand |
 | GitHub with a daily build | Adds the two-line job, nothing else in the build | ❌ |
 | Local use, then moving to CI | Runs setup, keeps reminders | ❌ |
-| Copies older than the skill | Proposes replacing them first, waits for a yes | ❌ |
-| Copies newer than the skill | Does not propose replacing them | ❌ |
+| CI workflow older than the skill | Proposes replacing it first, waits for a yes | ❌ |
+| CI workflow newer than the skill | Does not propose replacing it | ❌ |
+| Reminders but no CI workflow | Writes the reminder, then one sentence that it shows only with `npx chomik check` and that `/chomik` can set up CI | ❌ |
 | Copied script edited by hand | Says the edit would be lost before replacing | ❌ |
 | Developer asks for something the skill does not cover (hooks, cron) | Answers from README, invents no setup | ⚠️ by hand |
 | Setup only, nothing to remember yet | Ends after setup, no reminder suggested | ⚠️ by hand |

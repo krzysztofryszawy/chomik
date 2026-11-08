@@ -7,6 +7,13 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The installer now puts the check script in `.chomik/` itself, so
+  `npx chomik check` works right after installing, and every update keeps it
+  current. `/chomik` only sets up CI. An update from 0.1.7 or older moves the
+  script out of the skill folder; your reminders are never touched.
+- Without CI, `npx chomik check` says so, and after each new reminder the agent
+  says it shows only with `npx chomik check`: working without CI is a way to try
+  chomik, not to use it.
 - The skill says when to use it, its license and what it needs (Node, GitHub
   Actions, Claude Code or GitHub Copilot), following the Agent Skills standard.
 - The README explains how to verify a release cryptographically, in an empty

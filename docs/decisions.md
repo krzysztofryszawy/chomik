@@ -5,6 +5,17 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **One copy of the check script, written by the installer.** The installer
+  puts it in `.chomik/` and keeps it current with every update, shown in its
+  plan; the skill folder no longer carries it, and `/chomik` only sets up CI.
+  This replaces the earlier rule that the installer writes only the skill. Why:
+  two copies created a whole class of version mismatches between the skill and
+  the script, and an extra agent step; `npx husky init` likewise writes its files
+  straight into the project. The CI workflow stays with the agent, since setting
+  it up needs decisions.
+- **Working without CI is a stopgap, not a mode.** Setup always aims at CI; the
+  skill and `npx chomik check` say plainly when reminders will show only by hand.
+  Why: chomik's point is a reminder that fires on its own.
 - **chomik presents itself as an Agent Skill.** npm keywords and description,
   and the skill's `description`, `license` and `compatibility`, name the open
   Agent Skills standard, Claude Code, GitHub Copilot, Node and GitHub Actions.

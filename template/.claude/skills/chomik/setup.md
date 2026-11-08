@@ -1,8 +1,9 @@
-# Setting up chomik in a project
+# Setting chomik up in CI
 
-Follow these steps exactly; CI configuration breaks easily. If the developer
-prefers to go without CI for now, follow "Use it locally" in README.md instead
-of steps 2 and 3.
+The installer has already put the check script in `.chomik/`; setup connects it
+to CI. Follow these steps exactly; CI configuration breaks easily. If the
+developer prefers to go without CI for now, skip steps 2 and 3; "Use it locally"
+in README.md says what that means.
 
 1. This is usually the developer's first contact with chomik, so open with one
    sentence on what it is for, then say you are checking how CI runs, read-only.
@@ -17,8 +18,6 @@ of steps 2 and 3.
 3. Propose the setup in one message and confirm once. Mention anything that may
    surprise the developer, for example an `origin` that is not their repository.
    Then:
-   - Copy `looking-for-messages-from-the-past.mjs` from this folder to
-     `.chomik/looking-for-messages-from-the-past.mjs`, unchanged.
    - Copy `chomik-workflow.yml` from this folder to
      `.github/workflows/chomik.yml`, with `BRANCH` replaced by the default
      branch.
@@ -40,6 +39,6 @@ of steps 2 and 3.
 4. Skip how the files were checked and finish like a short tutorial for someone
    new to chomik: invite them to run `npx chomik check` now, say it finds
    nothing yet, and what it will show once a reminder is due. Then list the
-   files to commit, including `.claude/skills/chomik/` so the whole team can
-   use `/chomik`, and say that next time `/chomik` with a short description is
-   all it takes.
+   files to commit: `.claude/skills/chomik/`, so the whole team can use
+   `/chomik`, `.chomik/`, which CI runs, and any workflow changed in step 3. Say
+   that next time `/chomik` with a short description is all it takes.

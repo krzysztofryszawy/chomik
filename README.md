@@ -18,7 +18,7 @@ npx chomik@latest
 
 Then start a new session of your coding agent in the project (Claude Code or
 GitHub Copilot) and type `/chomik`. chomik's skill, instructions your agent
-reads, sets it up with you and then helps you write reminders.
+reads, sets up CI with you and then helps you write reminders.
 
 Safe to try: the installer shows its plan and asks before writing anything, and
 the agent asks before every change. Nothing runs on its own, and removing chomik
@@ -58,8 +58,8 @@ For dates you cannot afford to miss. Three typical cases:
 ### Do I need GitHub?
 
 For the full flow, yes: GitHub Actions checks every day and turns the build red.
-Without it, chomik works locally: reminders are written the same way and
-`npx chomik check` shows the ones that are due. Moving to GitHub later keeps
+Without it you can only try chomik: reminders are written the same way, but
+they show only when you run `npx chomik check`. Moving to GitHub later keeps
 your reminders.
 
 ### Do I need a coding agent?
@@ -71,8 +71,9 @@ Handling a reminder does not need one: each has a part for humans.
 
 - `.claude/skills/chomik/`, including its own `README.md`, which tells any
   coding agent in your project what chomik is
-- `.chomik/`: the check script and the reminders, nothing else; the check
-  reports anything else there, so no reminder is lost unnoticed
+- `.chomik/`: the check script, written by the installer, and the reminders,
+  nothing else; the check reports anything else there, so no reminder is lost
+  unnoticed
 - `.github/workflows/chomik.yml`
 - in a project with a daily build, two lines in that build workflow: the job
   `looking-for-messages-from-the-past`, which calls `chomik.yml`
