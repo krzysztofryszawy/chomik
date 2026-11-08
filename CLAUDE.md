@@ -7,6 +7,7 @@ created with an agent and checked deterministically in CI.
 - Decisions and their reasons: `docs/decisions.md`. Add an entry for every new decision.
 - Security checklist, checked before every release: `docs/security-checklist.md`
 - Development plans: `docs/roadmap.md`
+- Version mismatch scenarios and how they are tested: `docs/mismatch-scenarios.md`
 - `main` stays clean because this history becomes public. Prototypes and work in
   progress go on feature branches, which are deleted afterwards. Changes reach
   `main` through squash merge, one meaningful commit per change.
