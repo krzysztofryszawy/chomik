@@ -5,6 +5,11 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.7] - unreleased
 
+### Fixed
+
+- `/chomik` proposes replacing the copied check script and workflow only when
+  they are older than the skill, not when they are newer.
+
 ### Changed
 
 - Without GitHub, setup says that putting the project on GitHub is up to you,

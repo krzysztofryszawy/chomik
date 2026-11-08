@@ -23,7 +23,7 @@ chomik works in stages, and the developer starts each one:
 
 The copies setup made, `.chomik/looking-for-messages-from-the-past.mjs` and
 `.github/workflows/chomik.yml`, name their chomik version in the first comment.
-If it differs from the same files in this folder, chomik was updated: first
+If it is older than in the same files in this folder, chomik was updated: first
 propose replacing them as in step 3 of setup.md, and wait for a yes.
 
 Without `.github/workflows/chomik.yml`, the project uses chomik locally, as
@@ -76,7 +76,8 @@ the file to a new date and add a line below explaining why.
 ````
 
 Everything between the header and `## Prompt` is printed in CI for humans, so
-keep it short. The prompt must let any agent pick the reminder up cold. It asks the agent to:
+keep it short. The prompt must let any agent pick the reminder up cold. It asks
+the agent to:
 
 - explain the situation to the user first, then work with them, saying what it
   is doing and why;
@@ -98,5 +99,5 @@ keep it short. The prompt must let any agent pick the reminder up cold. It asks 
 
 ## Done
 
-List the paths written or changed, and remind the developer to commit them with
-their work. In local use, also give the command to check by hand.
+List the paths written or changed, remind the developer to commit them with
+their work, and mention that `npx chomik check` shows when the reminder is due.
