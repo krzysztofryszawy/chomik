@@ -71,6 +71,16 @@ Agent Skill for Node projects with Claude Code or GitHub Copilot. Research on
 4. Not now: `llms.txt`. Google ignores it and AI providers do not promise to read
    it; a clear README with examples matters more for one-page documentation.
 
+## Support
+
+1. Owner: set up a GitHub Sponsors profile: check that the owner's region is
+   supported, enable 2FA, choose "Get sponsored", add a bank account through
+   Stripe or a fiscal host, submit the tax form, create tiers and request
+   approval.
+2. Once the profile is live: add `.github/FUNDING.yml` (`github: krzysztofryszawy`),
+   `funding` in `package.json` and one discreet line in the README. No requests
+   for support in the tool's messages.
+
 ## Later
 
 - Deterministic conditions besides dates: a dependency version in the lockfile,

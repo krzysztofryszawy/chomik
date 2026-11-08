@@ -5,6 +5,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Support links only, once GitHub Sponsors is live.** A sponsor button, the
+  npm `funding` field and one discreet README line; the tool itself never asks
+  for support. Why: chomik's core stays free and open, and a link to a profile
+  that does not exist yet would lead nowhere.
 - **Without an agent there is a manual, craft mode.** The FAQ says how: follow
   `setup.md` and write reminders by hand in the format from `SKILL.md`. No extra
   tooling is built for it. Why: chomik stays usable without an agent, while the
