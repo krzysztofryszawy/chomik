@@ -345,6 +345,20 @@ test('check gives no hint when the skill was edited', () => {
   assert.doesNotMatch(run(root, ['check']).stdout, /To update/);
 });
 
+test('install and check refuse to run below the repository root', () => {
+  const root = project({ git: true });
+  const sub = join(root, 'packages', 'api');
+  mkdirSync(sub, { recursive: true });
+  writeFileSync(join(sub, 'package.json'), '{}');
+  for (const args of [['--yes'], ['check']]) {
+    const { code, stdout, stderr } = run(sub, args);
+    assert.equal(code, 1, args[0]);
+    assert.equal(stdout, '', args[0]);
+    assert.equal(stderr, `chomik: run this in the root of the repository, where GitHub reads workflows from:\n  cd ${root}\n`, args[0]);
+  }
+  assert.equal(existsSync(join(sub, '.claude')), false);
+});
+
 test('check refuses a check script that is a symbolic link', () => {
   const root = project();
   mkdirSync(join(root, '.chomik'));

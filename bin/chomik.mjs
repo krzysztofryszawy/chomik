@@ -68,6 +68,10 @@ try {
     console.log(HELP);
   } else if (has('--version')) {
     console.log(VERSION);
+  } else if (outsideRoot()) {
+    console.error('chomik: run this in the root of the repository, where GitHub reads workflows from:');
+    console.error(`  cd ${outsideRoot()}`);
+    process.exitCode = 1;
   } else if (command === 'check') {
     process.exitCode = check();
   } else {
@@ -76,6 +80,16 @@ try {
 } catch (error) {
   console.error(`chomik: ${error.message}`);
   process.exitCode = 1;
+}
+
+// In a subfolder or a package of a monorepo, chomik's files would land where GitHub
+// never reads them, so both commands run only in the repository root.
+function outsideRoot() {
+  const here = resolve('.');
+  for (let dir = here; ; dir = dirname(dir)) {
+    if (existsSync(join(dir, '.git'))) return dir === here ? '' : dir;
+    if (dirname(dir) === dir) return '';
+  }
 }
 
 // Runs the project's own copy, the same file CI runs, so both give the same answer.

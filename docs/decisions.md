@@ -5,6 +5,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **chomik runs only in the repository root.** Below it, `npx chomik` and
+  `npx chomik check` stop and name the root. Why: GitHub reads workflows only
+  from the root's `.github/`, so an install in a monorepo package would never
+  run in CI, and a check from a subfolder wrongly said chomik was missing.
 - **Nothing in `.chomik/` is skipped silently.** Apart from the check script,
   every file or folder there is a reminder or is reported with its reason, and
   fails the build on the main branch with exit code 2. Why: a tester found that

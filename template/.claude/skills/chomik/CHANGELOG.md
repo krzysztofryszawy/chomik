@@ -7,6 +7,9 @@ What changed in chomik, newest first. chomik follows
 
 ### Fixed
 
+- In a subfolder or a package of a monorepo, `npx chomik` and `npx chomik check`
+  stop and name the repository root, where GitHub reads workflows from, instead
+  of installing in the wrong place or saying chomik is not in the project.
 - No reminder is skipped silently any more. Every file or folder in `.chomik/`
   other than the check script is a reminder or is reported with its reason, for
   example `.MD` in capitals, `.md.bak`, a subfolder, a symbolic link or an empty
