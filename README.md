@@ -10,19 +10,21 @@ humans. Whoever takes it, even someone new to the project, knows what to do.
 
 ## Try it
 
-In the root of a Node project on GitHub:
+In the root of a Node project:
 
 ```
 npx chomik@latest
 ```
 
-Safe to try: `npx chomik` shows its plan and asks before writing anything, and
-the skill asks before every change. Nothing runs on its own, and removing chomik
+Then start a new session of your coding agent in the project (Claude Code or
+GitHub Copilot) and type `/chomik`. chomik's skill, instructions your agent
+reads, sets it up with you and then helps you write reminders.
+
+Safe to try: the installer shows its plan and asks before writing anything, and
+the agent asks before every change. Nothing runs on its own, and removing chomik
 is just deleting its files (see [Stop or remove](#stop-or-remove)).
 
-Then start a new session of your coding agent in the project (Claude Code or
-GitHub Copilot) and type `/chomik`. Feel free to share chomik with your team: commit
-`.claude/skills/chomik/`.
+Feel free to share chomik with your team: commit `.claude/skills/chomik/`.
 
 ## What it does
 
@@ -52,6 +54,18 @@ For dates you cannot afford to miss. Three typical cases:
 - **A temporary security workaround.** During an incident someone pins a package
   or switches off a check "for now". The reminder makes sure "for now" ends, and
   its prompt says what to verify before undoing it.
+
+### Do I need GitHub?
+
+For the full flow, yes: GitHub Actions checks every day and turns the build red.
+Without it, chomik works locally: reminders are written the same way and
+`npx chomik check` shows the ones that are due. Moving to GitHub later keeps
+your reminders.
+
+### Do I need a coding agent?
+
+To set chomik up and write reminders, yes: Claude Code or GitHub Copilot.
+Handling a reminder does not need one: each has a part for humans.
 
 ## Files that belong to chomik
 
