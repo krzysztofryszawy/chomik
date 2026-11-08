@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -35,8 +35,9 @@ function run(root, args) {
 const skillFile = (root) => join(root, SKILL_DIR, 'SKILL.md');
 const template = (file) => readFileSync(join(TEMPLATE, file));
 const SCRIPT = 'looking-for-messages-from-the-past.mjs';
+const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', SCRIPT, 'chomik-workflow.yml'];
 
-test('npx chomik --yes installs exactly the two skill files', () => {
+test('npx chomik --yes installs exactly the skill files', () => {
   const root = project();
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
@@ -264,6 +265,84 @@ test('check says when a newer chomik is out than the skill in the project', () =
   writeFileSync(join(root, '.chomik', SCRIPT), template(SCRIPT));
   const { stdout } = run(root, ['check']);
   assert.match(stdout, new RegExp(`\\n\\nchomik ${VERSION.replaceAll('.', '\\.')} is out; this project has ${tag.slice(1).replaceAll('.', '\\.')}\\. To update: npx chomik@latest\\n$`));
+});
+
+const releaseTags = (() => {
+  try {
+    return execFileSync('git', ['tag', '--list', 'v*'], { encoding: 'utf8' }).split('\n').filter(Boolean);
+  } catch {
+    return [];
+  }
+})();
+
+function withRelease(root, tag) {
+  mkdirSync(join(root, SKILL_DIR), { recursive: true });
+  for (const file of Object.keys(RELEASED[tag.slice(1)])) {
+    writeFileSync(join(root, SKILL_DIR, file), execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`]));
+  }
+  return root;
+}
+
+test('every older release is recognized and updated', () => {
+  for (const tag of releaseTags.filter((t) => t.slice(1) !== VERSION && RELEASED[t.slice(1)])) {
+    const root = withRelease(project(), tag);
+    const { code, stdout } = run(root, ['--yes']);
+    assert.equal(code, 0, tag);
+    assert.match(stdout, new RegExp(`Updating chomik in this project: ${tag.slice(1).replaceAll('.', '\\.')} -> `), tag);
+    for (const file of FILES) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)), `${tag} ${file}`);
+  }
+});
+
+test('skill files from different releases are treated as edited', () => {
+  const tags = releaseTags.filter((t) => RELEASED[t.slice(1)]?.['setup.md']).sort();
+  const [older, newest] = [tags[0], tags.at(-1)];
+  if (!older || older === newest) return;
+  const root = withRelease(project({ git: true }), newest);
+  writeFileSync(join(root, SKILL_DIR, 'setup.md'), execFileSync('git', ['show', `${older}:template/.claude/skills/chomik/setup.md`]));
+  gitIn(root, 'add', '-A');
+  gitIn(root, 'commit', '-qm', 'mixed');
+  const { stdout } = run(root, ['--dry-run']);
+  assert.match(stdout, /some of its files were edited here/);
+});
+
+test('a skill file deleted by hand is created again', () => {
+  const root = project();
+  run(root, ['--yes']);
+  rmSync(join(root, SKILL_DIR, 'README.md'));
+  const { code, stdout } = run(root, ['--yes']);
+  assert.equal(code, 0);
+  assert.match(stdout, /create\s+\.claude\/skills\/chomik\/README\.md/);
+  assert.doesNotMatch(stdout, /update|replace/);
+});
+
+test('an older chomik refuses to replace a newer skill unless forced', () => {
+  const root = project();
+  run(root, ['--yes']);
+  const changelog = join(root, SKILL_DIR, 'CHANGELOG.md');
+  writeFileSync(changelog, readFileSync(changelog, 'utf8').replace(/^## \[[^\]]+\]/m, '## [99.0.0]'));
+  const refused = run(root, ['--yes']);
+  assert.equal(refused.code, 1);
+  assert.equal(refused.stderr, `chomik: this project has chomik 99.0.0, newer than ${VERSION} that you ran.\nTo update, run: npx chomik@latest\nTo go back to an older version on purpose, add --force.\nNothing was changed.\n`);
+  assert.equal(run(root, ['--yes', '--force']).code, 0);
+});
+
+test('check says that copies without a version comment are older', () => {
+  const root = project();
+  setUp(root, template(SCRIPT).toString('utf8').replace(/^\/\/ 🐹 chomik [^:]+:/m, '// 🐹 chomik:'));
+  assert.match(run(root, ['check']).stdout, /copies here are still an older version\. To update them, type \/chomik/);
+});
+
+test('check gives no hint when the copies are newer than the skill', () => {
+  const root = project();
+  setUp(root, template(SCRIPT).toString('utf8').replace(`chomik ${VERSION}:`, 'chomik 99.0.0:'));
+  assert.doesNotMatch(run(root, ['check']).stdout, /To update/);
+});
+
+test('check gives no hint when the skill was edited', () => {
+  const root = project();
+  setUp(root);
+  writeFileSync(join(root, SKILL_DIR, 'SKILL.md'), 'edited');
+  assert.doesNotMatch(run(root, ['check']).stdout, /To update/);
 });
 
 test('check refuses a check script that is a symbolic link', () => {

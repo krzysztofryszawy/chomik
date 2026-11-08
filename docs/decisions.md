@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **An older installer never silently downgrades a newer skill.** The installer
+  reads the skill's version from the top entry of the installed `CHANGELOG.md`
+  and stops when it is newer than itself; `--force` allows a deliberate
+  downgrade. Why: npx may run a cached older chomik, which cannot know the hashes
+  of newer files and would treat them as edited. Installers up to 0.1.6 do not
+  have this check.
 - **`npx chomik check` names one version mismatch at most.** After the check, it
   says when a newer chomik is out than the skill in the project, or else when the
   copies setup made are older than the skill. Versions come from the package,

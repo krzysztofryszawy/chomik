@@ -23,11 +23,11 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | First install | Plan, confirm, six files | ✅ automated |
 | Same version again | "already here and up to date" | ✅ automated |
 | Update from the newest older release, unedited | `old -> new`, changelog prompt | ✅ automated |
-| Update from every older release, not only the newest | Same as above for each `v*` tag | ⚠️ only the newest tag |
+| Update from every older release, not only the newest | Same as above for each `v*` tag | ✅ automated |
 | Edited skill files, committed / not committed / no git | Replace with a note / refuse / refuse | ✅ automated |
-| Skill files from different versions mixed | Treated as edited, never as one version | ❌ |
-| A skill file deleted by hand | Recreated, others updated | ❌ |
-| Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest` | ❌ checked by hand on 2026-11-08: 0.1.6 sees 0.1.7 files as edited and plans to replace all six |
+| Skill files from different versions mixed | Treated as edited, never as one version | ✅ automated |
+| A skill file deleted by hand | Recreated, nothing else touched | ✅ automated |
+| Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated from 0.1.7; installers up to 0.1.6 replace the newer files |
 | Older chomik without a command that exists now (`check` in 0.1.5) | "unknown argument" | ⚠️ by hand only |
 
 ## Check: package, skill and copies
@@ -36,11 +36,11 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 |---|---|---|
 | Skill and copies match | No extra line | ✅ automated |
 | Copies older than the skill | "copies here are still X; type /chomik" | ✅ automated |
-| Copies without a version comment (before 0.1.6) | "still an older version" | ❌ |
-| Copies newer than the skill (a teammate updated) | No hint, no downgrade | ❌ |
+| Copies without a version comment (before 0.1.6) | "still an older version" | ✅ automated |
+| Copies newer than the skill (a teammate updated) | No hint, no downgrade | ✅ automated |
 | Package newer than the skill | "X is out; this project has Y" | ✅ automated |
-| Package older than the skill (stale npx cache) | No hint | ❌ |
-| Skill edited, so its version is unknown | No hint | ❌ |
+| Package older than the skill (stale npx cache) | No hint | ✅ automated, as an unknown skill |
+| Skill edited, so its version is unknown | No hint | ✅ automated |
 
 ## Check script: reminders
 
@@ -48,8 +48,8 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 |---|---|---|
 | Reminder from a newer format | Fails in CI (exit 2), asks to update | ✅ automated |
 | Unknown condition | Reported, passes locally | ✅ automated |
-| Header without its closing `---` | Read as format 1 without a header, text printed | ❌ |
-| Due, invalid and newer reminders together | All reported, exit 2 in CI | ⚠️ separately only |
+| Header without its closing `---` | Read as format 1 without a header, text printed | ✅ automated |
+| Due, invalid and newer reminders together | All reported, exit 2 in CI | ✅ automated |
 
 ## Skill: agent runs
 
@@ -67,11 +67,5 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 
 ## Next steps
 
-1. Fix the downgrade by a stale npx cache, then add its test. An older installer
-   cannot know the hashes of newer files, so the skill files need their version
-   in readable form, for example from the top entry of `CHANGELOG.md`; only
-   installers from the fix onward will read it.
-2. Add the missing automated tests above; one helper builds a project with the
-   skill files of any release tag.
-3. A script that prepares each agent-run scenario in a temporary repository, so
+1. A script that prepares each agent-run scenario in a temporary repository, so
    a run takes one command plus `/chomik`.

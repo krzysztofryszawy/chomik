@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Fixed
 
+- An older chomik, for example one cached by npx, no longer replaces a newer
+  skill: it stops and suggests `npx chomik@latest`, unless you add `--force`.
 - `/chomik` proposes replacing the copied check script and workflow only when
   they are older than the skill, not when they are newer.
 

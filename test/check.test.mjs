@@ -86,6 +86,23 @@ test('an unknown condition is reported locally but passes', () => {
   assert.match(out, /Not failing outside CI\./);
 });
 
+test('a header without its closing line is read as text in format 1', () => {
+  const broken = `---\nchomik: 2\n\n${reminder}`;
+  const { code, out } = check(project({ [`${isoDay(0)}-qs.md`]: broken }), { ci: true });
+  assert.equal(code, 1);
+  assert.doesNotMatch(out, /needs a newer chomik/);
+  assert.match(out, /qs pinned at 6\.13\.0/);
+});
+
+test('due, invalid and newer reminders together are all reported, exit code 2', () => {
+  const newer = `---\nchomik: 2\n---\n\n${reminder}`;
+  const { code, out } = check(project({ [`${isoDay(0)}-due.md`]: reminder, 'notes.md': '', [`${isoDay(5)}-newer.md`]: newer }), { ci: true });
+  assert.equal(code, 2);
+  assert.match(out, /chomik sent a message from the past: \.chomik\/.*-due\.md/);
+  assert.match(out, /invalid reminder file[\s\S]*\.chomik\/notes\.md/);
+  assert.match(out, /needs a newer chomik[\s\S]*-newer\.md/);
+});
+
 test('the YAML header is not printed', () => {
   const withHeader = `---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: withHeader }));

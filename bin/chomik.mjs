@@ -42,7 +42,7 @@ Commands:
 Options:
   --yes          Do not ask; required when not running in a terminal
   --dry-run      Show the plan and change nothing
-  --force        Also overwrite files with changes that are not committed
+  --force        Also overwrite edits that are not committed, or a newer chomik
   -h, --help     Show help
   --version      Show version
 
@@ -130,6 +130,15 @@ async function installOrUpdate({ yes, dryRun, force }) {
       console.error(`chomik: ${path} is a symbolic link; refusing to write through it.`);
       return 1;
     }
+  }
+
+  const newerHere = changelogVersion();
+  if (newerHere && newer(newerHere, VERSION) && !force) {
+    console.error(`chomik: this project has chomik ${newerHere}, newer than ${VERSION} that you ran.`);
+    console.error('To update, run: npx chomik@latest');
+    console.error('To go back to an older version on purpose, add --force.');
+    console.error('Nothing was changed.');
+    return 1;
   }
 
   const installed = installedVersion();
@@ -239,6 +248,15 @@ function onGitHub() {
   if (!existsSync(join('.git', 'config'))) return false;
   const origin = /\[remote "origin"\]([^[]*)/.exec(readFileSync(join('.git', 'config'), 'utf8'));
   return Boolean(origin && /^\s*url\s*=.*github\.com[:/]/m.test(origin[1]));
+}
+
+// The top entry of the installed changelog names the skill's version in readable
+// form, so a newer skill is recognized even by an installer that cannot know its hashes.
+function changelogVersion() {
+  const file = join(TARGET, 'CHANGELOG.md');
+  if (!existsSync(file)) return '';
+  const top = /^## \[(\d+\.\d+\.\d+)\]/m.exec(readFileSync(file, 'utf8'));
+  return top ? top[1] : '';
 }
 
 function releasedVersionOf(file, hash) {
