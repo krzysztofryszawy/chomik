@@ -198,7 +198,8 @@ endpoints, models, hardware and limits; Jev's version, status and price; the
 chomik repository has no issues.
 
 Not confirmed on that check, so not stated above: basal's figures of 9 to 45 ms
-per decision and 58.6% auto-acceptance at 1.2% errors; Jev's endpoint
+per decision and 58.6% auto-acceptance at 1.2% errors, and its sensitivity to
+option order with three or more options; Jev's endpoint
 (`/v1/decide` in the original analysis) and whether jevai.net is an independent
 community site. Not read: basal's technical report and Jev's full API
 documentation.

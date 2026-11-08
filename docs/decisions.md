@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Plans beyond today's chomik live in `docs/future/`, one file per scope.**
+  `platform-independence.md` is the long-term plan for chomik for people;
+  `chomik-for-robots.md` is a separate direction for agents, with a working name
+  and nothing decided. Why: chomik for people is the core and its flow must not be
+  disturbed, and the two plans have different scopes and must not blur together.
 - **The check, not the agent, names a reminder's file in its prompt.** It prints
   the current path as the first line of the prompt, and the skill leaves its own
   file name out. Why: renaming the file is the documented way to move a date, so

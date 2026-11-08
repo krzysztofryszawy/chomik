@@ -8,6 +8,7 @@ created with an agent and checked deterministically in CI.
 - Security checklist, checked before every release: `docs/security-checklist.md`
 - Development plans: `docs/roadmap.md`
 - Version mismatch scenarios and how they are tested: `docs/mismatch-scenarios.md`
+- Future plans, not built and not part of chomik's current behavior: `docs/future/`
 - `main` stays clean because this history becomes public. Prototypes and work in
   progress go on feature branches, which are deleted afterwards. Changes reach
   `main` through squash merge, one meaningful commit per change.

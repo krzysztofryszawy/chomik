@@ -81,6 +81,12 @@ Agent Skill for Node projects with Claude Code or GitHub Copilot. Research on
    `funding` in `package.json` and one discreet line in the README. No requests
    for support in the tool's messages.
 
+## Future plans
+
+Beyond the steps above, and not built: see [future/](future/README.md). Platform
+independence is the long-term plan for chomik; `chomik-for-robots` is a separate
+direction for agents.
+
 ## Later
 
 - Deterministic conditions besides dates: a dependency version in the lockfile,
