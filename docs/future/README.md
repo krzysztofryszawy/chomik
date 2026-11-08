@@ -9,10 +9,25 @@ deterministically in CI, with a person confirming every step. Its flow and its
 promises (no dependencies, no network, no hooks, no automatic actions) stay as
 they are unless a decision in [decisions.md](../decisions.md) says otherwise.
 
+## The guiding idea
+
+chomik is a mechanism: a message to the future with a condition, context and an
+addressee. Reminders for developers are the first use its author could imagine,
+and may well not turn out to be the most important one, especially in an agent
+loop. Once chomik for people is stable, this is the most important direction of
+development, because it opens possibilities nobody has discovered yet.
+
+An agent can steer its own future and its next steps. The simplest example: it
+batches work for the hours when tokens are cheaper. More complex mechanisms follow
+from the same idea.
+
+## Plans
+
 | Plan | Concerns | Status |
 |---|---|---|
 | [platform-independence.md](platform-independence.md) | People and agents alike: using chomik wherever they need it, across languages, CI systems, agents and distribution channels | Plan, starts after a stable chomik for people |
 | [chomik-for-robots.md](chomik-for-robots.md) | A separate product for agents in multi-agent sessions (working name) | Direction to explore, nothing decided |
+| [agent-exploration.md](agent-exploration.md) | An experiment: do agents discover uses of chomik on their own | Method described, not run |
 
 ## How the two plans relate
 

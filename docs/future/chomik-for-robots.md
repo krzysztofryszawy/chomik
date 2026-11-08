@@ -7,6 +7,10 @@ page and jevai.net, and checked against chomik 0.1.9 where noted.
 Every claim about benefits below is a hypothesis. Costs and quality were not
 measured on real session logs.
 
+The guiding idea is in [README.md](README.md): the use imagined first may not be
+the most important one, and an agent can steer its own future. The experiment in
+[agent-exploration.md](agent-exploration.md) tests how agents use that.
+
 ## Summary
 
 Chomik can grow into a general primitive: a deferred intention with a trigger, an
@@ -14,6 +18,16 @@ evaluator, a payload that allows a cold start, and an addressee with clearly
 defined permissions. A date is only the first possible trigger. For multi-agent
 sessions the value lies in three things agents lack today: memory over time,
 cheap and fast decisions, and controlled autonomy with oversight on demand.
+
+## How it works
+
+A scheduled workflow (cron) already runs the check. The result of that run need not
+be a red build: it can start an action. Because an LLM is allowed, the action need
+not be defined in advance. A trigger need not be a date either; it can be, for
+example, the hours when tokens are cheaper, so an agent can batch its work for them.
+
+This is the mechanism only. Who may do what is a separate topic, in "Autonomy as a
+dial" below.
 
 ## Why it is separate from chomik
 

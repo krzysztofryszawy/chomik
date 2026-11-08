@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **chomik is a mechanism, and its first use may not be its most important one.**
+  It is a message to the future with a condition, context and an addressee. Once
+  chomik for people is stable, the most important direction is agents steering
+  their own future, explored by experiment (`docs/future/agent-exploration.md`).
+  Why: the possibilities in an agent loop are not yet known, so they should be
+  discovered rather than designed in advance.
 - **Plans beyond today's chomik live in `docs/future/`, one file per scope.**
   `platform-independence.md` is the long-term plan for people and agents alike,
   starting after a stable chomik for people, even one for Node only;
