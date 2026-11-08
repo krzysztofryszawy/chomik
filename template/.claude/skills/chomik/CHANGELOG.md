@@ -7,6 +7,7 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The FAQ explains the manual, craft mode for working without a coding agent.
 - The hint after an unknown argument points to `npx chomik@latest --help`, the
   same command as in the help and the README.
 - The prompt for your coding agent after the first install, and from

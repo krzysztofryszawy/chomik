@@ -5,6 +5,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Without an agent there is a manual, craft mode.** The FAQ says how: follow
+  `setup.md` and write reminders by hand in the format from `SKILL.md`. No extra
+  tooling is built for it. Why: chomik stays usable without an agent, while the
+  product stays built for coding agents.
 - **No knowledge of 0.1.x in code or instructions.** Until the 0.2.0 beta only
   the owner and testers use chomik, and all 0.1.x versions are unpublished after
   it, so there are no migrations: a reminder must start with its header (no

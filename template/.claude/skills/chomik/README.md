@@ -42,8 +42,12 @@ your reminders.
 
 ### Do I need a coding agent?
 
-To set chomik up and write reminders, yes: Claude Code or GitHub Copilot.
-Handling a reminder does not need one: each has a part for humans.
+Not strictly, but chomik is built for one: Claude Code or GitHub Copilot sets up
+CI and writes reminders with you. Without an agent there is a manual, craft mode:
+after installing, set up `.github/workflows/chomik.yml` by following
+`.claude/skills/chomik/setup.md`, and write each reminder by hand in the format
+shown in `SKILL.md` next to it. Handling a reminder never needs an agent: each
+has a part for humans.
 
 ## Use it locally
 
