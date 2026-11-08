@@ -5,6 +5,13 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.9] - unreleased
 
+### Changed
+
+- The prompt for your coding agent after the first install, and from
+  `npx chomik check` in a project without chomik, asks what is worth never
+  forgetting and says chomik will help set up the first reminder, instead of
+  asking the agent to judge whether chomik helps this project.
+
 ## [0.1.8] - 2026-11-08
 
 ### Changed

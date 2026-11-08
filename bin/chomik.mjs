@@ -22,7 +22,7 @@ const OWN_FILES = [
   { key: SCRIPT, source: join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT), target: CHECK_SCRIPT, note: ' (the check CI runs)' },
 ];
 
-const explainFrom = (where) => `Read ${where} and explain with its examples what chomik does and how it could help in this project. Do not change anything.`;
+const explainFrom = (where) => `Read ${where} and explain with its examples what chomik does. Then point out what in this project is worth never forgetting, or what kind of thing usually is, and say that chomik will help me set up my first reminder. Do not change anything.`;
 // The same two lines open the README; a test keeps them equal.
 const PITCH = `Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.`;

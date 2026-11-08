@@ -45,7 +45,7 @@ test('npx chomik --yes installs exactly the skill files and the check script', (
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /create\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(the check CI runs\)/);
-  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read \.claude\/skills\/chomik\/README\.md and explain with its examples .*Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
+  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read \.claude\/skills\/chomik\/README\.md and explain with its examples what chomik does\. Then point out what in this project is worth never forgetting, .* and say that chomik will help me set up my first reminder\. Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
   assert.doesNotMatch(stdout, /Feel free to share chomik/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), [...FILES].sort());
   for (const file of FILES) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));

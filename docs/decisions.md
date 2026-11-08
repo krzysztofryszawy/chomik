@@ -71,9 +71,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 - **First contact comes with a prompt for the agent.** After the first install,
   and from `npx chomik check` in a project without chomik, chomik prints one
   ready prompt: read the repository and explain with its examples what chomik
-  does and how it could help here, changing nothing. `--help` gives one example.
-  Why: one good example says more than a description, and the agent can relate
-  the examples to the developer's project.
+  does, point out what here is worth never forgetting, and say chomik will help
+  set up the first reminder, changing nothing. `--help` gives one example. Why:
+  one good example says more than a description, and asking the agent to judge
+  whether chomik helps made it talk people out of installing in a young project.
 - **`npx chomik check` runs the check by hand, on trial until 0.2.0.** It runs
   the project's own copy of the check script, the file CI runs, so both give
   the same answer; it refuses a symbolic link. Before 0.2.0 it is decided whether
