@@ -211,6 +211,10 @@ test('released-files.json matches the files of every release tag in this reposit
 });
 
 
+test('the files copied into a project name the current chomik version', () => {
+  for (const file of [SCRIPT, 'chomik-workflow.yml']) assert.match(template(file).toString('utf8').split('\n').slice(0, 2).join('\n'), new RegExp(`🐹 chomik ${VERSION.replaceAll('.', '\\.')}[ :]`));
+});
+
 test('the workflow templates pin every action to a full commit SHA', () => {
   for (const file of ['chomik-workflow.yml']) {
     const uses = readFileSync(join(TEMPLATE, file), 'utf8').match(/uses:\s*\S+/g) ?? [];

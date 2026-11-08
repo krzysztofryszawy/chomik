@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **The files copied into a project name the chomik version.** The first comment
+  of the check script and of `chomik.yml` says, for example, `chomik 0.1.6`; a
+  test keeps it equal to `package.json`. Why: these copies stay in other
+  repositories for years, and the version is the first thing needed to help.
+
 - **A reminder the check script does not understand fails the build.** An
   unknown format version or condition, before or on its date, is reported with
   `npx chomik@latest` as the fix, and fails like an invalid file (exit code 2)

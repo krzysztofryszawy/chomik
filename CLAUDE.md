@@ -16,7 +16,8 @@ created with an agent and checked deterministically in CI.
   Squash commit and pull request titles follow Conventional Commits (`feat: …`, `fix: …`, `docs: …`,
   `test: …`, `chore: …`) with the same type as the branch. The squash merge uses
   that title, so `main` reads as a changelog.
-- Releases: bump `version` in `package.json`, push a tag `v<version>`. The publish
+- Releases: bump `version` in `package.json` (and in the first comment of the copied
+  check script and `chomik-workflow.yml`; a test checks), push a tag `v<version>`. The publish
   workflow runs `npm stage publish`; the owner approves the version on npmjs.com
   with 2FA. Nothing is published from a local machine. Right after a release, add its
   skill file hashes to `bin/released-files.json` (a test checks every `v*` tag)

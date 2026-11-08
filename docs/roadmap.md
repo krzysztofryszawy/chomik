@@ -40,7 +40,7 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 2. An old check script that meets a reminder it does not understand fails loudly
    in CI and says to update chomik; it never skips a reminder silently. Done.
 3. The chomik version in a comment in the copied check script and in
-   `chomik.yml`, so a project shows which version wrote them.
+   `chomik.yml`, so a project shows which version wrote them. Done.
 4. An unknown `npx chomik` command fails and suggests
    `npx chomik@latest <command>`.
 
