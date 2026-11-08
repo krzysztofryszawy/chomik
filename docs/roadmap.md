@@ -58,5 +58,5 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 - Stacks other than Node, CI systems other than GitHub Actions.
 - A decision model such as `rkinas/basal`, then a full LLM query in CI.
 - Other delivery channels, if testing shows they work better than the skill in a
-  conversation with an agent: a deterministic `chomik` CLI (for example `add`,
-  `extend`, `list`, `check`) or an MCP server. Open options, not plans.
+  conversation with an agent: more `chomik` commands (for example `add`,
+  `extend`, `list`) or an MCP server. Open options, not plans.

@@ -95,7 +95,7 @@ function run() {
   }
 
   console.log('');
-  console.log('Run locally: node .chomik/looking-for-messages-from-the-past.mjs');
+  console.log('Run locally: npx chomik check');
   if (!enforce) {
     if (!inActions) console.log('Not failing outside CI.');
     else if (!branch) console.log('Not failing: no branch given with --branch.');

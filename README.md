@@ -31,7 +31,7 @@ GitHub Copilot) and type `/chomik`. Feel free to share chomik with your team: co
 - `.chomik/looking-for-messages-from-the-past.mjs` runs in CI through
   `.github/workflows/chomik.yml`. From a reminder's date it prints the prompt and
   the part for humans, and the run on the main branch turns red. Locally and in
-  pull requests it only prints.
+  pull requests it only prints; `npx chomik check` runs it by hand.
 - To handle a reminder, resolve the problem and delete its file, or rename the
   file to a new date and add a line explaining why. No agent is required.
 

@@ -36,8 +36,8 @@ of steps 2 and 3.
      waits until the reminder is handled.
    - Without a daily build: keep that block in `chomik.yml` and remove only its
      two marker comments, so it runs every night and on push by itself.
-4. Finish like a short tutorial for someone new to chomik: invite them to run
-   `node .chomik/looking-for-messages-from-the-past.mjs` now, say it finds
+4. Skip how the files were checked and finish like a short tutorial for someone
+   new to chomik: invite them to run `npx chomik check` now, say it finds
    nothing yet, and what it will show once a reminder is due. Then list the
    files to commit, and say that next time `/chomik` with a short description
    is all it takes.

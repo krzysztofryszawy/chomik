@@ -5,6 +5,13 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **`npx chomik check` runs the check by hand, on trial until 0.2.0.** It runs
+  the project's own copy of the check script, the file CI runs, so both give
+  the same answer; it refuses a symbolic link. Before 0.2.0 it is decided whether
+  it stays; after that it stays, or remains as a stub that says what to use.
+  Why: `node .chomik/looking-for-messages-from-the-past.mjs` is too long to type
+  again and again, and nothing may require setup from the user.
+
 - **The beta stays 0.2.0, not 1.0.0.** Why: chomik is not yet ready for a stable
   promise; 1.0.0 comes when it is.
 

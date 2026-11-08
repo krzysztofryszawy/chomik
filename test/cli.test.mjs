@@ -180,6 +180,39 @@ test('--help and -h print help and write nothing', () => {
   }
 });
 
+test('check runs the project\'s check script and passes outside CI', () => {
+  const root = project();
+  mkdirSync(join(root, '.chomik'));
+  writeFileSync(join(root, '.chomik', SCRIPT), template(SCRIPT));
+  const { code, stdout } = run(root, ['check']);
+  assert.equal(code, 0);
+  assert.match(stdout, /^chomik: no reminders in \.chomik\/ yet\./);
+});
+
+test('check without chomik set up fails and says how to set it up', () => {
+  const { code, stdout, stderr } = run(project(), ['check']);
+  assert.equal(code, 1);
+  assert.equal(stdout, '');
+  assert.match(stderr, /not set up in this project yet\. To set it up, type \/chomik/);
+});
+
+test('check refuses a check script that is a symbolic link', () => {
+  const root = project();
+  mkdirSync(join(root, '.chomik'));
+  writeFileSync(join(root, 'elsewhere.mjs'), 'console.log("ran")');
+  symlinkSync(join(root, 'elsewhere.mjs'), join(root, '.chomik', SCRIPT));
+  const { code, stdout } = run(root, ['check']);
+  assert.equal(code, 1);
+  assert.equal(stdout, '');
+});
+
+test('check --help prints help and an unknown check option fails', () => {
+  assert.match(run(project(), ['check', '--help']).stdout, /npx chomik check/);
+  const { code, stderr } = run(project(), ['check', '--yes']);
+  assert.equal(code, 1);
+  assert.match(stderr, /unknown argument "--yes"/);
+});
+
 test('--version prints the package version', () => {
   const { code, stdout } = run(project(), ['--version']);
   assert.equal(code, 0);

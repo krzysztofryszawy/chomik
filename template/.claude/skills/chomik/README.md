@@ -21,8 +21,7 @@ The full flow needs GitHub Actions. To try chomik without it, the project needs
 only `.chomik/looking-for-messages-from-the-past.mjs`; ask `/chomik` to set it up
 locally. Reminders are written the same way.
 
-- Check by hand in the project root:
-  `node .chomik/looking-for-messages-from-the-past.mjs`. It prints the reminders
+- Check by hand in the project root: `npx chomik check`. It prints the reminders
   that are due, or when the next one is due, and never fails locally.
 - Nothing runs on its own and nobody else is reminded. By design there are no
   git hooks, npm scripts or scheduled jobs.

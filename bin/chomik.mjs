@@ -3,7 +3,7 @@ import { existsSync, lstatSync, mkdirSync, readFileSync, writeFileSync } from 'n
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createInterface } from 'node:readline/promises';
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,11 +16,16 @@ const TARGET = TARGET_DIRS.at(-1);
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
 const HELP = `Usage: npx chomik@latest [options]
+       npx chomik check
 
 Installs chomik in this project, or updates it: run the same command again.
 Writes only .claude/skills/chomik/. Shows the plan and asks before writing, and
 never overwrites edits that are not committed to git, unless you use --force.
 Then type /chomik in Claude Code or GitHub Copilot.
+
+Commands:
+  check          Show reminders that are due, the same check CI runs; never fails
+                 outside CI
 
 Options:
   --yes          Do not ask; required when not running in a terminal
@@ -32,8 +37,12 @@ Options:
 About chomik, including how to stop or remove it: .claude/skills/chomik/README.md`;
 
 const args = process.argv.slice(2);
-const has = (flag) => args.includes(flag);
-const unknown = args.find((a) => !['--yes', '--dry-run', '--force', '--help', '-h', '--version'].includes(a));
+const command = args[0] === 'check' ? 'check' : null;
+const options = command ? args.slice(1) : args;
+const has = (flag) => options.includes(flag);
+const allowed = command ? ['--help', '-h'] : ['--yes', '--dry-run', '--force', '--help', '-h', '--version'];
+const unknown = options.find((a) => !allowed.includes(a));
+const CHECK_SCRIPT = join('.chomik', 'looking-for-messages-from-the-past.mjs');
 
 try {
   if (unknown) {
@@ -45,12 +54,27 @@ try {
     console.log(HELP);
   } else if (has('--version')) {
     console.log(VERSION);
+  } else if (command === 'check') {
+    process.exitCode = check();
   } else {
     process.exitCode = await installOrUpdate({ yes: has('--yes'), dryRun: has('--dry-run'), force: has('--force') });
   }
 } catch (error) {
   console.error(`chomik: ${error.message}`);
   process.exitCode = 1;
+}
+
+// Runs the project's own copy, the same file CI runs, so both give the same answer.
+function check() {
+  if (!existsSync(CHECK_SCRIPT)) {
+    console.error('chomik: not set up in this project yet. To set it up, type /chomik in your coding agent.');
+    return 1;
+  }
+  if (lstatSync(CHECK_SCRIPT).isSymbolicLink() || lstatSync('.chomik').isSymbolicLink()) {
+    console.error(`chomik: ${CHECK_SCRIPT} is a symbolic link; not running it.`);
+    return 1;
+  }
+  return spawnSync(process.execPath, [CHECK_SCRIPT], { stdio: 'inherit' }).status ?? 1;
 }
 
 async function installOrUpdate({ yes, dryRun, force }) {

@@ -21,7 +21,7 @@ release. Recorded on 2026-11-05.
 
 - [ ] No install scripts (`preinstall`, `install`, `postinstall`, `prepare`).
 - [ ] No runtime dependencies.
-- [ ] No network access; the command only copies files bundled in the package.
+- [ ] No network access; the installer only copies files bundled in the package.
 - [ ] Few published files, short and readable code, no obfuscation.
 - [ ] Old versions 0.0.1 and 0.0.2 (a demo with a network request and a file
       write) are unpublished after the first real release.
@@ -33,6 +33,9 @@ release. Recorded on 2026-11-05.
 - [ ] Touches only chomik's own files; never overwrites other existing files.
 - [ ] Shows the plan, listing every file it creates or updates, and asks for
       confirmation before writing anything.
+- [ ] `npx chomik check` only runs the project's own
+      `.chomik/looking-for-messages-from-the-past.mjs`, the file CI runs, and
+      refuses it when it is a symbolic link.
 
 ## Publishing
 
