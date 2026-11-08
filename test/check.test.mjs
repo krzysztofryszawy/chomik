@@ -70,6 +70,22 @@ test('the prompt comes first, then the human part, each between clear markers', 
   assert.ok(lines.slice(human, humanEnd).includes('qs pinned at 6.13.0 because of a regression in 6.14.'));
 });
 
+test('a reminder from a newer format fails in CI and asks to update, even before its date', () => {
+  const newer = `---\nchomik: 2\ncondition: date\n---\n\n${reminder}`;
+  const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: newer }), { ci: true });
+  assert.equal(code, 2);
+  assert.match(out, /::error title=chomik::chomik found a reminder that needs a newer chomik/);
+  assert.match(out, /needs a newer chomik\. Update: npx chomik@latest\n {2}\.chomik\/.*-qs\.md/);
+});
+
+test('an unknown condition is reported locally but passes', () => {
+  const unknown = `---\nchomik: 1\ncondition: dependency\n---\n\n${reminder}`;
+  const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: unknown }));
+  assert.equal(code, 0);
+  assert.match(out, /needs a newer chomik/);
+  assert.match(out, /Not failing outside CI\./);
+});
+
 test('the YAML header is not printed', () => {
   const withHeader = `---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: withHeader }));

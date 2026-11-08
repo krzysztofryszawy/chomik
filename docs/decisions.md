@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **A reminder the check script does not understand fails the build.** An
+  unknown format version or condition, before or on its date, is reported with
+  `npx chomik@latest` as the fix, and fails like an invalid file (exit code 2)
+  on the main branch. Why: an old copy of the script lives on in a repository;
+  skipping what it does not understand could hide a reminder for good.
+
 - **Reminders start with a YAML header: `chomik: 1` and `condition: date`.** The
   check script reads only flat `key: value` lines and never prints the header. A
   reminder without a header is format 1. Why: a standard header that agents write

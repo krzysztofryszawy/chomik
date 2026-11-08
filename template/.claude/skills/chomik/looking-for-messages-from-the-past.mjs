@@ -35,12 +35,15 @@ function run() {
   const due = [];
   const waiting = [];
   const invalid = [];
+  const newer = [];
 
   // Symbolic links and folders are skipped on purpose, so the check never reads outside .chomik.
   for (const entry of entries.filter((e) => e.isFile() && e.name.endsWith('.md')).sort(byName)) {
     const match = REMINDER_NAME.exec(entry.name);
     if (!match || !isRealDate(match[1], match[2], match[3])) {
       invalid.push(entry.name);
+    } else if (!understood(parse(readFileSync(join(DIR, entry.name), 'utf8')).header)) {
+      newer.push(entry.name);
     } else if (entry.name.slice(0, 10) <= today) {
       due.push(entry.name);
     } else {
@@ -48,11 +51,12 @@ function run() {
     }
   }
 
-  if (due.length === 0 && invalid.length === 0) return nothingDue(waiting);
+  if (due.length === 0 && invalid.length === 0 && newer.length === 0) return nothingDue(waiting);
 
   if (inActions) {
     if (due.length) console.log('::error title=chomik::chomik sent a message from the past');
     if (invalid.length) console.log('::error title=chomik::chomik found an invalid reminder file');
+    if (newer.length) console.log('::error title=chomik::chomik found a reminder that needs a newer chomik');
   }
 
   // Reminder text is untrusted, so GitHub workflow commands are switched off while it is printed.
@@ -84,6 +88,12 @@ function run() {
     for (const name of invalid) console.log(`  ${join(DIR, name)}`);
   }
 
+  if (newer.length) {
+    console.log('');
+    console.log('chomik found a reminder that needs a newer chomik. Update: npx chomik@latest');
+    for (const name of newer) console.log(`  ${join(DIR, name)}`);
+  }
+
   console.log('');
   console.log('Run locally: node .chomik/looking-for-messages-from-the-past.mjs');
   if (!enforce) {
@@ -95,7 +105,12 @@ function run() {
   if (token) console.log(`::${token}::`);
 
   if (!enforce) return 0;
-  return invalid.length ? 2 : 1;
+  return invalid.length || newer.length ? 2 : 1;
+}
+
+// Unknown formats and conditions come from a newer chomik; skipping them could hide a reminder.
+function understood(header) {
+  return (header.chomik ?? '1') === '1' && (header.condition ?? 'date') === 'date';
 }
 
 function nothingDue(waiting) {
