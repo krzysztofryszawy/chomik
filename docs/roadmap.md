@@ -42,7 +42,7 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 3. The chomik version in a comment in the copied check script and in
    `chomik.yml`, so a project shows which version wrote them. Done.
 4. An unknown `npx chomik` command fails and suggests
-   `npx chomik@latest <command>`.
+   `npx chomik@latest <command>`. Done.
 
 Open question: whether the beta should be 1.0.0 instead of 0.2.0.
 

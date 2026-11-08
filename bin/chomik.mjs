@@ -37,7 +37,8 @@ const unknown = args.find((a) => !['--yes', '--dry-run', '--force', '--help', '-
 
 try {
   if (unknown) {
-    console.error(`chomik: unknown argument "${unknown}"\n`);
+    console.error(`chomik: unknown argument "${unknown}" in chomik ${VERSION}.`);
+    console.error(`If it comes from a newer chomik, try: npx chomik@latest ${args.join(' ')}\n`);
     console.error(HELP);
     process.exitCode = 1;
   } else if (has('--help') || has('-h')) {

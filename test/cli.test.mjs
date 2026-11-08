@@ -189,7 +189,7 @@ test('--version prints the package version', () => {
 test('an unknown argument such as the old "init" fails on stderr', () => {
   const { code, stdout, stderr } = run(project(), ['init']);
   assert.equal(code, 1);
-  assert.match(stderr, /unknown argument "init"/);
+  assert.match(stderr, new RegExp(`unknown argument "init" in chomik ${VERSION.replaceAll('.', '\\.')}\\.\nIf it comes from a newer chomik, try: npx chomik@latest init\n`));
   assert.equal(stdout, '');
 });
 

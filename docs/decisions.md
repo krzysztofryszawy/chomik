@@ -5,6 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **An unknown `npx chomik` argument suggests the latest version.** It still fails
+  on stderr with exit code 1, and now names the installed version and suggests
+  `npx chomik@latest` with the same arguments. Why: an older chomik cached by npx
+  cannot know commands added later, so the most it can do is point to them.
+
 - **The files copied into a project name the chomik version.** The first comment
   of the check script and of `chomik.yml` says, for example, `chomik 0.1.6`; a
   test keeps it equal to `package.json`. Why: these copies stay in other
