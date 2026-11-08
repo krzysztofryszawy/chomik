@@ -1,14 +1,15 @@
 # Setting up chomik in a project
 
-Follow these steps exactly; CI configuration breaks easily.
+Follow these steps exactly; CI configuration breaks easily. If the developer
+prefers to go without CI for now, follow "Use it locally" in README.md instead.
 
 1. This is usually the developer's first contact with chomik, so open with one
    sentence on what it is for, then say you are checking how CI runs, read-only.
-   Read the files
-   in `.github/workflows/`, the default branch from
+   Read the files in `.github/workflows/`, the default branch from
    `.git/refs/remotes/origin/HEAD` (`ref: refs/remotes/origin/<branch>`), and
    whether the `origin` remote in `.git/config` is on github.com. If it is not,
-   say chomik needs GitHub Actions for now, and stop.
+   say briefly that the full flow needs a GitHub repository with Actions, and
+   ask whether they want to set that up first or go without CI for now.
 2. Look for the daily build: a workflow with a `schedule` trigger. Scheduled
    workflows run only on the default branch, so that is the branch to use.
 3. Propose the setup in one message and confirm once. Mention anything that may
@@ -36,7 +37,3 @@ Follow these steps exactly; CI configuration breaks easily.
      two marker comments, so it runs every night and on push by itself.
 4. Say that chomik is ready, list the files to commit, and that next time
    `/chomik` with a short description is all it takes.
-
-The steps above are the full flow; present it as such. Mention local use only
-after the developer says they do not want CI for now; if they want it, follow
-"Use it locally" in README.md.
