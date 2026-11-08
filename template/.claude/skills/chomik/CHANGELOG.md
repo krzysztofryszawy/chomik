@@ -7,6 +7,9 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The README explains how to verify a release cryptographically, in an empty
+  folder with `npm audit signatures`; `npm view` only showed that a record
+  exists.
 - On a Node older than chomik needs, `npx chomik` stops right away and says which
   Node is needed, instead of failing with an unclear error.
 - The hint to try a newer chomik leaves out `-y` and `--yes`, so following it

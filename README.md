@@ -83,9 +83,11 @@ Handling a reminder does not need one: each has a part for humans.
 - The check script only reads `.chomik/*.md`. It never executes their content and
   switches off GitHub workflow commands while printing it.
 - `chomik.yml` has read-only permissions and pins its action to a commit SHA.
-- Releases are published from GitHub Actions with npm provenance; to see it:
-  `npm view chomik dist.attestations`. Details and how to report a
-  vulnerability: [SECURITY.md](SECURITY.md).
+- Releases are published from GitHub Actions with npm provenance. To verify a
+  release yourself, in an empty folder (not your project):
+  `npm install chomik && npm audit signatures`. It should say: 1 package has a
+  verified attestation. Details and how to report a vulnerability:
+  [SECURITY.md](SECURITY.md).
 
 ## Help
 

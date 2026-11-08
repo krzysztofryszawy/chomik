@@ -75,7 +75,9 @@ locally. Reminders are written the same way.
   switches off GitHub workflow commands while printing it.
 - `chomik.yml` has read-only permissions and pins its action to a commit SHA.
 - Source: https://github.com/krzysztofryszawy/chomik. Releases are published with
-  npm provenance; to see it: `npm view chomik dist.attestations`.
+  npm provenance. To verify a release yourself, in an empty folder (not your
+  project): `npm install chomik && npm audit signatures`. It should say: 1
+  package has a verified attestation.
 
 ## Help
 
