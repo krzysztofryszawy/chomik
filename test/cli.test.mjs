@@ -521,6 +521,7 @@ test('the workflow templates pin every action to a full commit SHA', () => {
 
 test('the workflow template marks its own schedule and uses the shared name', () => {
   const text = readFileSync(join(TEMPLATE, 'chomik-workflow.yml'), 'utf8');
+  assert.match(text, /^name: "🐹 chomik: looking for messages from the past"$/m);
   assert.match(text, /workflow_call:/);
   assert.match(text, /# chomik: only without a daily build, begin\n[\s\S]*schedule:[\s\S]*# chomik: only without a daily build, end/);
   assert.match(text, /^ {2}looking-for-messages-from-the-past:$/m);

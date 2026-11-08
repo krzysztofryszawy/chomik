@@ -7,6 +7,7 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The GitHub Actions workflow has a name that says what it does.
 - Setup ends as a short dialogue, one step per message, instead of one long
   message.
 - Setup is proposed in a few plain sentences, as a one-time step, and working
