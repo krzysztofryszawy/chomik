@@ -7,6 +7,12 @@ What changed in chomik, newest first. chomik follows
 
 ### Fixed
 
+- No reminder is skipped silently any more. Every file or folder in `.chomik/`
+  other than the check script is a reminder or is reported with its reason, for
+  example `.MD` in capitals, `.md.bak`, a subfolder, a symbolic link or an empty
+  file, and fails the build on the main branch like an invalid name.
+- A reminder whose header the check cannot read says it may need a newer chomik
+  or have a mistake, and what the header should say.
 - Reading a reminder never loses text: a code block inside the prompt no longer
   cuts it short, a heading such as "Prompt engineering notes" stays in the part
   for humans, a file saved with a byte order mark (Windows Notepad) keeps its

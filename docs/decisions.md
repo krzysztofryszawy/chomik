@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Nothing in `.chomik/` is skipped silently.** Apart from the check script,
+  every file or folder there is a reminder or is reported with its reason, and
+  fails the build on the main branch with exit code 2. Why: a tester found that
+  `.MD`, `.md.bak`, subfolders and symbolic links were skipped without a word, so
+  a reminder could stop working unnoticed; `.chomik/` belongs to chomik, so
+  anything unexpected there is worth a red build.
 - **An older installer never silently downgrades a newer skill.** The installer
   reads the skill's version from the top entry of the installed `CHANGELOG.md`
   and stops when it is newer than itself; `--force` allows a deliberate

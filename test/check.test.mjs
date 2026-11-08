@@ -74,15 +74,15 @@ test('a reminder from a newer format fails in CI and asks to update, even before
   const newer = `---\nchomik: 2\ncondition: date\n---\n\n${reminder}`;
   const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: newer }), { ci: true });
   assert.equal(code, 2);
-  assert.match(out, /::error title=chomik::chomik found a reminder that needs a newer chomik/);
-  assert.match(out, /needs a newer chomik\. Update: npx chomik@latest\n {2}\.chomik\/.*-qs\.md/);
+  assert.match(out, /::error title=chomik::chomik found a reminder it cannot read/);
+  assert.match(out, /asks for a newer chomik, or has a mistake\.\nThis chomik reads "chomik: 1" and "condition: date"\. To update chomik: npx chomik@latest\n {2}\.chomik\/.*-qs\.md/);
 });
 
 test('an unknown condition is reported locally but passes', () => {
   const unknown = `---\nchomik: 1\ncondition: dependency\n---\n\n${reminder}`;
   const { code, out } = check(project({ [`${isoDay(30)}-qs.md`]: unknown }));
   assert.equal(code, 0);
-  assert.match(out, /needs a newer chomik/);
+  assert.match(out, /asks for a newer chomik/);
   assert.match(out, /Not failing outside CI\./);
 });
 
@@ -90,7 +90,7 @@ test('a header without its closing line is read as text in format 1', () => {
   const broken = `---\nchomik: 2\n\n${reminder}`;
   const { code, out } = check(project({ [`${isoDay(0)}-qs.md`]: broken }), { ci: true });
   assert.equal(code, 1);
-  assert.doesNotMatch(out, /needs a newer chomik/);
+  assert.doesNotMatch(out, /asks for a newer chomik/);
   assert.match(out, /qs pinned at 6\.13\.0/);
 });
 
@@ -99,8 +99,8 @@ test('due, invalid and newer reminders together are all reported, exit code 2', 
   const { code, out } = check(project({ [`${isoDay(0)}-due.md`]: reminder, 'notes.md': '', [`${isoDay(5)}-newer.md`]: newer }), { ci: true });
   assert.equal(code, 2);
   assert.match(out, /chomik sent a message from the past: \.chomik\/.*-due\.md/);
-  assert.match(out, /invalid reminder file[\s\S]*\.chomik\/notes\.md/);
-  assert.match(out, /needs a newer chomik[\s\S]*-newer\.md/);
+  assert.match(out, /not valid reminders:[\s\S]*\.chomik\/notes\.md: expected a name like/);
+  assert.match(out, /asks for a newer chomik[\s\S]*-newer\.md/);
 });
 
 test('a code block inside the prompt does not cut the prompt short', () => {
@@ -172,14 +172,35 @@ test('invalid file name or impossible date in CI on the branch: exit code 2', ()
   for (const name of ['qs.md', '2026-02-30-qs.md', '2026-1-05-qs.md', '2026-11-05-Bad Name.md']) {
     const { code, out } = check(project({ [name]: 'text' }), { ci: true });
     assert.equal(code, 2, name);
-    assert.match(out, /invalid reminder file/, name);
+    assert.match(out, /not valid reminders:/, name);
   }
 });
 
-test('non-Markdown files in .chomik are ignored', () => {
-  const { code, out } = check(project({ 'looking-for-messages-from-the-past.mjs': '', 'notes.txt': '' }), { ci: true });
-  assert.equal(code, 0);
-  assert.equal(out, noReminders);
+test('every other file or folder in .chomik is reported with its reason, never skipped', () => {
+  const root = project({
+    'looking-for-messages-from-the-past.mjs': '',
+    'notes.txt': '',
+    [`${isoDay(0)}-up.MD`]: 'x',
+    [`${isoDay(0)}-old.md.bak`]: 'x',
+    [`${isoDay(0)}-empty.md`]: '  \n',
+    '2026-02-30-qs.md': 'x',
+  });
+  mkdirSync(join(root, '.chomik', 'archive'));
+  const { code, out } = check(root, { ci: true });
+  assert.equal(code, 2);
+  assert.match(out, /^::error title=chomik::chomik found a file in \.chomik that is not a valid reminder$/m);
+  assert.match(out, /\.chomik\/2026-02-30-qs\.md: that date does not exist/);
+  assert.match(out, /-empty\.md: the file is empty/);
+  assert.match(out, /-old\.md\.bak: expected a name like/);
+  assert.match(out, /-up\.MD: expected a name like/);
+  assert.match(out, /\.chomik\/archive: a folder; chomik reads only files directly in \.chomik\//);
+  assert.match(out, /\.chomik\/notes\.txt: expected a name like/);
+  assert.doesNotMatch(out, /looking-for-messages-from-the-past\.mjs:/);
+});
+
+test('output never starts with a blank line', () => {
+  const { out } = check(project({ 'bad.md': 'x' }));
+  assert.match(out, /^chomik found files in \.chomik\/ that are not valid reminders:/);
 });
 
 test('symbolic links are not followed', () => {
@@ -188,8 +209,9 @@ test('symbolic links are not followed', () => {
   writeFileSync(outside, 'OUTSIDE-CONTENT');
   symlinkSync(outside, join(root, '.chomik', `${isoDay(-1)}-link.md`));
   const { code, out } = check(root, { ci: true });
-  assert.equal(code, 0);
+  assert.equal(code, 2);
   assert.doesNotMatch(out, /OUTSIDE-CONTENT/);
+  assert.match(out, /-link\.md: a symbolic link, which chomik does not follow/);
 });
 
 test('workflow commands in reminder text are switched off in GitHub Actions', () => {
