@@ -1,7 +1,7 @@
 # Changelog
 
 What changed in chomik, newest first. chomik follows
-[Semantic Versioning](https://semver.org/); versions 0.1.x are test versions.
+[Semantic Versioning](https://semver.org/).
 
 ## [0.1.9] - unreleased
 
@@ -125,5 +125,5 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.0] to [0.1.5] - 2026-11-06 to 2026-11-08
 
-Test versions: the skill, the check script, the installer and setup in GitHub
+The skill, the check script, the installer and setup in GitHub
 Actions.
