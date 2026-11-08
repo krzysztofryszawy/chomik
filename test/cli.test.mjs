@@ -42,8 +42,8 @@ test('npx chomik --yes installs exactly the two skill files', () => {
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
-  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik and explain with its examples .*Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
-  assert.match(stdout, /Feel free to share chomik with your team/);
+  assert.match(stdout, /\n\nchomik just moved in\.\nFirst time with chomik\? Paste this into a new session of your coding agent:\n {2}Read \.claude\/skills\/chomik\/README\.md and explain with its examples .*Do not change anything\.\nThen type \/chomik there to set it up\.\n$/);
+  assert.doesNotMatch(stdout, /Feel free to share chomik/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', SCRIPT, 'chomik-workflow.yml'].sort());
   for (const file of ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', SCRIPT, 'chomik-workflow.yml'].sort()) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
   assert.deepEqual(readdirSync(root).sort(), ['.claude', 'package.json']);
@@ -212,6 +212,11 @@ test('check with the skill installed but not set up says how to finish', () => {
   const { code, stderr } = run(root, ['check']);
   assert.equal(code, 1);
   assert.equal(stderr, 'chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.\n');
+});
+
+test('the skill README has the same FAQ as the README', () => {
+  const faq = (text) => /\n## FAQ\n[\s\S]*?\n(?=## )/.exec(text)[0];
+  assert.equal(faq(template('README.md').toString('utf8')), faq(readFileSync('README.md', 'utf8')));
 });
 
 test('the check pitch opens the README word for word', () => {

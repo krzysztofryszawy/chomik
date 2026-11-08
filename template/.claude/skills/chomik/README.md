@@ -15,6 +15,36 @@ turns the build red on a chosen date, with everything the team needs to act.
 - To handle a reminder, resolve the problem and delete its file, or rename the
   file to a new date and add a line explaining why. No agent is required.
 
+## FAQ
+
+### What would I use it for?
+
+For dates you cannot afford to miss. Three typical cases:
+
+- **Credentials that expire.** A new integration uses an API key or certificate
+  valid for a year. A week before it expires, the build turns red. If someone
+  has already rotated it, the agent confirms that, proposes a reminder for the
+  next expiry and deletes the old one, with no code change.
+- **Retiring your own API version.** You told clients that v1 stops on 1 March.
+  Two weeks before, the reminder's prompt guides the agent: find out who still
+  calls v1, help warn them, and on the day remove the old endpoints. The same
+  works when a provider retires an API you depend on.
+- **A temporary security workaround.** During an incident someone pins a package
+  or switches off a check "for now". The reminder makes sure "for now" ends, and
+  its prompt says what to verify before undoing it.
+
+### Do I need GitHub?
+
+For the full flow, yes: GitHub Actions checks every day and turns the build red.
+Without it, chomik works locally: reminders are written the same way and
+`npx chomik check` shows the ones that are due. Moving to GitHub later keeps
+your reminders.
+
+### Do I need a coding agent?
+
+To set chomik up and write reminders, yes: Claude Code or GitHub Copilot.
+Handling a reminder does not need one: each has a part for humans.
+
 ## Use it locally
 
 The full flow needs GitHub Actions. To try chomik without it, the project needs

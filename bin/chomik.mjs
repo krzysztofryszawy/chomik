@@ -15,7 +15,7 @@ const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skil
 const TARGET = TARGET_DIRS.at(-1);
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'looking-for-messages-from-the-past.mjs', 'chomik-workflow.yml'];
 
-const FIRST_TIME_PROMPT = 'Read https://github.com/krzysztofryszawy/chomik and explain with its examples what chomik does and how it could help in this project. Do not change anything.';
+const explainFrom = (where) => `Read ${where} and explain with its examples what chomik does and how it could help in this project. Do not change anything.`;
 // The same two lines open the README; a test keeps them equal.
 const PITCH = `Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.`;
@@ -83,7 +83,7 @@ function check() {
   if (!existsSync(CHECK_SCRIPT) && !existsSync(join(TARGET, 'SKILL.md'))) {
     console.error(`chomik is not in this project yet.\n\n${PITCH}\nBuilt for coding agents.\n`);
     console.error('Give chomik a chance to impress you: npx chomik@latest');
-    console.error(`Curious first? Paste this into your coding agent:\n  ${FIRST_TIME_PROMPT}`);
+    console.error(`Curious first? Paste this into your coding agent:\n  ${explainFrom('https://github.com/krzysztofryszawy/chomik')}`);
     return 1;
   }
   if (!existsSync(CHECK_SCRIPT)) {
@@ -204,14 +204,14 @@ async function installOrUpdate({ yes, dryRun, force }) {
   mkdirSync(TARGET, { recursive: true });
   for (const p of plan) writeFileSync(p.target, p.source);
 
-  console.log(installed === 'not installed' ? `Done. chomik ${VERSION} is installed.` : `Done. chomik is now ${VERSION}.`);
-  console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.');
-  console.log('');
   if (installed === 'not installed') {
+    console.log(`Done. chomik ${VERSION} is installed.\n`);
     console.log('chomik just moved in.');
-    console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${FIRST_TIME_PROMPT}`);
+    console.log(`First time with chomik? Paste this into a new session of your coding agent:\n  ${explainFrom('.claude/skills/chomik/README.md')}`);
     console.log('Then type /chomik there to set it up.');
   } else {
+    console.log(`Done. chomik is now ${VERSION}.`);
+    console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.\n');
     const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
     console.log('chomik learned some new tricks. Curious which? Paste this into a new session of your coding agent:');
     console.log(`  Read .claude/skills/chomik/CHANGELOG.md and tell me briefly what changed ${since} and what it means for this project. Do not change anything.`);
