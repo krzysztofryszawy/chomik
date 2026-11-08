@@ -69,7 +69,8 @@ agent, must be able to verify quickly that it is safe.
 - [ ] Every release has an entry in the skill's `CHANGELOG.md` describing what
       changed in behavior.
 - [ ] Publicly verifiable signals, to confirm when set up: npm provenance
-      (`npm audit signatures`), OpenSSF Scorecard for repository practices,
+      (`npm view chomik dist.attestations`; `npm audit signatures` works only
+      for installed dependencies), OpenSSF Scorecard for repository practices,
       GitHub code scanning, secret scanning and private vulnerability reporting,
       and package scanners such as Socket. Check what each one actually reports
       before relying on it.

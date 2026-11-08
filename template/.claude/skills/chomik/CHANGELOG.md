@@ -27,6 +27,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The README shows provenance with `npm view chomik dist.attestations`;
+  `npm audit signatures` works only for installed dependencies.
 - A typo in a command or option suggests the closest one ("Did you mean
   check?") instead of printing the whole help; `-y` works like `--yes`.
 - Without git, the installer no longer suggests committing or stashing.
