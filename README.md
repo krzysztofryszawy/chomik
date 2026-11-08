@@ -16,6 +16,10 @@ In the root of a Node project on GitHub:
 npx chomik@latest
 ```
 
+Safe to try: `npx chomik` shows its plan and asks before writing anything, and
+the skill asks before every change. Nothing runs on its own, and removing chomik
+is just deleting its files (see [Stop or remove](#stop-or-remove)).
+
 Then open your coding agent in the project (Claude Code or GitHub Copilot) and
 type `/chomik`. Feel free to share chomik with your team: commit
 `.claude/skills/chomik/`.
