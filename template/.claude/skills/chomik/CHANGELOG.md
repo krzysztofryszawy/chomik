@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- Without GitHub, setup says that putting the project on GitHub is up to you,
+  before you come back with `/chomik`.
 - `--help` and the README no longer say that `npx chomik check` never fails
   outside CI: only due reminders do not make it fail there.
 - `--help` says which files the agent adds during setup, that chomik also works

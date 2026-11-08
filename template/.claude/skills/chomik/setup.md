@@ -10,7 +10,8 @@ of steps 2 and 3.
    `.git/refs/remotes/origin/HEAD` (`ref: refs/remotes/origin/<branch>`), and
    whether the `origin` remote in `.git/config` is on github.com. If it is not,
    say briefly that the full flow needs a GitHub repository with Actions, and
-   ask whether they want to set that up first or go without CI for now.
+   ask whether they will put the project on GitHub first, which they do
+   themselves before coming back with `/chomik`, or go without CI for now.
 2. Look for the daily build: a workflow with a `schedule` trigger. Scheduled
    workflows run only on the default branch, so that is the branch to use.
 3. Propose the setup in one message and confirm once. Mention anything that may
