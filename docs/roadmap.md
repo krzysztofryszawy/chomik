@@ -44,8 +44,6 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 4. An unknown `npx chomik` command fails and suggests
    `npx chomik@latest <command>`. Done.
 
-Open question: whether the beta should be 1.0.0 instead of 0.2.0.
-
 ## Beta: version 0.2.0
 
 - Breaking changes are fine until then.

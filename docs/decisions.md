@@ -5,6 +5,9 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **The beta stays 0.2.0, not 1.0.0.** Why: chomik is not yet ready for a stable
+  promise; 1.0.0 comes when it is.
+
 - **An unknown `npx chomik` argument suggests the latest version.** It still fails
   on stderr with exit code 1, and now names the installed version and suggests
   `npx chomik@latest` with the same arguments. Why: an older chomik cached by npx
