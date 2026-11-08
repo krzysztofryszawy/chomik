@@ -14,6 +14,8 @@ turns the build red on a chosen date, with everything the team needs to act.
 - To create a reminder, type `/chomik` in Claude Code or GitHub Copilot.
 - To handle a reminder, resolve the problem and delete its file, or rename the
   file to a new date and add a line explaining why. No agent is required.
+- To see a reminder as it will look on its date, rename its file to today's date,
+  run `npx chomik check`, and rename it back.
 
 ## FAQ
 

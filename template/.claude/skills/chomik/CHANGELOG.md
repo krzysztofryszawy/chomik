@@ -7,6 +7,7 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- The README shows how to see a reminder as it will look on its date.
 - In a project that is not on GitHub, `npx chomik check` says CI can be set up
   once it is there, instead of suggesting `/chomik` right away.
 - The FAQ explains the manual, craft mode for working without a coding agent.

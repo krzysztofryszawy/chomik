@@ -36,6 +36,8 @@ Feel free to share chomik with your team: commit `.claude/skills/chomik/`.
   pull requests it only prints; `npx chomik check` runs it by hand.
 - To handle a reminder, resolve the problem and delete its file, or rename the
   file to a new date and add a line explaining why. No agent is required.
+- To see a reminder as it will look on its date, rename its file to today's date,
+  run `npx chomik check`, and rename it back.
 
 ## FAQ
 
