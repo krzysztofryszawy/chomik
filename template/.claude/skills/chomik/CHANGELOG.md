@@ -7,6 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- On a Node older than chomik needs, `npx chomik` stops right away and says which
+  Node is needed, instead of failing with an unclear error.
 - The hint to try a newer chomik leaves out `-y` and `--yes`, so following it
   still shows the plan and asks first.
 - `npx chomik check` names the check script in `.chomik/` when it is older than

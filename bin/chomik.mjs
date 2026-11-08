@@ -4,10 +4,11 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { createInterface } from 'node:readline/promises';
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const VERSION = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'package.json'), 'utf8')).version;
+const PACKAGE = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'package.json'), 'utf8'));
+const VERSION = PACKAGE.version;
+const MIN_NODE = Number(/\d+/.exec(PACKAGE.engines.node)[0]);
 // SHA-256 of the skill files in every released version, to recognize files nobody edited.
 const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-files.json'), 'utf8'));
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
@@ -59,7 +60,12 @@ const unknown = options.find((a) => !allowed.includes(a));
 const CHECK_SCRIPT = join('.chomik', 'looking-for-messages-from-the-past.mjs');
 
 try {
-  if (unknown) {
+  // npm only warns about "engines", so chomik checks Node itself before doing anything.
+  if (Number(process.versions.node.split('.')[0]) < MIN_NODE) {
+    console.error(`chomik needs Node ${MIN_NODE} or newer; this is Node ${process.versions.node}.`);
+    console.error('Update Node: https://nodejs.org');
+    process.exitCode = 1;
+  } else if (unknown) {
     console.error(`chomik: unknown argument "${unknown}" in chomik ${VERSION}.`);
     const near = closest(unknown, command ? allowed : ['check', ...allowed]);
     if (near) console.error(`Did you mean "${near}"?`);
@@ -227,6 +233,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
       console.error('Nothing was changed.');
       return 1;
     }
+    const { createInterface } = await import('node:readline/promises');
     const rl = createInterface({ input: process.stdin, output: process.stdout });
     const answer = (await rl.question('Continue? (Y/n) ')).trim().toLowerCase();
     rl.close();

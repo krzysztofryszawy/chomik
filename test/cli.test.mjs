@@ -379,6 +379,18 @@ test('check --help prints help and an unknown check option fails', () => {
   assert.match(stderr, /unknown argument "--yes"/);
 });
 
+test('an old Node stops every command with a clear message', () => {
+  const minimum = Number(/\d+/.exec(JSON.parse(readFileSync('package.json', 'utf8')).engines.node)[0]);
+  const fake = `data:text/javascript,Object.defineProperty(process.versions,"node",{value:"${minimum - 1}.0.0"})`;
+  for (const args of [[], ['check'], ['--yes']]) {
+    const root = project();
+    const result = spawnSync(process.execPath, ['--import', fake, BIN, ...args], { cwd: root, encoding: 'utf8', input: '' });
+    assert.equal(result.status, 1, args.join(' '));
+    assert.equal(result.stderr, `chomik needs Node ${minimum} or newer; this is Node ${minimum - 1}.0.0.\nUpdate Node: https://nodejs.org\n`);
+    assert.equal(existsSync(join(root, '.claude')), false);
+  }
+});
+
 test('--version prints the package version', () => {
   const { code, stdout } = run(project(), ['--version']);
   assert.equal(code, 0);

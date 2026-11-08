@@ -30,6 +30,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated from 0.1.7; installers up to 0.1.6 replace the newer files |
 | Older chomik without a command that exists now (`check` in 0.1.5) | "unknown argument" | ⚠️ by hand only |
 | Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
+| Node older than `engines` in `package.json` | Stop before anything else, name the Node needed | ✅ automated, with a faked version |
 
 ## Check: package, skill and copies
 

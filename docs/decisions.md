@@ -5,6 +5,10 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **chomik checks the Node version itself.** Before any command, it compares
+  Node with `engines` in `package.json` and stops with the version needed. Why:
+  npm treats `engines` as advisory, so on an older Node chomik would otherwise
+  fail with an unclear JavaScript error. npm comes with Node, so Node is enough.
 - **chomik runs only in the repository root.** Below it, `npx chomik` and
   `npx chomik check` stop and name the root. Why: GitHub reads workflows only
   from the root's `.github/`, so an install in a monorepo package would never
