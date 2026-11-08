@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 🐹 chomik 0.1.9: looks for messages from the past in .chomik/. About chomik: .claude/skills/chomik/README.md
+// 🐹 chomik 0.1.10: looks for messages from the past in .chomik/. About chomik: .claude/skills/chomik/README.md
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
