@@ -5,10 +5,11 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
-- **Local use is an option, not the pitch.** Setup always describes the full
-  flow with CI. Only when the developer does not want CI or has no GitHub, the
-  skill copies just the check script, which is run by hand; no hooks, npm
-  scripts or schedules. Moving to CI later is the normal setup and keeps existing
+- **Local use is an option, not the pitch.** Setup always aims at the full flow
+  with CI; without GitHub it asks whether to set that up first or go without CI
+  for now. Only when the developer chooses to go without CI, the skill copies
+  just the check script, which is run by hand; no hooks, npm scripts or
+  schedules. Moving to CI later is the normal setup and keeps existing
   reminders. Why: some developers want to understand chomik locally first, and
   without a defined option the agent improvised, proposing a git hook.
 - **The skill stays short; the details live in its README.** `SKILL.md` and
