@@ -202,7 +202,7 @@ test('check with the skill installed but not set up says how to finish', () => {
   run(root, ['--yes']);
   const { code, stderr } = run(root, ['check']);
   assert.equal(code, 1);
-  assert.match(stderr, /not set up in this project yet\. To set it up, type \/chomik/);
+  assert.equal(stderr, 'chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.\n');
 });
 
 test('the check pitch opens the README word for word', () => {

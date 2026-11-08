@@ -81,7 +81,7 @@ function check() {
     return 1;
   }
   if (!existsSync(CHECK_SCRIPT)) {
-    console.error('chomik: not set up in this project yet. To set it up, type /chomik in your coding agent.');
+    console.error('chomik is installed here, but its setup is not finished yet.\nTo finish, type /chomik in your coding agent.');
     return 1;
   }
   if (lstatSync(CHECK_SCRIPT).isSymbolicLink() || lstatSync('.chomik').isSymbolicLink()) {
