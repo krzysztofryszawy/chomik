@@ -24,9 +24,13 @@ const HELP = `Usage: npx chomik@latest [options]
        npx chomik check
 
 Installs chomik in this project, or updates it: run the same command again.
-Writes only .claude/skills/chomik/. Shows the plan and asks before writing, and
-never overwrites edits that are not committed to git, unless you use --force.
-Then type /chomik in Claude Code or GitHub Copilot.
+The installer writes only .claude/skills/chomik/, the skill your coding agent
+reads. It shows the plan and asks before writing, and never overwrites edits
+that are not committed to git, unless you use --force.
+
+Then type /chomik in Claude Code or GitHub Copilot. The agent sets chomik up
+with you and, after you confirm, adds .chomik/ and, on GitHub,
+.github/workflows/chomik.yml. Not on GitHub? chomik also works locally.
 
 Example: an API key expires in a year. A week before, the main-branch build
 turns red with a ready prompt for your coding agent.
@@ -42,7 +46,9 @@ Options:
   -h, --help     Show help
   --version      Show version
 
-About chomik, including how to stop or remove it: .claude/skills/chomik/README.md`;
+About chomik, including how to stop or remove it:
+https://github.com/krzysztofryszawy/chomik, or once installed,
+.claude/skills/chomik/README.md`;
 
 const args = process.argv.slice(2);
 const command = args[0] === 'check' ? 'check' : null;

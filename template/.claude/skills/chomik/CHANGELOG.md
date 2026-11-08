@@ -5,6 +5,11 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.7] - unreleased
 
+### Changed
+
+- `--help` says which files the agent adds during setup, that chomik also works
+  without GitHub, and where to read more before installing.
+
 ## [0.1.6] - 2026-11-08
 
 ### Added
