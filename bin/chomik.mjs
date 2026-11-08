@@ -135,7 +135,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.');
   console.log('');
   const greeting = installed === 'not installed' ? 'chomik just moved in.' : 'chomik learned some new tricks.';
-  console.log(`${greeting} Say hi: open your coding agent in this project and type /chomik.`);
+  console.log(`${greeting} Say hi: start a new session of your coding agent in this project and type /chomik.`);
   return 0;
 }
 
