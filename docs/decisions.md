@@ -5,6 +5,17 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-08
 
+- **Versioning follows what lives longest.** chomik's interfaces live for very
+  different times: `npx chomik` commands and skill files are replaced on update,
+  while the check script copied to `.chomik/`, the reminder format and the job in
+  the user's workflow stay in other repositories for years. Rules: the public
+  interface is named explicitly; changes are additive; anything unknown fails
+  loudly with a hint instead of being guessed or skipped; a removed command keeps
+  its name as a stub that says what to use instead. Why: SemVer only works once
+  the public interface is declared, data outlives code, and RFC 9413 shows that
+  silent tolerance entrenches errors. For chomik the worst failure is a reminder
+  that silently never shows.
+
 - **The check always says something.** With nothing due, it says there are no
   reminders yet, with how to leave one, or when the next one is due. Counts and
   dates come from file names only. Exit codes are unchanged. Why: a silent pass

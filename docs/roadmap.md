@@ -31,6 +31,20 @@ the build turn red in GitHub Actions, then handle the reminder from its prompt
 in a fresh agent session. Not tested yet: setup in a repository with CI, a real
 red run, handling by someone else.
 
+## Compatibility groundwork, before 0.2.0
+
+Cheap now, expensive once reminders live in other people's repositories. In order:
+
+1. A format version in every reminder, so new code can tell old formats apart.
+2. An old check script that meets a reminder it does not understand fails loudly
+   in CI and says to update chomik; it never skips a reminder silently.
+3. The chomik version in a comment in the copied check script and in
+   `chomik.yml`, so a project shows which version wrote them.
+4. An unknown `npx chomik` command fails and suggests
+   `npx chomik@latest <command>`.
+
+Open question: whether the beta should be 1.0.0 instead of 0.2.0.
+
 ## Beta: version 0.2.0
 
 - Breaking changes are fine until then.
