@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 
 const DIR = '.chomik';
 const REMINDER_NAME = /^(\d{4})-(\d{2})-(\d{2})-[a-z0-9][a-z0-9-]*\.md$/;
-const PROMPT_HEADING = /^#{1,6}\s+prompt\b/i;
+const PROMPT_HEADING = /^#{1,6}\s+prompt\s*$/i;
 const MAX_LINES = 40;
 const MAX_PROMPT_LINES = 200;
 
@@ -65,7 +65,7 @@ function run() {
 
   for (const name of due) {
     const { body: text } = parse(readFileSync(join(DIR, name), 'utf8'));
-    const prompt = promptPart(text);
+    const prompt = promptPart(text, join(DIR, name));
     if (name !== due[0]) console.log('');
     console.log(`chomik sent a message from the past: ${join(DIR, name)}`);
     if (prompt) {
@@ -78,7 +78,7 @@ function run() {
     }
     console.log('');
     console.log('===== FOR HUMANS =====');
-    console.log(humanPart(text));
+    console.log(humanPart(text, join(DIR, name)));
     console.log('===== END =====');
   }
 
@@ -130,7 +130,7 @@ function nothingDue(waiting) {
 // A reminder may start with a YAML header such as "chomik: 1" and "condition: date";
 // only flat "key: value" lines are read. Without a header it is format 1.
 function parse(raw) {
-  const lines = raw.replace(/\r\n/g, '\n').split('\n');
+  const lines = raw.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').split('\n');
   const header = {};
   if (lines[0] !== '---') return { header, body: lines.join('\n') };
   const end = lines.indexOf('---', 1);
@@ -142,26 +142,28 @@ function parse(raw) {
   return { header, body: lines.slice(end + 1).join('\n') };
 }
 
-function humanPart(text) {
+function humanPart(text, file) {
   const lines = [];
   for (const line of text.split('\n')) {
     if (PROMPT_HEADING.test(line)) break;
     lines.push(line);
   }
-  return limit(trimBlank(lines), MAX_LINES);
+  return limit(trimBlank(lines), MAX_LINES, file);
 }
 
-function promptPart(text) {
+// The prompt is everything after the "## Prompt" heading. Only the fence around all
+// of it is dropped, so code blocks inside the prompt never cut it short.
+function promptPart(text, file) {
   const lines = text.split('\n');
   const start = lines.findIndex((line) => PROMPT_HEADING.test(line));
   if (start === -1) return '';
-  let body = lines.slice(start + 1);
-  const open = body.findIndex((line) => line.startsWith('```'));
-  if (open !== -1) {
-    const close = body.findIndex((line, i) => i > open && line.startsWith('```'));
-    body = body.slice(open + 1, close === -1 ? undefined : close);
+  let body = trimBlank(lines.slice(start + 1));
+  const open = /^(`{3,}|~{3,})/.exec(body[0] ?? '');
+  const close = /^(`{3,}|~{3,})\s*$/.exec(body.at(-1) ?? '');
+  if (open && close && body.length > 1 && close[1][0] === open[1][0] && close[1].length >= open[1].length) {
+    body = trimBlank(body.slice(1, -1));
   }
-  return limit(trimBlank(body), MAX_PROMPT_LINES);
+  return limit(body, MAX_PROMPT_LINES, file);
 }
 
 function trimBlank(lines) {
@@ -172,8 +174,9 @@ function trimBlank(lines) {
   return lines.slice(from, to);
 }
 
-function limit(lines, max) {
-  return (lines.length > max ? [...lines.slice(0, max), '...'] : lines).join('\n');
+function limit(lines, max, file) {
+  if (lines.length <= max) return lines.join('\n');
+  return [...lines.slice(0, max), `... (cut after ${max} lines; the rest is in ${file})`].join('\n');
 }
 
 function isRealDate(year, month, day) {

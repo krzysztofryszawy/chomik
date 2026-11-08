@@ -7,6 +7,10 @@ What changed in chomik, newest first. chomik follows
 
 ### Fixed
 
+- Reading a reminder never loses text: a code block inside the prompt no longer
+  cuts it short, a heading such as "Prompt engineering notes" stays in the part
+  for humans, a file saved with a byte order mark (Windows Notepad) keeps its
+  header, and a cut prompt says where the rest is.
 - An older chomik, for example one cached by npx, no longer replaces a newer
   skill: it stops and suggests `npx chomik@latest`, unless you add `--force`.
 - `/chomik` proposes replacing the copied check script and workflow only when

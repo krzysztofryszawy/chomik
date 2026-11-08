@@ -103,6 +103,32 @@ test('due, invalid and newer reminders together are all reported, exit code 2', 
   assert.match(out, /needs a newer chomik[\s\S]*-newer\.md/);
 });
 
+test('a code block inside the prompt does not cut the prompt short', () => {
+  const text = '# x\n\n## Prompt\n\n```text\nline one\n```bash\nls\n```\nnever push to main\n```\n';
+  const lines = check(project({ [`${isoDay(0)}-x.md`]: text })).out.split('\n');
+  const prompt = lines.slice(lines.indexOf('===== PROMPT =====') + 1, lines.indexOf('===== END OF PROMPT ====='));
+  assert.deepEqual(prompt, ['line one', '```bash', 'ls', '```', 'never push to main']);
+});
+
+test('a heading that only starts with "Prompt" stays in the part for humans', () => {
+  const text = '# x\n\n## Prompt engineering notes\nkeep me\n\n## Resolved when\n- done\n\n## Prompt\n\n```text\nP\n```\n';
+  const { out } = check(project({ [`${isoDay(0)}-x.md`]: text }));
+  assert.match(out, /===== FOR HUMANS =====[\s\S]*keep me[\s\S]*## Resolved when\n- done\n===== END =====/);
+});
+
+test('a byte order mark before the header is ignored', () => {
+  const text = `\uFEFF---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
+  const { out } = check(project({ [`${isoDay(0)}-qs.md`]: text }));
+  assert.doesNotMatch(out, /chomik: 1/);
+  assert.match(out, /===== FOR HUMANS =====\n# qs pin/);
+});
+
+test('a prompt that is cut says where the rest is', () => {
+  const long = Array.from({ length: 205 }, (_, i) => `L${i}`).join('\n');
+  const { out } = check(project({ [`${isoDay(0)}-long.md`]: `# x\n\n## Prompt\n\n\`\`\`text\n${long}\n\`\`\`\n` }));
+  assert.match(out, /L199\n\.\.\. \(cut after 200 lines; the rest is in \.chomik\/.*-long\.md\)\n===== END OF PROMPT =====/);
+});
+
 test('the YAML header is not printed', () => {
   const withHeader = `---\nchomik: 1\ncondition: date\n---\n\n${reminder}`;
   const { out } = check(project({ [`${isoDay(0)}-qs.md`]: withHeader }));
