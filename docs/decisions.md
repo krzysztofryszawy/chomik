@@ -9,7 +9,7 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   is for someone without access to the npm registry; the README and the tool do not
   point to it. Why: it is a fallback, not a standard way to install chomik.
 - **With `bin-links` off, chomik is installed without changing that setting.** The
-  end of the README gives `npm pack` and running the installer with `node`, not an
+  last question in the README's FAQ gives `npm pack` and running the installer with `node`, not an
   npx flag that overrides the setting, and says plainly that this is not a fault
   in chomik. Why: a test in a locked-down environment showed that
   `npx chomik` cannot work there, and such a setting is a deliberate security

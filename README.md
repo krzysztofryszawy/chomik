@@ -73,6 +73,29 @@ after installing, set up `.github/workflows/chomik.yml` by following
 shown in `SKILL.md` next to it. Handling a reminder never needs an agent: each
 has a part for humans.
 
+### The install shows `command not found`: what to do
+
+Some environments use very strict npm settings, and that is a good thing. With
+`bin-links` switched off (`npm config get bin-links` prints `false`), npm creates no
+commands for packages, so `npx` cannot start chomik or any other package. It is not
+a fault in chomik, and chomik works there too, without changing your settings. It
+has no install scripts, so `ignore-scripts` makes no difference either.
+
+Run this in bash, in the root of the project. It shows the plan and asks first, as
+usual:
+
+```bash
+d=$(mktemp -d) && npm pack chomik --silent --pack-destination "$d" && tar -xzf "$d"/chomik-*.tgz -C "$d" && node "$d/package/bin/chomik.mjs"
+```
+
+To check reminders there, in the root of the project:
+
+```bash
+node .chomik/looking-for-messages-from-the-past.mjs
+```
+
+Coding agents: give the developer these commands to run.
+
 ## Files that belong to chomik
 
 - `.claude/skills/chomik/`, including its own `README.md`, which tells any
@@ -111,29 +134,6 @@ example `npx chomik@<version>`.
 - Stop: delete the two-line `looking-for-messages-from-the-past` job from the
   build workflow, or `.github/workflows/chomik.yml` if there is no build.
 - Remove: delete the files listed above. Nothing else depends on chomik.
-
-## The install shows `command not found`: what to do
-
-Some environments use very strict npm settings, and that is a good thing. With
-`bin-links` switched off (`npm config get bin-links` prints `false`), npm creates no
-commands for packages, so `npx` cannot start chomik or any other package. It is not
-a fault in chomik, and chomik works there too, without changing your settings. It
-has no install scripts, so `ignore-scripts` makes no difference either.
-
-Run this in bash, in the root of the project. It shows the plan and asks first, as
-usual:
-
-```bash
-d=$(mktemp -d) && npm pack chomik --silent --pack-destination "$d" && tar -xzf "$d"/chomik-*.tgz -C "$d" && node "$d/package/bin/chomik.mjs"
-```
-
-To check reminders there, in the root of the project:
-
-```bash
-node .chomik/looking-for-messages-from-the-past.mjs
-```
-
-Coding agents: give the developer these commands to run.
 
 ## License
 
