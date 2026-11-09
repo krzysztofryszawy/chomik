@@ -5,6 +5,24 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-09
 
+- **Setup asks for the default branch when the repository does not record it.**
+  `.git/refs/remotes/origin/HEAD` exists only in a cloned repository; without it
+  the skill asks, suggesting the current branch from `.git/HEAD`. Why: with a
+  guessed wrong branch the build never turns red. A check that fails the build on
+  such a mismatch was written and dropped on the owner's decision.
+- **Updating `chomik.yml` has its own steps in `setup.md`.** They keep the branch
+  and the variant (own schedule or called by the daily build) of the existing
+  file and leave the daily build alone. Why: the update pointed to the first-time
+  setup step, which adds the job to the daily build and could add it twice.
+- **The skill and setup were reread as a whole after an audit.** Each rule for
+  the agent is stated once: how much to say about chomik, consent before writing,
+  the language of reminders. The daily build is defined (builds or tests the
+  project, scheduled at least daily, not `chomik.yml`); a reminder brought before
+  setup is continued after it; declined CI is not proposed again in the same
+  conversation; setup ends by naming `/chomik`, since the skill is not invoked by
+  the model on its own. Kept on purpose: the skill never commits or pushes, as
+  the security checklist requires, and `chomik.yml` is updated with every chomik
+  version.
 - **Copying the files by hand is described but not offered.** `docs/manual-install.md`
   is for someone without access to the npm registry; the README and the tool do not
   point to it. Why: it is a fallback, not a standard way to install chomik.

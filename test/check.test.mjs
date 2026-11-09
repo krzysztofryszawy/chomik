@@ -228,3 +228,14 @@ test('workflow commands in reminder text are switched off in GitHub Actions', ()
   assert.ok(token.length >= 32);
   assert.ok(stop < evilLine && evilLine < resume);
 });
+
+test('a push to another branch than --branch still only prints', () => {
+  const { code, out } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }), { ci: true, ref: 'feature' });
+  assert.equal(code, 0);
+  assert.match(out, /Not failing: the build fails only on branch "main"\./);
+});
+
+test('the hint to run the check locally shows in CI only', () => {
+  assert.match(check(project({ [`${isoDay(0)}-qs.md`]: reminder }), { ci: true }).out, /Run locally: npx chomik check/);
+  assert.doesNotMatch(check(project({ [`${isoDay(0)}-qs.md`]: reminder })).out, /Run locally/);
+});

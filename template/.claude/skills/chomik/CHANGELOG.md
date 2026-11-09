@@ -5,6 +5,23 @@ What changed in chomik, newest first. chomik follows
 
 ## [0.1.11] - unreleased
 
+### Changed
+
+- Setup asks which branch is the default one when the repository does not say,
+  instead of guessing.
+- Updating `chomik.yml` after a chomik update has its own short steps and keeps
+  the setup your project already has.
+- Setup chooses the daily build more carefully and asks when several workflows
+  could be it.
+- When you start with something to remember, the agent continues with that
+  reminder right after setup. Declining CI is not proposed again in the same
+  conversation.
+- The review date follows the situation, such as a week before a key expires;
+  14 days is only the default.
+- After an update, the installer reminds you to commit `.chomik/` too, since CI
+  runs the check script from there.
+- Run locally, the check no longer tells you to run it locally.
+
 ## [0.1.10] - 2026-11-09
 
 ### Changed

@@ -285,7 +285,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.log('Then type /chomik there to set it up.');
   } else {
     console.log(`Done. chomik is now ${VERSION}.`);
-    console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/.\n');
+    console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/ and .chomik/.\n');
     const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
     console.log('chomik learned some new tricks.\n');
     console.log('Curious which? Paste this into a new session of your coding agent:\n');
@@ -333,7 +333,6 @@ function sha256(buffer) {
   return createHash('sha256').update(buffer).digest('hex');
 }
 
-// Read-only check: git reports nothing for the path only when it is tracked and committed as is.
 // Only for typos, so a distance of two edits at most.
 function closest(word, candidates) {
   const distance = (a, b) => {
@@ -353,6 +352,7 @@ function closest(word, candidates) {
   return best && best[1] <= 2 ? best[0] : '';
 }
 
+// Read-only check: git reports nothing for the path only when it is tracked and committed as is.
 function isCommittedInGit(path) {
   try {
     const status = execFileSync('git', ['status', '--porcelain', '--', path], {

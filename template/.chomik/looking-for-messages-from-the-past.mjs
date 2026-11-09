@@ -101,7 +101,7 @@ function run() {
     ]);
   }
 
-  const footer = ['Run locally: npx chomik check'];
+  const footer = inActions ? ['Run locally: npx chomik check'] : [];
   if (!enforce) {
     if (!inActions) footer.push('Not failing outside CI.');
     else if (!branch) footer.push('Not failing: no branch given with --branch.');

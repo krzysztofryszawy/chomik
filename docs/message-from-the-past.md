@@ -56,8 +56,8 @@ reminder file alone.
 - Direction: a shared, version-pinned Action or reusable workflow, local messages,
   and minimal wiring. Unit tests are a prototype, not the generic mechanism.
 - The check runs as its own always-run step or job inside the main build
-  workflow, next to tests but separate from them. It is not a separately
-  scheduled workflow.
+  workflow, next to tests but separate from them. Only a project without a daily
+  build gets chomik's own nightly workflow.
 - Deadline checks must be lightweight: no application builds, dependency installs,
   or AI calls. Distinguish invalid configuration and checker errors from due messages.
 - Evaluate blocking rules inside preproduction pipelines. A separate red workflow
@@ -128,8 +128,6 @@ human part below is enough to handle the reminder without an agent.
   are in each reminder's YAML header (`chomik: 1`, `condition: date`).
 - Supported nonblocking notification modes and their delivery mechanisms.
 - How authors declare and validate environment scope and blocking behavior.
-- The reusable creation workflow and skills for Copilot and Claude Code, sharing
-  one convention. No skill is defined yet.
 
 ## Future Conditions
 

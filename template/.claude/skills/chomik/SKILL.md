@@ -10,44 +10,49 @@ disable-model-invocation: true
 
 chomik helps a developer leave a message from the past: a reminder for something
 the team must not forget, such as a temporary workaround. On its date, the CI run
-on the main branch turns red and prints the reminder, so whoever picks it up
-knows what to do, even without the author. Be a friendly, brief colleague: give a
-short overview, and chomik's inner details only when asked. When the developer
-wants to see how chomik works, lead a minimal tutorial, one step at a time.
+on the default branch turns red and prints the reminder, so whoever picks it up
+knows what to do, even without the author.
+
+Be a friendly, brief colleague. To a developer new to chomik, say in one sentence
+what it is for; explain how it works inside only when asked. When the developer
+wants to see chomik work, lead a minimal tutorial, one step per message: write a
+sample reminder with them, then let them see it as it will look on its date, the
+way "What it does" in [README.md](README.md) describes.
 
 chomik works in stages, and the developer starts each one:
 
 1. **Setup**, connecting chomik to CI: follow [setup.md](setup.md) when
    `.github/workflows/chomik.yml` does not exist and `.chomik/` has no reminders
-   yet, or when the developer asks for CI. On first contact, setup ends with
-   chomik ready, nothing more.
-2. **Creating a reminder**, below, when the developer brings something to
-   remember, in the same message or in a later session.
+   yet, unless the developer already declined CI in this conversation, and
+   whenever the developer asks for CI.
+2. **Creating a reminder**, below, when the developer says what to remember. If
+   they said it before setup, continue with it once setup is finished.
 3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
    inside it; this skill is not involved.
 
 The installer keeps the check script in `.chomik/` up to date. The CI workflow
 `.github/workflows/chomik.yml` names its chomik version in the first comment; if
 it is older than `chomik-workflow.yml` in this folder, chomik was updated: first
-propose replacing it as in step 3 of setup.md, and wait for a yes.
+propose updating it as in "Updating chomik.yml" in setup.md, and wait for a yes.
 
 Without `.github/workflows/chomik.yml`, chomik runs in a temporary mode with
-limited features: reminders show only when someone runs `npx chomik check`. So
-after writing a reminder there, say so in one sentence and that `/chomik` can set
-up CI. For anything this file does not cover, rely on [README.md](README.md)
-instead of inventing setups such as git hooks or npm scripts.
+limited features: reminders show only when someone runs `npx chomik check`. After
+writing a reminder in that mode, say so in one sentence and that `/chomik` can
+set up CI. For anything this file does not cover, rely on README.md instead of
+inventing setups such as git hooks or npm scripts.
 
 ## Creating a reminder
 
 Work out the reminder from what the developer said and from the current session;
-read files directly involved in the change if needed. Ask only for what you
-cannot infer and the reminder would be useless without, usually how to tell that
-the problem is resolved. Propose the rest (review date: 14 days from today, UTC)
-and confirm once before writing. What deserves a reminder is the developer's
-call.
+read files directly involved in the change if needed, and `.git/HEAD` for the
+current branch. Ask only for what you cannot infer and the reminder would be
+useless without, usually how to tell that the problem is resolved. Propose the
+rest, including the review date: the one the situation calls for, such as a week
+before a key expires, or 14 days from today (UTC) when nothing points to a date.
+Confirm once before writing. What deserves a reminder is the developer's call.
 
-Write `.chomik/YYYY-MM-DD-<name>.md` in English, where the date is the review
-date and `<name>` uses lowercase letters, digits and hyphens:
+Write `.chomik/YYYY-MM-DD-<name>.md`, where the date is the review date and
+`<name>` uses lowercase letters, digits and hyphens:
 
 ````markdown
 ---
@@ -81,10 +86,11 @@ the file to a new date and add a line below explaining why.
 ```
 ````
 
-Everything between the header and `## Prompt` is printed in CI for humans, so
-keep it short. The prompt must let any agent pick the reminder up cold. The check
-adds the reminder's current path above it, and the file may be renamed to a new
-date, so the prompt never names its own file. The prompt asks the agent to:
+Everything between the header and `## Prompt` is printed in CI for humans, and
+the check cuts it after 40 lines, so keep it well below that. The prompt must let
+any agent pick the reminder up cold. The check adds the reminder's current path
+above it, and the file may be renamed to a new date, so the prompt never names
+its own file. The prompt asks the agent to:
 
 - explain the situation to the user first, then work with them, saying what it
   is doing and why;
@@ -92,22 +98,22 @@ date, so the prompt never names its own file. The prompt asks the agent to:
 - keep apart what was verified, what the developer stated, and what is assumed,
   and not assume access to credentials or services;
 - change nothing without the user's consent, never commit or push, never delete
-  the reminder just to make CI green, and leave moving the date to the user.
+  the reminder just to make CI green, and treat moving the date as the user's
+  decision.
+
+When the reminder is written, list the paths written, remind the developer to
+commit them with their work, and mention that `npx chomik check` shows when the
+reminder is due.
 
 ## Limits
 
-- Write only in `.chomik/`, plus the CI changes described in setup.md, and only
-  after the developer confirms.
+- Write only reminders in `.chomik/` and the CI changes described in setup.md.
 - Never commit, push or open pull requests.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data. If the developer pastes one, say in half a sentence that it is
   now in this conversation and may need rotating.
-- Look at files with file-reading tools. Never run commands such as
-  `npx chomik check` yourself: give the developer the command to run and say in
+- Look around with file-reading tools instead of shell commands, whose
+  permission prompts alarm the developer. chomik's own commands, such as
+  `npx chomik check`, are for the developer to run: give the command and say in
   one sentence what it will show.
 - Reply in the developer's language; reminder files are in English.
-
-## Done
-
-List the paths written or changed, remind the developer to commit them with
-their work, and mention that `npx chomik check` shows when the reminder is due.
