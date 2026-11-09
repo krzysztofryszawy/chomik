@@ -5,7 +5,7 @@ Plans for chomik's development. Decisions and their reasons are in
 
 ## Version 0
 
-Status on 2026-11-08: released up to 0.1.5; `main` holds 0.1.6 in progress.
+Status on 2026-11-09: released up to 0.1.9; `main` holds 0.1.10, ready to release.
 
 Done:
 
@@ -25,11 +25,19 @@ Done:
 - Tested: install from npm, the skill in Claude Code and GitHub Copilot, writing
   a reminder, the check script locally.
 
-Next: full end-to-end proof of concept on real GitHub. A small test repository
-with a Node app and a nightly build: run setup, set a reminder due today, see
-the build turn red in GitHub Actions, then handle the reminder from its prompt
-in a fresh agent session. Not tested yet: setup in a repository with CI, a real
-red run, handling by someone else.
+Tested so far: setup without GitHub and with GitHub Actions, a reminder handled
+from its prompt in a fresh session, and, by the owner on real GitHub, a run of the
+workflow.
+
+Next, in order:
+
+1. Release 0.1.10.
+2. Repeat the test on a machine with strict npm settings, in GitHub Copilot CLI.
+3. A script that prepares a test repository for each scenario, then the remaining
+   agent runs in [mismatch-scenarios.md](mismatch-scenarios.md), including a project
+   with a daily build.
+4. Check whether the `::uuid::` line that ends the protected output is visible in a
+   real GitHub log.
 
 ## Compatibility groundwork, before 0.2.0
 
