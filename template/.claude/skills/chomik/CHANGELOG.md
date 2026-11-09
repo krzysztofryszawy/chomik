@@ -7,7 +7,8 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
-- The FAQ explains how to install and check when npm has `bin-links` switched off.
+- The README explains how to install and check in environments where npm has
+  `bin-links` switched off.
 - The GitHub Actions workflow has a name that says what it does.
 - Setup ends as a short dialogue, one step per message, instead of one long
   message.

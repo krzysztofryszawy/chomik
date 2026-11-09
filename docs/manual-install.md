@@ -1,7 +1,7 @@
 # Installing chomik by hand
 
 This is not the standard way to install chomik. Use `npx chomik@latest`, or the
-command in the README's FAQ if npm has `bin-links` switched off. Follow these steps
+command at the end of the README if npm has `bin-links` switched off. Follow these steps
 only if you cannot reach the npm registry or want to do everything yourself.
 
 You need Node and a copy of this repository at a release tag, for example the

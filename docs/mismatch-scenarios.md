@@ -29,7 +29,7 @@ Status: ✅ covered, ⚠️ partly covered, ❌ not covered yet.
 | Skill files from different versions mixed | Treated as edited, never as one version | ✅ automated |
 | A skill file deleted by hand | Recreated, nothing else touched | ✅ automated |
 | Older chomik run over a newer skill (stale npx cache) | Refuse to downgrade, suggest `npx chomik@latest`; `--force` downgrades on purpose | ✅ automated |
-| npm with `bin-links=false` and `ignore-scripts=true` | `npx chomik` fails with "command not found"; the FAQ gives a path that keeps both settings | ⚠️ by hand |
+| npm with `bin-links=false` and `ignore-scripts=true` | `npx chomik` fails with "command not found"; the README gives a path that keeps both settings | ⚠️ by hand |
 | Run in a subfolder or a monorepo package | Stop and name the repository root | ✅ automated |
 | New version released between a dry run and the install | The plan shown before the question is the current one | ⚠️ by hand |
 | Check script edited by hand | Update refused unless the edit is committed or `--force` is used | ✅ automated |
