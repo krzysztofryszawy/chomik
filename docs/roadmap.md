@@ -5,7 +5,7 @@ Plans for chomik's development. Decisions and their reasons are in
 
 ## Version 0
 
-Status on 2026-11-09: released up to 0.1.9; `main` holds 0.1.10, ready to release.
+Status on 2026-11-09: released up to 0.1.10; `main` holds 0.1.11, in progress.
 
 Done:
 
@@ -31,12 +31,11 @@ workflow.
 
 Next, in order:
 
-1. Release 0.1.10.
-2. Repeat the test on a machine with strict npm settings, in GitHub Copilot CLI.
-3. A script that prepares a test repository for each scenario, then the remaining
+1. Repeat the test on a machine with strict npm settings, in GitHub Copilot CLI.
+2. A script that prepares a test repository for each scenario, then the remaining
    agent runs in [mismatch-scenarios.md](mismatch-scenarios.md), including a project
    with a daily build.
-4. Check whether the `::uuid::` line that ends the protected output is visible in a
+3. Check whether the `::uuid::` line that ends the protected output is visible in a
    real GitHub log.
 
 ## Compatibility groundwork, before 0.2.0

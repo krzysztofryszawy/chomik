@@ -1,6 +1,6 @@
 {
   "name": "chomik",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Agent Skill for Claude Code and GitHub Copilot: bulletproof reminders that turn your GitHub Actions build red on a chosen date, with a ready prompt for your coding agent. Node, no dependencies.",
   "keywords": [
     "agent-skills",
