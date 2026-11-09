@@ -5,6 +5,9 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-09
 
+- **Copying the files by hand is described but not offered.** `docs/manual-install.md`
+  is for someone without access to the npm registry; the README and the tool do not
+  point to it. Why: it is a fallback, not a standard way to install chomik.
 - **With `bin-links` off, chomik is installed without changing that setting.** The
   FAQ gives `npm pack` and running the installer with `node`, not an npx flag that
   overrides the setting. Why: a test in a locked-down environment showed that
