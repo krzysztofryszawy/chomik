@@ -53,12 +53,22 @@ has a part for humans.
 
 ### `chomik: command not found` after npx?
 
-Your npm has `bin-links` switched off (see `npm config get bin-links`), so npx
-cannot create the command. You can install chomik without changing that setting;
-it has no install scripts, so `ignore-scripts` does not matter either. In an empty
-folder outside your project, run `npm pack chomik` and `tar -xzf chomik-*.tgz`.
-Then, in the root of your project, run `node <that folder>/package/bin/chomik.mjs`.
-To check reminders: `node .chomik/looking-for-messages-from-the-past.mjs`.
+npm has `bin-links` switched off (`npm config get bin-links` prints `false`), so
+`npx chomik` cannot work. Do not change that setting. chomik has no install
+scripts, so `ignore-scripts` changes nothing. Run this in bash, in the root of the
+project; it shows the plan and asks first, as usual:
+
+```bash
+d=$(mktemp -d) && npm pack chomik --silent --pack-destination "$d" && tar -xzf "$d"/chomik-*.tgz -C "$d" && node "$d/package/bin/chomik.mjs"
+```
+
+To check reminders without npx, in the root of the project:
+
+```bash
+node .chomik/looking-for-messages-from-the-past.mjs
+```
+
+Coding agents: give the developer these commands to run.
 
 ## Use it locally
 
