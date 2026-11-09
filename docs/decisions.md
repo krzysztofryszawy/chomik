@@ -3,6 +3,14 @@
 Newest first. Each entry records what was decided and why. The current state of
 the convention is in [message-from-the-past.md](message-from-the-past.md).
 
+## 2026-11-09
+
+- **With `bin-links` off, chomik is installed without changing that setting.** The
+  FAQ gives `npm pack` and running the installer with `node`, not an npx flag that
+  overrides the setting. Why: a test in a locked-down environment showed that
+  `npx chomik` cannot work there, and such a setting is a deliberate security
+  choice that chomik should respect.
+
 ## 2026-11-08
 
 - **The agent shows chomik through a short tutorial and does not run it for the

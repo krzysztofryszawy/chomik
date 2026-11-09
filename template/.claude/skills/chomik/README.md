@@ -51,6 +51,15 @@ after installing, set up `.github/workflows/chomik.yml` by following
 shown in `SKILL.md` next to it. Handling a reminder never needs an agent: each
 has a part for humans.
 
+### `chomik: command not found` after npx?
+
+Your npm has `bin-links` switched off (see `npm config get bin-links`), so npx
+cannot create the command. You can install chomik without changing that setting;
+it has no install scripts, so `ignore-scripts` does not matter either. In an empty
+folder outside your project, run `npm pack chomik` and `tar -xzf chomik-*.tgz`.
+Then, in the root of your project, run `node <that folder>/package/bin/chomik.mjs`.
+To check reminders: `node .chomik/looking-for-messages-from-the-past.mjs`.
+
 ## Use it locally
 
 A temporary mode with limited features, for trying chomik before it goes into CI.
