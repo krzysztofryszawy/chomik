@@ -9,7 +9,9 @@ What changed in chomik, newest first. chomik follows
 
 - The prompt chomik gives you to paste into your coding agent asks what trouble
   chomik takes off your hands and what you gain, so the answer starts from your
-  side rather than from how chomik works.
+  side rather than from how chomik works. The agent then invites you to the next
+  step, installing chomik or typing `/chomik`, and says what it will and will
+  not change.
 
 ## [0.1.11] - 2026-11-10
 

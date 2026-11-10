@@ -22,7 +22,8 @@ const OWN_FILES = [
   { key: SCRIPT, source: join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT), target: CHECK_SCRIPT, note: ' (the check CI runs)' },
 ];
 
-const explainFrom = (where) => `Read ${where} and tell me in at most four short sentences what trouble chomik takes off my hands and what I gain, with one example. Do not search this project. Finish by offering to set up my first reminder together. Do not change anything.`;
+// The agent cannot start the next step itself, so the prompt asks it to invite me to it.
+const explainFrom = (where, next) => `Read ${where} and tell me in at most four short sentences what trouble chomik takes off my hands and what I gain, with one example. Do not search this project. Then invite me to ${next}, and say what that will and will not change, so I can try it without worry. Do not change anything.`;
 // The same two lines open the README; a test keeps them equal.
 const PITCH = `Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.`;
@@ -143,7 +144,7 @@ function outsideRoot() {
 function introduce(problem, start) {
   console.error(`${problem}\n\n${PITCH}\nBuilt for coding agents.\n`);
   console.error(start);
-  console.error(`Curious first? Paste this into your coding agent:\n\n${indented(explainFrom('https://github.com/krzysztofryszawy/chomik'))}`);
+  console.error(`Curious first? Paste this into your coding agent:\n\n${indented(explainFrom('https://github.com/krzysztofryszawy/chomik', 'install chomik by running npx chomik@latest in the root of this project'))}`);
 }
 
 // Runs the project's own copy, the same file CI runs, so both give the same answer.
@@ -304,7 +305,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.log(`Done. chomik ${VERSION} is installed.\n`);
     console.log('chomik just moved in.\n');
     console.log('First time with chomik? Paste this into a new session of your coding agent:\n');
-    console.log(`${indented(explainFrom('.claude/skills/chomik/README.md'))}\n`);
+    console.log(`${indented(explainFrom('.claude/skills/chomik/README.md', 'finish setting chomik up by typing /chomik'))}\n`);
     console.log('Then type /chomik there to set it up.');
   } else {
     console.log(`Done. chomik is now ${VERSION}.`);
