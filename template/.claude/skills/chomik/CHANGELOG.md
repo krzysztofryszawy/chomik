@@ -3,6 +3,8 @@
 What changed in chomik, newest first. chomik follows
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.12] - unreleased
+
 ## [0.1.11] - 2026-11-10
 
 ### Changed

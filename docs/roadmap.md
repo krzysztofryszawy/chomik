@@ -5,7 +5,7 @@ Plans for chomik's development. Decisions and their reasons are in
 
 ## Version 0
 
-Status on 2026-11-09: released up to 0.1.10; `main` holds 0.1.11, in progress.
+Status on 2026-11-10: released up to 0.1.11; `main` holds 0.1.12, in progress.
 
 Done:
 
