@@ -5,6 +5,14 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **The changelog is the usual minimum, and empty until the beta.** Until 0.2.0,
+  `CHANGELOG.md` holds one entry naming the working version; its heading still
+  carries the version that guards against downgrades. After an update the
+  installer no longer offers a prompt to read the changelog. From 0.2.0 each
+  version gets a few short lines on what changed in behavior. Why: before the
+  beta only testers use chomik, 0.1.x is gone from npm, and a long history
+  helps nobody; the reasons live here and in git history. This replaces the
+  update prompt of 2026-11-08.
 - **Several due reminders are counted, listed and numbered.** The annotation
   gives the count, the log opens with one instruction (each is a separate task,
   one agent session at a time) and a numbered list of titles from each

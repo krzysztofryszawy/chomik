@@ -130,8 +130,7 @@ written the same way.
 ## Update
 
 Run `npx chomik@latest` in the project root. It shows the plan and asks first,
-and it never overwrites edits that are not committed to git. What changed:
-[CHANGELOG.md](CHANGELOG.md).
+and it never overwrites edits that are not committed to git.
 
 ## Stop or remove
 

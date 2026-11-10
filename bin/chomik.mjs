@@ -330,11 +330,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     console.log(`Done. Commit ${WORKFLOW} and push it to your main branch:\nfrom then on GitHub checks your reminders every night.`);
   } else {
     console.log(`Done. chomik is now ${VERSION}.`);
-    console.log(`Feel free to share chomik with your team: commit ${toCommit}.\n`);
-    const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
-    console.log('chomik learned some new tricks.\n');
-    console.log('Curious which? Paste this into a new session of your coding agent:\n');
-    console.log(indented(`Read .claude/skills/chomik/CHANGELOG.md and tell me briefly what changed ${since} and what it means for this project. Do not change anything.`));
+    console.log(`Feel free to share chomik with your team: commit ${toCommit}.`);
   }
   return 0;
 }
