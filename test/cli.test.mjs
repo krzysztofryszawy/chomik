@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -389,8 +389,15 @@ const releaseTags = (() => {
   }
 })();
 
-// Up to 0.1.7 every file sat in the skill folder; later the check script is in template/.chomik/.
+const OWN_SCHEDULE = /^ *# chomik: only without a daily build, begin\n[\s\S]*?^ *# chomik: only without a daily build, end\n/m;
+
+// Up to 0.1.7 every file sat in the skill folder; later the check script is in template/.chomik/,
+// and from 0.1.12 the workflow is in template/.github/workflows/, in two forms.
 function releasedFile(tag, file) {
+  if (file.startsWith('chomik.yml')) {
+    const workflow = execFileSync('git', ['show', `${tag}:template/.github/workflows/chomik.yml`], { encoding: 'utf8' });
+    return Buffer.from(file === 'chomik.yml#called' ? workflow.replace(OWN_SCHEDULE, '') : workflow);
+  }
   try {
     return execFileSync('git', ['show', `${tag}:template/.claude/skills/chomik/${file}`], { stdio: ['ignore', 'pipe', 'ignore'] });
   } catch {
@@ -401,7 +408,7 @@ function releasedFile(tag, file) {
 function withRelease(root, tag) {
   mkdirSync(join(root, SKILL_DIR), { recursive: true });
   const scriptInSkill = releasedFromSkillFolder(tag, SCRIPT);
-  for (const file of Object.keys(RELEASED[tag.slice(1)])) {
+  for (const file of Object.keys(RELEASED[tag.slice(1)]).filter((f) => !f.startsWith('chomik.yml'))) {
     const dir = file === SCRIPT && !scriptInSkill ? '.chomik' : SKILL_DIR;
     mkdirSync(join(root, dir), { recursive: true });
     writeFileSync(join(root, dir, file), releasedFile(tag, file));
@@ -584,6 +591,32 @@ test('released-files.json matches the files of every release tag in this reposit
       assert.equal(RELEASED[tag.slice(1)]?.[file], hash, `${tag} ${file}`);
     }
   }
+});
+
+test('after a release, the script records both workflow forms the installer writes', () => {
+  const repo = mkdtempSync(join(tmpdir(), 'chomik-release-'));
+  for (const path of ['package.json', 'bin', 'template']) cpSync(resolve(path), join(repo, path), { recursive: true });
+  gitIn(repo, 'init', '-q');
+  gitIn(repo, 'add', '-A');
+  gitIn(repo, 'commit', '-qm', 'release');
+  gitIn(repo, 'tag', `v${VERSION}`);
+  const result = spawnSync(process.execPath, [resolve('scripts/after-release.mjs')], { cwd: repo, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  const recorded = JSON.parse(readFileSync(join(repo, 'bin', 'released-files.json'), 'utf8'))[VERSION];
+
+  const root = project({ git: true });
+  gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
+  run(root, ['--yes']);
+  assert.equal(createHash('sha256').update(readFileSync(join(root, WORKFLOW))).digest('hex'), recorded['chomik.yml']);
+  inDailyBuild(root);
+  rmSync(join(root, WORKFLOW));
+  run(root, ['--yes']);
+  assert.equal(createHash('sha256').update(readFileSync(join(root, WORKFLOW))).digest('hex'), recorded['chomik.yml#called']);
+
+  const next = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).version;
+  assert.notEqual(next, VERSION);
+  assert.match(readFileSync(join(repo, 'template', WORKFLOW), 'utf8'), new RegExp(`chomik ${next.replaceAll('.', '\\.')} `));
+  assert.match(readFileSync(join(repo, 'template', '.claude', 'skills', 'chomik', 'CHANGELOG.md'), 'utf8'), new RegExp(`^## \\[${next.replaceAll('.', '\\.')}\\] - unreleased$`, 'm'));
 });
 
 test('the changelog has an entry for the current version', () => {

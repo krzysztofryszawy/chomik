@@ -22,11 +22,12 @@ created with an agent and checked deterministically in CI.
   check script and `template/.github/workflows/chomik.yml`; a test checks), date its entry in
   `template/.claude/skills/chomik/CHANGELOG.md`, push a tag `v<version>`. The publish
   workflow runs `npm stage publish`; the owner approves the version on npmjs.com
-  with 2FA. Nothing is published from a local machine. Right after a release, add its
-  file hashes (skill folder, `template/.chomik/`, and `chomik.yml` in both forms, with and
-  without its own schedule) to `bin/released-files.json` (a test checks every `v*` tag)
-  and bump `version` to the next one, with a new `unreleased` changelog entry, so
-  new work is never mistaken for the released version. The changelog is for
+  with 2FA. Nothing is published from a local machine. Right after the owner approves
+  it, run `node scripts/after-release.mjs` and commit the result: it adds the released
+  files' hashes to `bin/released-files.json` (a test checks every `v*` tag), including
+  `chomik.yml` in both forms, and bumps `version` to the next one with a new
+  `unreleased` changelog entry, so new work is never mistaken for the released
+  version. The changelog is for
   users and stays the usual minimum: a few short lines per version on what
   changed in behavior, never a list of commits. Until the 0.2.0 beta an entry
   only names the working version.
