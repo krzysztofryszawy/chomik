@@ -29,6 +29,9 @@ What changed in chomik, newest first. chomik follows
   untested variants.
 - Setup ends in warmer, plainer words: what each folder to commit is for, and
   when reminders will show, with CI or without it.
+- chomik introduces itself by what it gives you rather than how it works: in
+  the README, in the prompt to paste into your coding agent, and in the agent's
+  first words about it.
 - Run outside a Node project, `npx chomik` says what chomik is and how to try
   it, instead of only that `package.json` is missing.
 - Run in a folder that only holds repositories, `npx chomik` and

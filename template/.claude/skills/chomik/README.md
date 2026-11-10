@@ -3,6 +3,13 @@
 Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.
 
+Some things in a project must not be forgotten: a key that expires, a temporary
+workaround, a follow-up promised for later. Keeping them in your head, with every
+detail of what to do, is a burden, and still no guarantee. chomik carries it for
+you. On the day, the main-branch build turns red with exactly what needs doing and
+a ready task for your coding agent, so nobody misses it, and whoever picks it up,
+even someone new to the project, can act at once.
+
 ## What it does
 
 - A reminder is a Markdown file `.chomik/YYYY-MM-DD-name.md`: a part for humans

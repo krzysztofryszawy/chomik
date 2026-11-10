@@ -83,7 +83,7 @@ test('npx chomik --yes installs exactly the skill files and the check script', (
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
   assert.match(stdout, /create\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(the check CI runs\)/);
-  assert.match(prose(stdout), /\n\nchomik just moved in\.\n\nFirst time with chomik\? Paste this into a new session of your coding agent:\n Read \.claude\/skills\/chomik\/README\.md and tell me in at most four short sentences what chomik does, with one example\. Do not search this project\. End by saying that chomik will help me set up my first reminder\. Do not change anything\.\n\nThen type \/chomik there to set it up\.\n$/);
+  assert.match(prose(stdout), /\n\nchomik just moved in\.\n\nFirst time with chomik\? Paste this into a new session of your coding agent:\n Read \.claude\/skills\/chomik\/README\.md and tell me in at most four short sentences what chomik gives me, from my point of view, with one example\. Do not search this project\. Finish by offering to set up my first reminder together\. Do not change anything\.\n\nThen type \/chomik there to set it up\.\n$/);
   assert.ok(stdout.split('\n').every((line) => line.length <= 80 || !line.startsWith('  ')));
   assert.doesNotMatch(stdout, /Feel free to share chomik/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), [...FILES].sort());

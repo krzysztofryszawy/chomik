@@ -3,10 +3,12 @@
 Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.
 
-You put off a fix, a temporary pin, or a follow-up. With your coding agent you
-leave a reminder in the repository. On its date, the main-branch build turns red
-and prints a ready prompt for any coding agent, plus a short explanation for
-humans. Whoever takes it, even someone new to the project, knows what to do.
+Some things in a project must not be forgotten: a key that expires, a temporary
+workaround, a follow-up promised for later. Keeping them in your head, with every
+detail of what to do, is a burden, and still no guarantee. chomik carries it for
+you. On the day, the main-branch build turns red with exactly what needs doing and
+a ready task for your coding agent, so nobody misses it, and whoever picks it up,
+even someone new to the project, can act at once.
 
 ## Try it
 

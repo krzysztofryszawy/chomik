@@ -5,6 +5,15 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **chomik introduces itself by its benefit, and the model chooses the words.**
+  The README opens with the burden chomik takes off (remembering what must not
+  be forgotten, with every detail), the first-contact prompt asks what chomik
+  gives me, from my point of view, and ends with an offer to set up the first
+  reminder together, and the skill's first sentence to a newcomer says what
+  chomik gives them. No sample sentences and no language instruction. Why: the
+  owner found the agent's answer a dry list of mechanics, and the old prompt
+  ("End by saying that chomik will help me…") was echoed word for word in the
+  first person; fixed phrases would make every answer sound the same.
 - **`npx chomik` outside a Node project introduces chomik.** It prints the same
   pitch and prompt for an agent as `npx chomik check` in a project without
   chomik, and says where to run it; a folder of repositories lists at most five
