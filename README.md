@@ -18,6 +18,9 @@ In the root of a Node project:
 npx chomik@latest
 ```
 
+The `npm i chomik` shown on npmjs.com only adds the package to your project;
+`npx chomik@latest` is what installs chomik, and updates it later.
+
 Then start a new session of your coding agent in the project (Claude Code or
 GitHub Copilot) and type `/chomik`. chomik's skill, instructions your agent
 reads, sets up CI with you and then helps you write reminders.
