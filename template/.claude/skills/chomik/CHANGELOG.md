@@ -7,6 +7,12 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- Rules that had dropped out of the skill are back: the agent says that the
+  build turns red on the reminder's date, asks at most one question at a time,
+  does not search your project, introduces itself when you type `/chomik` alone,
+  and never touches files outside your repository. A reminder's prompt again
+  asks the agent to propose cleaning up after a verified fix, and to move the
+  date only on your decision, backed by current evidence.
 - chomik never blocks a production deployment: setup does not join a build
   that deploys to production or that a production deployment waits for, and
   gives chomik its own nightly run instead.

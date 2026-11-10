@@ -36,7 +36,9 @@ chomik works in stages, and the developer starts each one:
    yet, unless the developer already declined CI in this conversation, and
    whenever the developer asks for CI.
 2. **Creating a reminder**, below, when the developer says what to remember. If
-   they said it before setup, continue with it once setup is finished.
+   they said it before setup, continue with it once setup is finished. If they
+   invoke chomik without saying anything and setup is not needed, say in one
+   sentence what chomik can do for them, then wait for them to describe it.
 3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
    inside it; this skill is not involved.
 
@@ -53,13 +55,17 @@ inventing setups such as git hooks or npm scripts.
 
 ## Creating a reminder
 
-Work out the reminder from what the developer said and from the current session;
-read files directly involved in the change if needed, and `.git/HEAD` for the
-current branch. Ask only for what you cannot infer and the reminder would be
-useless without, usually how to tell that the problem is resolved. Propose the
-rest, including the review date: the one the situation calls for, such as a week
-before a key expires, or 14 days from today (UTC) when nothing points to a date.
-Confirm once before writing. What deserves a reminder is the developer's call.
+Work out the reminder from what the developer said and from the current session.
+Do not search the repository on your own; read only files the developer mentions
+or that are part of the change, and `.git/HEAD` for the current branch. Ask only
+for what you cannot infer and the reminder would be useless without, usually how
+to tell that the problem is resolved, and at most one question per message.
+Propose the rest, including the review date: 14 days from today (UTC) when
+nothing points to another date, or a later one when the situation justifies it,
+such as a week before a key that expires next year. Confirm once before writing,
+and say then that on that date the main-branch build turns red, so the developer
+can choose a later date instead. What deserves a reminder is the developer's
+call.
 
 Write `.chomik/YYYY-MM-DD-<name>.md`, where the date is the review date and
 `<name>` uses lowercase letters, digits and hyphens:
@@ -107,9 +113,11 @@ its own file. The prompt asks the agent to:
 - use the context, relevant files, checks and resolution criteria given;
 - keep apart what was verified, what the developer stated, and what is assumed,
   and not assume access to credentials or services;
-- change nothing without the user's consent, never commit or push, never delete
-  the reminder just to make CI green, and treat moving the date as the user's
-  decision.
+- change nothing without the user's consent, never commit or push, and never
+  delete the reminder just to make CI green;
+- once the resolution is verified, propose removing the workaround and the
+  reminder in one change for review, leaving other reminders alone;
+- move the date only on the user's decision, backed by current evidence.
 
 When the reminder is written, list the paths written, remind the developer to
 commit them with their work, and mention that `npx chomik check` shows when the
@@ -117,7 +125,8 @@ reminder is due.
 
 ## Limits
 
-- Write only reminders in `.chomik/` and the CI changes described in setup.md.
+- Write only reminders in `.chomik/` and the CI changes described in setup.md;
+  never touch files outside this repository.
 - Never commit, push or open pull requests.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data. If the developer pastes one, say in half a sentence that it is

@@ -5,6 +5,24 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **Rules lost from the skill are restored, and no rule leaves it silently
+  again.** An audit against this file, `message-from-the-past.md` and the
+  security checklist found decided rules missing from the skill: saying that the
+  build turns red when confirming a reminder, cleanup after a verified fix and
+  moving the date only with current evidence in the prompt, no searching the
+  repository, at most one question per message, introducing itself when invoked
+  without a request, and never touching files outside the repository. Most were
+  dropped in the rewrite of 2026-11-07 (`fb43c97`), one on the same day
+  (`69f4790`), without being named. Rule from now on: a change that removes or
+  weakens a rule in the skill names that rule and gets an entry here, and the
+  owner agrees to it first.
+- **Long review dates are fine when the situation justifies them.** The default
+  stays 14 days; a later date, such as a week before a key that expires next
+  year, is proposed when the situation calls for it. This replaces "deadlines are
+  short, usually up to a month" from the accepted risks of 2026-11-05. Why: the
+  most valuable reminders, such as expiring credentials, are often far ahead; the
+  prompt stays useful because it asks the agent to verify the current state
+  before acting.
 - **Setup never joins a build that a production deployment depends on.** A daily
   build that deploys to production, or after which a production deployment runs
   (`needs:` or `workflow_run`), is treated as no daily build: chomik gets its own
