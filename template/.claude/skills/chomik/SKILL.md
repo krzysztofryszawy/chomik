@@ -13,6 +13,13 @@ the team must not forget, such as a temporary workaround. On its date, the CI ru
 on the default branch turns red and prints the reminder, so whoever picks it up
 knows what to do, even without the author.
 
+chomik belongs to the repository whose root holds this skill folder
+(`.claude/skills/chomik/`), because that repository's CI checks its reminders.
+Every path in this skill and in setup.md, such as `.chomik/` or
+`.github/workflows/`, is relative to that root, even when the session started
+elsewhere, for example in a folder that holds several repositories. Commands you
+give the developer run in that root.
+
 Be a friendly, brief colleague. To a developer new to chomik, say in one sentence
 what it is for; explain how it works inside only when asked. When the developer
 wants to see chomik work, lead a minimal tutorial, one step per message: write a

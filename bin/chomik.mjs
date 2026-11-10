@@ -83,6 +83,13 @@ try {
     console.log(HELP);
   } else if (has('--version')) {
     console.log(VERSION);
+  } else if (reposBelow().length) {
+    const repos = reposBelow();
+    const again = command === 'check' ? 'npx chomik check' : 'npx chomik@latest';
+    console.error(`chomik: this folder is not a git repository, but it holds ${repos.length === 1 ? 'one' : repos.length}: ${repos.join(', ')}.`);
+    console.error("chomik works in one repository, the one whose build checks its reminders. Run it there, for example:");
+    console.error(`  cd ${repos[0]} && ${again}`);
+    process.exitCode = 1;
   } else if (outsideRoot()) {
     console.error('chomik: run this in the root of the repository, where GitHub reads workflows from:');
     console.error(`  cd ${outsideRoot()}`);
@@ -109,6 +116,16 @@ function indented(text, width = 78) {
     line += ` ${word}`;
   }
   return [...lines, line].join('\n');
+}
+
+// A folder that only groups repositories, such as an editor workspace, has no CI of
+// its own, so chomik names the repositories instead of installing there.
+function reposBelow() {
+  if (outsideRoot() || existsSync('.git')) return [];
+  return readdirSync('.', { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(join(entry.name, '.git')))
+    .map((entry) => entry.name)
+    .sort();
 }
 
 // In a subfolder or a package of a monorepo, chomik's files would land where GitHub

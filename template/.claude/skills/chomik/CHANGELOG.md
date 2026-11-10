@@ -21,6 +21,11 @@ What changed in chomik, newest first. chomik follows
 - After an update, the installer reminds you to commit `.chomik/` too, since CI
   runs the check script from there.
 - Run locally, the check no longer tells you to run it locally.
+- In an editor workspace that opens several repositories at once, the agent
+  works in the repository that holds chomik, even when the session started in
+  the folder above them.
+- Run in a folder that only holds repositories, `npx chomik` and
+  `npx chomik check` name them and say to run chomik in one of them.
 
 ## [0.1.10] - 2026-11-09
 

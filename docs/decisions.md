@@ -5,6 +5,20 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **chomik belongs to the repository whose build checks its reminders.** In an
+  editor workspace with several repositories, the skill works in the repository
+  that holds its own folder, whatever folder the session started in, and the
+  installer run in a folder that only holds repositories names them instead of
+  installing. A reminder about another repository lives where the team watches
+  the build and names that repository in its prompt. Why: a workspace exists only
+  in the editor; GitHub runs each repository's workflows separately. In Claude
+  Code a session started above a repository loads that repository's skills,
+  `CLAUDE.md` and rules only once it works on files there, and reads
+  `.claude/settings.json` only from the folder where it started, so the skill
+  cannot rely on the session's folder. Not decided yet: whether `/chomik` is
+  available at once in such a session; a test in VS Code comes first, and
+  installing the skill per user stays under "Later". Requiring `package.json`
+  stays for now.
 - **Versions 0.1.0 to 0.1.9 were unpublished before the beta.** The owner removed
   them from npm by hand on 2026-11-10; 0.1.10 stays as the only published version
   until 0.2.0, so the name stays held. This brings forward part of the beta plan

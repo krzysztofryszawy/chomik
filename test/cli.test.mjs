@@ -39,6 +39,34 @@ const prose = (text) => text.replace(/\n {2}/g, ' ');
 const scriptTemplate = () => readFileSync(resolve('template/.chomik', SCRIPT));
 const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
 
+function workspace() {
+  const root = mkdtempSync(join(tmpdir(), 'chomik-workspace-'));
+  for (const name of ['web', 'infra']) {
+    mkdirSync(join(root, name));
+    gitIn(join(root, name), 'init', '-q');
+  }
+  writeFileSync(join(root, 'web', 'package.json'), '{"name":"web"}\n');
+  return root;
+}
+
+test('in a folder that holds repositories, both commands name them and change nothing', () => {
+  const root = workspace();
+  for (const [args, again] of [[['--yes'], 'npx chomik@latest'], [['check'], 'npx chomik check']]) {
+    const { code, stdout, stderr } = run(root, args);
+    assert.equal(code, 1, args[0]);
+    assert.equal(stdout, '');
+    assert.equal(stderr, `chomik: this folder is not a git repository, but it holds 2: infra, web.\nchomik works in one repository, the one whose build checks its reminders. Run it there, for example:\n  cd infra && ${again}\n`);
+  }
+  assert.deepEqual(readdirSync(root).sort(), ['infra', 'web']);
+});
+
+test('a repository with other repositories inside still installs in its own root', () => {
+  const root = project({ git: true });
+  mkdirSync(join(root, 'vendor'));
+  gitIn(join(root, 'vendor'), 'init', '-q');
+  assert.equal(run(root, ['--yes']).code, 0);
+});
+
 test('npx chomik --yes installs exactly the skill files and the check script', () => {
   const root = project();
   const { code, stdout } = run(root, ['--yes']);
