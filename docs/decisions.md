@@ -5,6 +5,12 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **`npx chomik` outside a Node project introduces chomik.** It prints the same
+  pitch and prompt for an agent as `npx chomik check` in a project without
+  chomik, and says where to run it; a folder of repositories lists at most five
+  of them. Why: on a dry run of a newcomer's first steps, `npx chomik` in a random
+  folder was the most likely first command and said only that `package.json` was
+  missing.
 - **chomik belongs to the repository whose build checks its reminders.** In an
   editor workspace with several repositories, the skill works in the repository
   that holds its own folder, whatever folder the session started in, and the

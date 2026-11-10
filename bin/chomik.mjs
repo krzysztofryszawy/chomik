@@ -86,7 +86,8 @@ try {
   } else if (reposBelow().length) {
     const repos = reposBelow();
     const again = command === 'check' ? 'npx chomik check' : 'npx chomik@latest';
-    console.error(`chomik: this folder is not a git repository, but it holds ${repos.length === 1 ? 'one' : repos.length}: ${repos.join(', ')}.`);
+    const names = repos.length > 5 ? `${repos.slice(0, 5).join(', ')} and ${repos.length - 5} more` : repos.join(', ');
+    console.error(`chomik: this folder is not a git repository, but it holds ${repos.length === 1 ? 'one' : repos.length}: ${names}.`);
     console.error("chomik works in one repository, the one whose build checks its reminders. Run it there, for example:");
     console.error(`  cd ${repos[0]} && ${again}`);
     process.exitCode = 1;
@@ -138,12 +139,17 @@ function outsideRoot() {
   }
 }
 
+// Someone who runs chomik where it cannot work yet is often seeing it for the first time.
+function introduce(problem, start) {
+  console.error(`${problem}\n\n${PITCH}\nBuilt for coding agents.\n`);
+  console.error(start);
+  console.error(`Curious first? Paste this into your coding agent:\n\n${indented(explainFrom('https://github.com/krzysztofryszawy/chomik'))}`);
+}
+
 // Runs the project's own copy, the same file CI runs, so both give the same answer.
 function check() {
   if (!existsSync(CHECK_SCRIPT) && !existsSync(join(TARGET, 'SKILL.md'))) {
-    console.error(`chomik is not in this project yet.\n\n${PITCH}\nBuilt for coding agents.\n`);
-    console.error('Give chomik a chance to impress you: npx chomik@latest');
-    console.error(`Curious first? Paste this into your coding agent:\n\n${indented(explainFrom('https://github.com/krzysztofryszawy/chomik'))}`);
+    introduce('chomik is not in this project yet.', 'Give chomik a chance to impress you: npx chomik@latest');
     return 1;
   }
   if (!existsSync(CHECK_SCRIPT)) {
@@ -196,7 +202,7 @@ function newer(a, b) {
 
 async function installOrUpdate({ yes, dryRun, force }) {
   if (!existsSync('package.json')) {
-    console.error('chomik: no package.json here. Run this in the root of a Node project.');
+    introduce('chomik: this folder is not a Node project, so there is nothing to install it in.', 'To try it, run this in the root of a Node project: npx chomik@latest');
     return 1;
   }
 

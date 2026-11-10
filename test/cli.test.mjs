@@ -60,6 +60,15 @@ test('in a folder that holds repositories, both commands name them and change no
   assert.deepEqual(readdirSync(root).sort(), ['infra', 'web']);
 });
 
+test('a folder with many repositories names five of them', () => {
+  const root = mkdtempSync(join(tmpdir(), 'chomik-workspace-'));
+  for (const name of ['a', 'b', 'c', 'd', 'e', 'f', 'g']) {
+    mkdirSync(join(root, name));
+    gitIn(join(root, name), 'init', '-q');
+  }
+  assert.match(run(root, ['--yes']).stderr, /^chomik: this folder is not a git repository, but it holds 7: a, b, c, d, e and 2 more\.\n/);
+});
+
 test('a repository with other repositories inside still installs in its own root', () => {
   const root = project({ git: true });
   mkdirSync(join(root, 'vendor'));
@@ -186,12 +195,14 @@ test('without a terminal and without --yes nothing is written', () => {
   assert.equal(existsSync(join(root, '.claude')), false);
 });
 
-test('refuses to run outside a Node project', () => {
+test('outside a Node project, introduces chomik and installs nothing', () => {
   const root = project({ packageJson: false });
-  const { code, stderr } = run(root, ['--yes']);
+  const { code, stdout, stderr } = run(root, ['--yes']);
   assert.equal(code, 1);
-  assert.match(stderr, /no package\.json/);
-  assert.equal(existsSync(join(root, '.claude')), false);
+  assert.equal(stdout, '');
+  assert.match(stderr, /^chomik: this folder is not a Node project, so there is nothing to install it in\.\n\nBulletproof reminders/);
+  assert.match(stderr, /To try it, run this in the root of a Node project: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
+  assert.deepEqual(readdirSync(root), []);
 });
 
 test('refuses to write through a symbolic link', () => {

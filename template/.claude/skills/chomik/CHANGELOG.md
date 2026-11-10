@@ -29,6 +29,8 @@ What changed in chomik, newest first. chomik follows
   untested variants.
 - Setup ends in warmer, plainer words: what each folder to commit is for, and
   when reminders will show, with CI or without it.
+- Run outside a Node project, `npx chomik` says what chomik is and how to try
+  it, instead of only that `package.json` is missing.
 - Run in a folder that only holds repositories, `npx chomik` and
   `npx chomik check` name them and say to run chomik in one of them.
 
