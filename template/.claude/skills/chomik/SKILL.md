@@ -35,16 +35,22 @@ describes.
 When the developer says what to remember, create the reminder as described
 below. When they invoke chomik without that, welcome them as someone who may be
 new to chomik and may have nothing to remember yet. Say what chomik takes off
-their hands, with one example from everyday work, and how it is set up here.
-Then leave the next step open: they can see how it works on a sample reminder,
-or come back with `/chomik` whenever something comes up. Do not press them for
-something to remember. How it is set up depends on
+their hands, with one example from everyday work: on the reminder's date it
+shows up where the team already looks, as a red build or check on GitHub, with
+exactly what to do, so it cannot slip by. Then say how it is set up here. Then
+leave the next step open: they can see how it works on a sample reminder, or
+come back with `/chomik` whenever something comes up. Do not press them for
+something to remember.
+
+You cannot tell whether chomik's files are committed and pushed yet, so never
+say that chomik is already checking. Say instead that it starts once its files
+are on the main branch on GitHub. How it is set up depends on
 `.github/workflows/chomik.yml`:
 
-- Another workflow calls it: it runs inside that daily build, which turns red on
-  a reminder's date.
-- It exists on its own: once it is committed and pushed to the main branch,
-  GitHub checks the reminders every night. If the project has a daily build,
+- Another workflow calls it: chomik runs inside that daily build, which turns
+  red on a reminder's date.
+- It exists on its own: GitHub will check the reminders every night. If the
+  project has a daily build,
   propose moving chomik into it, as described below, once per conversation,
   as the only question in that message.
 - It does not exist: reminders show only when someone runs `npx chomik check`.
