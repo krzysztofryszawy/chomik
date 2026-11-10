@@ -23,8 +23,10 @@ release. Recorded on 2026-11-05.
 - [ ] No runtime dependencies.
 - [ ] No network access; the installer only copies files bundled in the package.
 - [ ] Few published files, short and readable code, no obfuscation.
-- [ ] Old versions 0.0.1 and 0.0.2 (a demo with a network request and a file
-      write) are unpublished after the first real release.
+- [ ] Only the current line of versions is published on npm. Old versions
+      0.0.1 and 0.0.2 (a demo with a network request and a file write) and
+      0.1.0 to 0.1.9 were unpublished; the remaining 0.1.x go after the 0.2.0
+      beta.
 
 ## Installer (`npx chomik`)
 

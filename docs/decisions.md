@@ -3,6 +3,20 @@
 Newest first. Each entry records what was decided and why. The current state of
 the convention is in [message-from-the-past.md](message-from-the-past.md).
 
+## 2026-11-10
+
+- **Versions 0.1.0 to 0.1.9 were unpublished before the beta.** The owner removed
+  them from npm by hand on 2026-11-10; 0.1.10 stays as the only published version
+  until 0.2.0, so the name stays held. This brings forward part of the beta plan
+  from 2026-11-06, which was to unpublish all 0.1.x only after 0.2.0. Why: npm
+  allows unpublishing a version only within 72 hours of publishing, or later for
+  a package with fewer than 300 downloads a week, so waiting for the beta would
+  most likely have made it impossible. The numbers stay listed on npm as deleted
+  and cannot be reused. Repository tags, `CHANGELOG.md` and
+  `bin/released-files.json` keep 0.1.x until the beta, as planned. Lesson:
+  `npm unpublish` run without being logged in prints `- chomik@<version>` as if it
+  had worked, so `npm whoami` comes first.
+
 ## 2026-11-09
 
 - **Setup asks for the default branch when the repository does not record it.**

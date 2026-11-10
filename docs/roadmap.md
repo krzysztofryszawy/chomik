@@ -21,7 +21,8 @@ Done:
 - Clean repository start, `LICENSE`, `SECURITY.md`, public repository.
 - Publishing through a workflow with trusted publishing, staged publishing and
   provenance.
-- Experimental versions 0.0.1 and 0.0.2 unpublished from npm.
+- Versions 0.0.1 to 0.1.9 unpublished from npm; 0.1.10 is the only published
+  version.
 - Tested: install from npm, the skill in Claude Code and GitHub Copilot, writing
   a reminder, the check script locally.
 
@@ -55,7 +56,8 @@ Cheap now, expensive once reminders live in other people's repositories. In orde
 
 - Breaking changes are fine until then.
 - Until then, working versions are 0.1.x.
-- Publish 0.2.0 as the beta, then unpublish all 0.1.x versions, in that order.
+- Publish 0.2.0 as the beta, then unpublish 0.1.10 and any later 0.1.x, in that
+  order.
 - Start the history at 0.2.0: `bin/released-files.json` and `CHANGELOG.md` keep
   only 0.2.0 on, and the tests stop reading 0.1.x tags.
 
