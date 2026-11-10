@@ -27,6 +27,8 @@ What changed in chomik, newest first. chomik follows
 - The agent looks at your files without shell commands, so it does not ask for
   permission to run them, and gives chomik's commands as they are, without
   untested variants.
+- Setup ends in warmer, plainer words: what each folder to commit is for, and
+  when reminders will show, with CI or without it.
 - Run in a folder that only holds repositories, `npx chomik` and
   `npx chomik check` name them and say to run chomik in one of them.
 

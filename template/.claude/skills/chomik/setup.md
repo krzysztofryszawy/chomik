@@ -48,12 +48,18 @@ in README.md says what that means.
    new to chomik, one step per message, waiting for their reply each time:
    - invite them to run `npx chomik check` now, and say in one sentence what it
      shows;
-   - then list the files to commit: `.claude/skills/chomik/`, so the whole team
-     can use `/chomik`, `.chomik/`, which CI runs, and any workflow changed in
-     step 3;
-   - then say chomik is ready. If they already said what to remember, continue
-     with that reminder; otherwise say that `/chomik` leaves one whenever
-     something must not be forgotten.
+   - then suggest adding these to their next commit, each with what it gives
+     them: `.claude/skills/chomik/`, so the whole team can type `/chomik`;
+     `.chomik/`, which holds the reminders and the script that checks them; and
+     any workflow changed in step 3;
+   - then say chomik is ready, and in plain words when its reminders will show:
+     every night in CI, or, without CI, whenever someone runs
+     `npx chomik check`. If they already said what to remember, continue with
+     that reminder; otherwise invite them to type `/chomik` whenever something
+     must not be forgotten.
+
+   Say what happens instead of using terms such as "tracked", "checker" or
+   "local mode".
 
 ## Updating chomik.yml
 
