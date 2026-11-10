@@ -5,6 +5,13 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **Several due reminders are counted, listed and numbered.** The annotation
+  gives the count, the log opens with one instruction (each is a separate task,
+  one agent session at a time) and a numbered list of titles from each
+  reminder's first heading, and each section starts with "N of M". Overdue ones
+  say since when. One due reminder keeps the earlier format. A GitHub job summary
+  table was considered and left out for now: it needs a write, and the check
+  stays read-only.
 - **The welcome does not press for a reminder.** Invoked without a request, the
   agent treats the developer as possibly new and with nothing to remember yet:
   what chomik takes off their hands, one everyday example, how it is set up, then

@@ -235,6 +235,26 @@ test('a push to another branch than --branch still only prints', () => {
   assert.match(out, /Not failing: the build fails only on branch "main"\./);
 });
 
+test('several due reminders are counted, listed and numbered, overdue ones marked', () => {
+  const titled = (title) => `${HEADER}# ${title}\n\nWhy.\n\n## Prompt\n\n\`\`\`text\nP-${title}\n\`\`\`\n`;
+  const { code, out } = check(project({
+    [`${isoDay(-2)}-old.md`]: titled('Remove the banner'),
+    [`${isoDay(0)}-key.md`]: titled('Rotate the key'),
+  }), { ci: true });
+  assert.equal(code, 1);
+  assert.match(out, /^::error title=chomik::chomik: 2 messages from the past are due\n/);
+  assert.match(out, new RegExp(`chomik: 2 messages from the past are due\\. Each one is a separate task:\\n[^\\n]*\\n[^\\n]*\\n {2}1\\. Remove the banner \\(overdue since ${isoDay(-2)}\\)\\n {2}2\\. Rotate the key\\n`));
+  assert.match(out, new RegExp(`===== 1 of 2: Remove the banner =====\\n\\.chomik/${isoDay(-2)}-old\\.md \\(overdue since ${isoDay(-2)}\\)\\n\\n===== PROMPT =====`));
+  assert.match(out, /===== 2 of 2: Rotate the key =====/);
+  assert.ok(out.indexOf('::stop-commands::') < out.indexOf('1. Remove the banner'));
+});
+
+test('a single overdue reminder says since when', () => {
+  const { out } = check(project({ [`${isoDay(-3)}-qs.md`]: reminder }));
+  assert.match(out, new RegExp(`^chomik sent a message from the past: \\.chomik/${isoDay(-3)}-qs\\.md \\(overdue since ${isoDay(-3)}\\)\\n`));
+  assert.doesNotMatch(out, /1 of 1/);
+});
+
 test('the hint to run the check locally shows in CI only', () => {
   assert.match(check(project({ [`${isoDay(0)}-qs.md`]: reminder }), { ci: true }).out, /Run locally: npx chomik check/);
   assert.doesNotMatch(check(project({ [`${isoDay(0)}-qs.md`]: reminder })).out, /Run locally/);

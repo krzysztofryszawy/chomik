@@ -20,6 +20,9 @@ What changed in chomik, newest first. chomik follows
   example, says that chomik starts once its files are on your main branch on
   GitHub, and lets you try it on a sample reminder or come back whenever
   something comes up.
+- When several reminders are due at once, the build log says how many, lists
+  them by title and numbers each one, so it is clear they are separate tasks.
+  A reminder past its date says since when it is overdue.
 - No question about your default branch: the workflow reads it from GitHub.
 - On its own, chomik's workflow runs every night and by hand, no longer on every
   push.

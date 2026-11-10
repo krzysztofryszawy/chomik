@@ -119,6 +119,9 @@ To read yourself what needs to be done, see FOR HUMANS below the prompt.
 Run locally: npx chomik check
 ```
 
+With several due at once, the log first says how many, lists them by title,
+and numbers each section ("1 of 3: title"); each is a separate task.
+
 The prompt is the main part and comes first, ready to paste into any coding
 agent. The first line tells the team at the daily meeting what happened. The
 human part below is enough to handle the reminder without an agent.

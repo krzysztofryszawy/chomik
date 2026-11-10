@@ -57,7 +57,8 @@ function run() {
   if (due.length === 0 && invalid.length === 0 && newer.length === 0) return nothingDue(waiting);
 
   if (inActions) {
-    if (due.length) console.log('::error title=chomik::chomik sent a message from the past');
+    if (due.length === 1) console.log('::error title=chomik::chomik sent a message from the past');
+    if (due.length > 1) console.log(`::error title=chomik::chomik: ${due.length} messages from the past are due`);
     if (invalid.length) console.log('::error title=chomik::chomik found a file in .chomik that is not a valid reminder');
     if (newer.length) console.log('::error title=chomik::chomik found a reminder it cannot read');
   }
@@ -73,18 +74,36 @@ function run() {
     printed = true;
   };
 
-  for (const name of due) {
+  const reminders = due.map((name) => {
     const { body: text } = parse(readFileSync(join(DIR, name), 'utf8'));
-    const prompt = promptPart(text, join(DIR, name));
-    const lines = [`chomik sent a message from the past: ${join(DIR, name)}`];
-    if (prompt) {
+    const date = name.slice(0, 10);
+    return { name, text, title: titleOf(text, name), late: date < today ? ` (overdue since ${date})` : '' };
+  });
+
+  // Several due on one run are separate tasks, so they are listed and numbered first.
+  if (reminders.length > 1) {
+    section([
+      `chomik: ${reminders.length} messages from the past are due. Each one is a separate task:`,
+      'paste its prompt into a new coding agent session, one at a time. To read yourself',
+      'what needs to be done, see FOR HUMANS below each prompt.',
+      ...reminders.map(({ title, late }, i) => `  ${i + 1}. ${title}${late}`),
+    ]);
+  }
+
+  reminders.forEach(({ name, text, title, late }, i) => {
+    const file = join(DIR, name);
+    const prompt = promptPart(text, file);
+    const lines = reminders.length > 1
+      ? [`===== ${i + 1} of ${reminders.length}: ${title} =====`, `${file}${late}`]
+      : [`chomik sent a message from the past: ${file}${late}`];
+    if (prompt && reminders.length === 1) {
       lines.push('Paste the prompt below into a coding agent session in this repository.');
       lines.push('To read yourself what needs to be done, see FOR HUMANS below the prompt.');
-      lines.push('', '===== PROMPT =====', `This reminder is in ${join(DIR, name)}.`, prompt, '===== END OF PROMPT =====');
     }
-    lines.push('', '===== FOR HUMANS =====', humanPart(text, join(DIR, name)), '===== END =====');
+    if (prompt) lines.push('', '===== PROMPT =====', `This reminder is in ${file}.`, prompt, '===== END OF PROMPT =====');
+    lines.push('', '===== FOR HUMANS =====', humanPart(text, file), '===== END =====');
     section(lines);
-  }
+  });
 
   if (invalid.length) {
     section([
@@ -160,6 +179,12 @@ function parse(raw) {
     if (match) header[match[1]] = match[2];
   }
   return { header, body: lines.slice(end + 1).join('\n') };
+}
+
+// The reminder's first heading names it; the file name is the fallback.
+function titleOf(text, name) {
+  const heading = /^#\s+(.+?)\s*$/m.exec(text.split(/^#{1,6}\s+prompt\s*$/im)[0]);
+  return heading ? heading[1] : name.slice(11, -3);
 }
 
 function humanPart(text, file) {
