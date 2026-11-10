@@ -24,6 +24,9 @@ What changed in chomik, newest first. chomik follows
 - In an editor workspace that opens several repositories at once, the agent
   works in the repository that holds chomik, even when the session started in
   the folder above them.
+- The agent looks at your files without shell commands, so it does not ask for
+  permission to run them, and gives chomik's commands as they are, without
+  untested variants.
 - Run in a folder that only holds repositories, `npx chomik` and
   `npx chomik check` name them and say to run chomik in one of them.
 

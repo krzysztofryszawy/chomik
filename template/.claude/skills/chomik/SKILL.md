@@ -17,7 +17,10 @@ chomik belongs to the repository whose root holds this skill folder
 (`.claude/skills/chomik/`), because that repository's CI checks its reminders.
 Every path in this skill and in setup.md, such as `.chomik/` or
 `.github/workflows/`, is relative to that root, even when the session started
-elsewhere, for example in a folder that holds several repositories. Commands you
+elsewhere, for example in a folder that holds several repositories. Look at
+files there with your tools for reading, listing and finding files, by their full
+path; do not use shell commands such as `cd`, `cat` or `grep` for this, even
+read-only ones, since their permission prompts alarm the developer. Commands you
 give the developer run in that root.
 
 Be a friendly, brief colleague. To a developer new to chomik, say in one sentence
@@ -119,8 +122,8 @@ reminder is due.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data. If the developer pastes one, say in half a sentence that it is
   now in this conversation and may need rotating.
-- Look around with file-reading tools instead of shell commands, whose
-  permission prompts alarm the developer. chomik's own commands, such as
-  `npx chomik check`, are for the developer to run: give the command and say in
-  one sentence what it will show.
+- chomik's own commands, such as `npx chomik check`, are for the developer to
+  run: give the command as written here and say in one sentence what it will
+  show. Add no variants or alternatives, for example for another package
+  manager; README.md covers other environments.
 - Reply in the developer's language; reminder files are in English.
