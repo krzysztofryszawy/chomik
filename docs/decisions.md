@@ -5,6 +5,14 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **chomik installs in the root of any repository.** The installer needs the
+  repository root (`.git`), or `package.json` in a folder without git for a local
+  try; `package.json` no longer has to be in the repository root, as in a
+  monorepo or a repository that is not a Node project. Node is needed only on the
+  developer's machine and comes preinstalled on GitHub's runners. Why: the owner
+  had asked for "a repository and an agent" earlier the same day; requiring
+  `package.json` had been kept without the owner's agreement. This replaces
+  "Version 0 targets Node projects only" (2026-11-05).
 - **The changelog is the usual minimum, and empty until the beta.** Until 0.2.0,
   `CHANGELOG.md` holds one entry naming the working version; its heading still
   carries the version that guards against downgrades. After an update the
@@ -104,8 +112,7 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
   `.claude/settings.json` only from the folder where it started, so the skill
   cannot rely on the session's folder. Not decided yet: whether `/chomik` is
   available at once in such a session; a test in VS Code comes first, and
-  installing the skill per user stays under "Later". Requiring `package.json`
-  stays for now.
+  installing the skill per user stays under "Later".
 - **Versions 0.1.0 to 0.1.9 were unpublished before the beta.** The owner removed
   them from npm by hand on 2026-11-10; 0.1.10 stays as the only published version
   until 0.2.0, so the name stays held. This brings forward part of the beta plan

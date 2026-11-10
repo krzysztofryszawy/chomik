@@ -222,8 +222,9 @@ function newer(a, b) {
 }
 
 async function installOrUpdate({ yes, dryRun, force }) {
-  if (!existsSync('package.json')) {
-    introduce('chomik: this folder is not a Node project, so there is nothing to install it in.', 'To try it, run this in the root of a Node project: npx chomik@latest');
+  // chomik needs the root of a repository; package.json may live elsewhere, as in a monorepo.
+  if (!existsSync('.git') && !existsSync('package.json')) {
+    introduce('chomik: this folder is not the root of a repository, so there is nothing to install it in.', 'To try it, run this in the root of your repository: npx chomik@latest');
     return 1;
   }
 

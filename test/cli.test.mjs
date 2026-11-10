@@ -238,13 +238,20 @@ test('without a terminal and without --yes nothing is written', () => {
   assert.equal(existsSync(join(root, '.claude')), false);
 });
 
-test('outside a Node project, introduces chomik and installs nothing', () => {
+test('a repository without package.json in its root installs', () => {
+  const root = project({ packageJson: false });
+  gitIn(root, 'init', '-q');
+  assert.equal(run(root, ['--yes']).code, 0);
+  assert.ok(existsSync(skillFile(root)));
+});
+
+test('outside a repository, introduces chomik and installs nothing', () => {
   const root = project({ packageJson: false });
   const { code, stdout, stderr } = run(root, ['--yes']);
   assert.equal(code, 1);
   assert.equal(stdout, '');
-  assert.match(stderr, /^chomik: this folder is not a Node project, so there is nothing to install it in\.\n\nBulletproof reminders/);
-  assert.match(stderr, /To try it, run this in the root of a Node project: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
+  assert.match(stderr, /^chomik: this folder is not the root of a repository, so there is nothing to install it in\.\n\nBulletproof reminders/);
+  assert.match(stderr, /To try it, run this in the root of your repository: npx chomik@latest\nCurious first\? Paste this into your coding agent:\n\n {2}Read https:\/\/github\.com\/krzysztofryszawy\/chomik /);
   assert.deepEqual(readdirSync(root), []);
 });
 

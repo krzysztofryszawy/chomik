@@ -21,7 +21,7 @@ run with.
 
 ## Try it
 
-In the root of a Node project:
+In the root of your repository:
 
 ```
 npx chomik@latest
