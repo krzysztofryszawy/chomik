@@ -11,9 +11,9 @@ In the root of your project, copy:
 
 1. `template/.claude/skills/chomik/` to `.claude/skills/chomik/`.
 2. `template/.chomik/looking-for-messages-from-the-past.mjs` to `.chomik/`.
+3. On GitHub: `template/.github/workflows/chomik.yml` to `.github/workflows/`.
 
-Then type `/chomik` in your coding agent to set up CI, or follow
-`.claude/skills/chomik/setup.md` yourself.
+Then type `/chomik` in your coding agent to leave a reminder.
 
 To check reminders: `node .chomik/looking-for-messages-from-the-past.mjs`.
 

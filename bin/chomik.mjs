@@ -14,13 +14,35 @@ const RELEASED = JSON.parse(readFileSync(join(PACKAGE_ROOT, 'bin', 'released-fil
 const SOURCE = join(PACKAGE_ROOT, 'template', '.claude', 'skills', 'chomik');
 const TARGET_DIRS = ['.claude', join('.claude', 'skills'), join('.claude', 'skills', 'chomik')];
 const TARGET = TARGET_DIRS.at(-1);
-const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
+const FILES = ['SKILL.md', 'README.md', 'CHANGELOG.md'];
 const SCRIPT = 'looking-for-messages-from-the-past.mjs';
 const CHECK_SCRIPT = join('.chomik', SCRIPT);
-const OWN_FILES = [
-  ...FILES.map((file) => ({ key: file, source: join(SOURCE, file), target: join(TARGET, file) })),
-  { key: SCRIPT, source: join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT), target: CHECK_SCRIPT, note: ' (the check CI runs)' },
+const WORKFLOW = join('.github', 'workflows', 'chomik.yml');
+const OWN_SCHEDULE = /^ *# chomik: only without a daily build, begin\n[\s\S]*?^ *# chomik: only without a daily build, end\n/m;
+// The nightly workflow only makes sense on GitHub, so elsewhere it is left out of the plan.
+const ownFiles = () => [
+  ...FILES.map((file) => ({ key: file, content: readFileSync(join(SOURCE, file)), target: join(TARGET, file) })),
+  { key: SCRIPT, content: readFileSync(join(PACKAGE_ROOT, 'template', '.chomik', SCRIPT)), target: CHECK_SCRIPT, note: ' (checks the reminders)' },
+  ...(onGitHub() ? [workflowFile()] : []),
 ];
+
+// Once the daily build calls chomik.yml, chomik's own schedule is gone from it, so it
+// never runs twice; the installer keeps whichever of the two forms the project uses.
+function workflowFile() {
+  const template = readFileSync(join(PACKAGE_ROOT, 'template', WORKFLOW), 'utf8');
+  if (calledByBuild()) {
+    return { key: 'chomik.yml#called', content: Buffer.from(template.replace(OWN_SCHEDULE, '')), target: WORKFLOW, note: ' (called by your daily build)' };
+  }
+  return { key: 'chomik.yml', content: Buffer.from(template), target: WORKFLOW, note: ' (runs the check every night on GitHub)' };
+}
+
+function calledByBuild() {
+  const dir = join('.github', 'workflows');
+  if (!existsSync(dir)) return false;
+  return readdirSync(dir)
+    .filter((name) => /\.ya?ml$/.test(name) && name !== 'chomik.yml')
+    .some((name) => /uses:\s*\.\/\.github\/workflows\/chomik\.yml\b/.test(readFileSync(join(dir, name), 'utf8')));
+}
 
 // The agent cannot start the next step itself, so the prompt asks it to invite me to it.
 const explainFrom = (where, next) => `Read ${where} and tell me in at most four short sentences what trouble chomik takes off my hands and what I gain, with one example. Do not search this project. Then invite me to ${next}, and say what that will and will not change, so I can try it without worry. Do not change anything.`;
@@ -33,13 +55,12 @@ const HELP = `Usage: npx chomik@latest [options]
 
 Installs chomik in this project, or updates it: run the same command again.
 The installer writes only chomik's own files: .claude/skills/chomik/, the skill
-your coding agent reads, and the check script in .chomik/. It shows the plan and
-asks before writing, and never overwrites edits that are not committed to git,
-unless you use --force.
+your coding agent reads, the check script in .chomik/ and, on GitHub,
+.github/workflows/chomik.yml, which runs the check every night. It shows the
+plan and asks before writing, and never overwrites edits that are not committed
+to git, unless you use --force.
 
-Then type /chomik in Claude Code or GitHub Copilot. The agent sets up CI with
-you and, after you confirm, adds .github/workflows/chomik.yml. Not on GitHub
-yet? Try chomik with npx chomik check until it is.
+Then type /chomik in Claude Code or GitHub Copilot to leave a reminder.
 
 Example: an API key expires in a year. A week before, the main-branch build
 turns red with a ready prompt for your coding agent.
@@ -179,15 +200,14 @@ function versionHint() {
   if (/^\d/.test(skill) && script && newer(skill, script)) {
     return `The check script in .chomik/ is older than chomik ${skill} here. To update it, run: npx chomik@latest`;
   }
-  const workflow = join('.github', 'workflows', 'chomik.yml');
-  if (!existsSync(workflow)) {
+  if (!existsSync(WORKFLOW)) {
     return onGitHub()
-      ? 'CI is not set up, so reminders show only when you run this. To set it up, type /chomik in your coding agent.'
-      : 'This project is not on GitHub yet, so reminders show only when you run this. Once it is, type /chomik in your coding agent to set up CI.';
+      ? 'The nightly check on GitHub is missing, so reminders show only when you run this. To add it, run: npx chomik@latest'
+      : 'This project is not on GitHub yet, so reminders show only when you run this. Once it is, run npx chomik@latest again to add the nightly check.';
   }
-  const ci = stampOf(workflow);
+  const ci = stampOf(WORKFLOW);
   if (/^\d/.test(skill) && ci && newer(skill, ci)) {
-    return `chomik was updated, but .github/workflows/chomik.yml is still ${ci}. To update it, type /chomik in your coding agent.`;
+    return `chomik was updated, but .github/workflows/chomik.yml is still ${ci}. To update it, run: npx chomik@latest`;
   }
   return '';
 }
@@ -207,8 +227,9 @@ async function installOrUpdate({ yes, dryRun, force }) {
     return 1;
   }
 
+  const OWN_FILES = ownFiles();
   // Refuse symbolic links on the way, so chomik never writes outside the project.
-  for (const path of [...TARGET_DIRS, '.chomik', ...OWN_FILES.map((f) => f.target)]) {
+  for (const path of [...TARGET_DIRS, '.chomik', '.github', join('.github', 'workflows'), ...OWN_FILES.map((f) => f.target)]) {
     if (isLink(path)) {
       console.error(`chomik: ${path} is a symbolic link; refusing to write through it.`);
       return 1;
@@ -226,8 +247,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
 
   const installed = installedVersion();
   const plan = [];
-  for (const { key, source: from, target, note = '' } of OWN_FILES) {
-    const source = readFileSync(from);
+  for (const { key, content: source, target, note = '' } of OWN_FILES) {
     if (!existsSync(target)) {
       plan.push({ target, source, note, action: 'create' });
       continue;
@@ -245,6 +265,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
   }
 
   if (installed === 'not installed') console.log(`Installing chomik ${VERSION} in this project.`);
+  else if (installed === VERSION && plan.every((p) => p.target === WORKFLOW)) console.log("Adding chomik's nightly check on GitHub to this project.");
   else if (installed === VERSION) console.log(`Restoring missing chomik ${VERSION} files in this project.`);
   else if (installed === 'edited') console.log(`Updating chomik in this project to ${VERSION} (some of its files were edited here).`);
   else console.log(`Updating chomik in this project: ${installed} -> ${VERSION}.`);
@@ -256,11 +277,7 @@ async function installOrUpdate({ yes, dryRun, force }) {
     if (p.action === 'replace') console.log(`  replace  ${p.target} (edited here; ${keep(p)})`);
   }
   console.log('Nothing else is changed. No dependencies are added.');
-  if (installed === 'not installed') {
-    console.log('Then /chomik in your coding agent sets up CI with you: on GitHub, it adds');
-    console.log('.github/workflows/chomik.yml.');
-    if (!onGitHub()) console.log('This project is not on GitHub yet; until it is, try chomik with npx chomik check.');
-  }
+  if (!onGitHub()) console.log('This project is not on GitHub yet, so there is no nightly check for now.');
 
   const atRisk = plan.filter((p) => p.action === 'replace' && !p.committed);
   if (atRisk.length && !force) {
@@ -301,15 +318,19 @@ async function installOrUpdate({ yes, dryRun, force }) {
     writeFileSync(p.target, p.source);
   }
 
+  const written = plan.map((p) => p.target);
+  const toCommit = [TARGET, '.chomik', ...(written.includes(WORKFLOW) ? [WORKFLOW] : [])].join(', ');
   if (installed === 'not installed') {
-    console.log(`Done. chomik ${VERSION} is installed.\n`);
-    console.log('chomik just moved in.\n');
-    console.log('First time with chomik? Paste this into a new session of your coding agent:\n');
-    console.log(`${indented(explainFrom('.claude/skills/chomik/README.md', 'finish setting chomik up by typing /chomik'))}\n`);
-    console.log('Then type /chomik there to set it up.');
+    console.log(`Done. chomik ${VERSION} just moved in.\n`);
+    console.log(onGitHub()
+      ? 'Commit these files and push them to your main branch: from then on GitHub\nchecks your reminders every night, and your whole team can leave them.\n'
+      : 'Until this project is on GitHub, reminders show when you run npx chomik check.\nOnce it is, run npx chomik@latest again to add the nightly check.\n');
+    console.log('Next: open your coding agent here, Claude Code or GitHub Copilot, and type\n/chomik. It will show you around and help you leave your first reminder.');
+  } else if (installed === VERSION && written.every((target) => target === WORKFLOW)) {
+    console.log(`Done. Commit ${WORKFLOW} and push it to your main branch:\nfrom then on GitHub checks your reminders every night.`);
   } else {
     console.log(`Done. chomik is now ${VERSION}.`);
-    console.log('Feel free to share chomik with your team: commit .claude/skills/chomik/ and .chomik/.\n');
+    console.log(`Feel free to share chomik with your team: commit ${toCommit}.\n`);
     const since = /^\d/.test(installed) ? `since chomik ${installed}` : 'in recent versions of chomik';
     console.log('chomik learned some new tricks.\n');
     console.log('Curious which? Paste this into a new session of your coding agent:\n');

@@ -37,7 +37,9 @@ const template = (file) => readFileSync(join(TEMPLATE, file));
 const SCRIPT = 'looking-for-messages-from-the-past.mjs';
 const prose = (text) => text.replace(/\n {2}/g, ' ');
 const scriptTemplate = () => readFileSync(resolve('template/.chomik', SCRIPT));
-const FILES = ['SKILL.md', 'setup.md', 'README.md', 'CHANGELOG.md', 'chomik-workflow.yml'];
+const FILES = ['SKILL.md', 'README.md', 'CHANGELOG.md'];
+const WORKFLOW = join('.github', 'workflows', 'chomik.yml');
+const workflowSource = () => readFileSync(resolve('template', WORKFLOW));
 
 function workspace() {
   const root = mkdtempSync(join(tmpdir(), 'chomik-workspace-'));
@@ -76,21 +78,63 @@ test('a repository with other repositories inside still installs in its own root
   assert.equal(run(root, ['--yes']).code, 0);
 });
 
-test('npx chomik --yes installs exactly the skill files and the check script', () => {
+test('outside GitHub, npx chomik --yes installs the skill and the check script, and no workflow', () => {
   const root = project();
   const { code, stdout } = run(root, ['--yes']);
   assert.equal(code, 0);
   assert.match(stdout, new RegExp(`Installing chomik ${VERSION.replaceAll('.', '\\.')} in this project`));
   assert.match(stdout, /create\s+\.claude\/skills\/chomik\/SKILL\.md/);
-  assert.match(stdout, /create\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(the check CI runs\)/);
-  assert.match(prose(stdout), /\n\nchomik just moved in\.\n\nFirst time with chomik\? Paste this into a new session of your coding agent:\n Read \.claude\/skills\/chomik\/README\.md and tell me in at most four short sentences what trouble chomik takes off my hands and what I gain, with one example\. Do not search this project\. Then invite me to finish setting chomik up by typing \/chomik, and say what that will and will not change, so I can try it without worry\. Do not change anything\.\n\nThen type \/chomik there to set it up\.\n$/);
-  assert.ok(stdout.split('\n').every((line) => line.length <= 80 || !line.startsWith('  ')));
+  assert.match(stdout, /create\s+\.chomik\/looking-for-messages-from-the-past\.mjs \(checks the reminders\)/);
+  assert.match(stdout, /This project is not on GitHub yet, so there is no nightly check for now\./);
+  assert.match(stdout, /Until this project is on GitHub, reminders show when you run npx chomik check\.\nOnce it is, run npx chomik@latest again to add the nightly check\.\n\nNext: open your coding agent here, Claude Code or GitHub Copilot, and type\n\/chomik\. It will show you around and help you leave your first reminder\.\n$/);
+  assert.ok(stdout.split('\n').every((line) => line.length <= 80));
   assert.doesNotMatch(stdout, /Feel free to share chomik/);
   assert.deepEqual(readdirSync(join(root, SKILL_DIR)).sort(), [...FILES].sort());
   for (const file of FILES) assert.ok(readFileSync(join(root, SKILL_DIR, file)).equals(template(file)));
   assert.deepEqual(readdirSync(join(root, '.chomik')), [SCRIPT]);
   assert.ok(readFileSync(join(root, '.chomik', SCRIPT)).equals(scriptTemplate()));
   assert.deepEqual(readdirSync(root).sort(), ['.chomik', '.claude', 'package.json']);
+});
+
+test('on GitHub, one install also adds the nightly workflow and says how to switch it on', () => {
+  const root = project({ git: true });
+  gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
+  const { code, stdout } = run(root, ['--yes']);
+  assert.equal(code, 0);
+  assert.match(stdout, /create\s+\.github\/workflows\/chomik\.yml \(runs the check every night on GitHub\)/);
+  assert.match(stdout, /Commit these files and push them to your main branch: from then on GitHub\nchecks your reminders every night, and your whole team can leave them\.\n/);
+  assert.ok(readFileSync(join(root, WORKFLOW)).equals(workflowSource()));
+  assert.ok(stdout.split('\n').every((line) => line.length <= 80));
+});
+
+test('a project that moved to GitHub gets the nightly workflow on the next run', () => {
+  const root = project({ git: true });
+  run(root, ['--yes']);
+  gitIn(root, 'remote', 'add', 'origin', 'git@github.com:someone/something.git');
+  const { code, stdout } = run(root, ['--yes']);
+  assert.equal(code, 0);
+  assert.match(stdout, /^Adding chomik's nightly check on GitHub to this project\.\nPlan:\n {2}create {3}\.github\/workflows\/chomik\.yml/);
+  assert.match(stdout, /Done\. Commit \.github\/workflows\/chomik\.yml and push it to your main branch:/);
+});
+
+function inDailyBuild(root) {
+  writeFileSync(join(root, '.github', 'workflows', 'build.yml'), 'on:\n  schedule:\n    - cron: "0 3 * * *"\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - run: npm test\n  looking-for-messages-from-the-past:\n    uses: ./.github/workflows/chomik.yml\n');
+  const text = readFileSync(join(root, WORKFLOW), 'utf8');
+  writeFileSync(join(root, WORKFLOW), text.replace(/^ *# chomik: only without a daily build, begin\n[\s\S]*?^ *# chomik: only without a daily build, end\n/m, ''));
+}
+
+test('a workflow moved into the daily build by the agent stays without its own schedule on update', () => {
+  const root = project({ git: true });
+  gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
+  run(root, ['--yes']);
+  inDailyBuild(root);
+  const moved = readFileSync(join(root, WORKFLOW));
+  assert.match(run(root, ['--yes']).stdout, /is already here and up to date/);
+  rmSync(join(root, WORKFLOW));
+  const { stdout } = run(root, ['--yes']);
+  assert.match(stdout, /create\s+\.github\/workflows\/chomik\.yml \(called by your daily build\)/);
+  assert.ok(readFileSync(join(root, WORKFLOW)).equals(moved));
+  assert.doesNotMatch(moved.toString('utf8'), /schedule:/);
 });
 
 test('running again reports that everything is up to date', () => {
@@ -174,8 +218,7 @@ test('--dry-run shows the plan and writes nothing', () => {
   const { code, stdout } = run(root, ['--dry-run']);
   assert.equal(code, 0);
   assert.match(stdout, /create/);
-  assert.match(stdout, /Then \/chomik in your coding agent sets up CI with you: on GitHub, it adds\n\.github\/workflows\/chomik\.yml\./);
-  assert.match(stdout, /This project is not on GitHub yet; until it is, try chomik with npx chomik check\./);
+  assert.match(stdout, /This project is not on GitHub yet, so there is no nightly check for now\./);
   assert.match(stdout, /Dry run: nothing was changed\. To install, run the same command without --dry-run\.\n$/);
   assert.equal(existsSync(join(root, '.claude')), false);
 });
@@ -270,7 +313,7 @@ test('the check pitch opens the README word for word', () => {
   assert.ok(readFileSync('README.md', 'utf8').includes(`\n\n${pitch}\n\n`));
 });
 
-const workflowTemplate = (version = VERSION) => template('chomik-workflow.yml').toString('utf8').replace(`chomik ${VERSION} `, `chomik ${version} `);
+const workflowTemplate = (version = VERSION) => workflowSource().toString('utf8').replace(`chomik ${VERSION} `, `chomik ${version} `);
 
 function setUp(root, script = scriptTemplate(), workflow = workflowTemplate()) {
   run(root, ['--yes']);
@@ -289,21 +332,22 @@ test('check adds nothing when chomik, its script and its workflow match', () => 
   assert.match(stdout, /^chomik: no reminders in \.chomik\/ right now\.\nTo leave one, .*\n$/);
 });
 
-test('check works right after install and says when CI is not set up', () => {
+test('check on GitHub without the workflow says how to add it', () => {
   const root = project({ git: true });
   gitIn(root, 'remote', 'add', 'origin', 'https://github.com/someone/something.git');
   run(root, ['--yes']);
+  rmSync(join(root, WORKFLOW));
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
-  assert.match(stdout, /\n\nCI is not set up, so reminders show only when you run this\. To set it up, type \/chomik in your coding agent\.\n$/);
+  assert.match(stdout, /\n\nThe nightly check on GitHub is missing, so reminders show only when you run this\. To add it, run: npx chomik@latest\n$/);
 });
 
-test('check outside GitHub does not promise that /chomik can set up CI now', () => {
+test('check outside GitHub says when the nightly check comes', () => {
   const root = project();
   run(root, ['--yes']);
   const { code, stdout } = run(root, ['check']);
   assert.equal(code, 0);
-  assert.match(stdout, /\n\nThis project is not on GitHub yet, so reminders show only when you run this\. Once it is, type \/chomik in your coding agent to set up CI\.\n$/);
+  assert.match(stdout, /\n\nThis project is not on GitHub yet, so reminders show only when you run this\. Once it is, run npx chomik@latest again to add the nightly check\.\n$/);
 });
 
 test('check says when the check script is older than the skill', () => {
@@ -318,7 +362,7 @@ test('check says when the CI workflow is older than the skill', () => {
   const root = project();
   setUp(root, scriptTemplate(), workflowTemplate('0.1.0'));
   const { stdout } = run(root, ['check']);
-  assert.match(stdout, /\n\nchomik was updated, but \.github\/workflows\/chomik\.yml is still 0\.1\.0\. To update it, type \/chomik in your coding agent\.\n$/);
+  assert.match(stdout, /\n\nchomik was updated, but \.github\/workflows\/chomik\.yml is still 0\.1\.0\. To update it, run: npx chomik@latest\n$/);
 });
 
 test('check says when a newer chomik is out than the skill in the project', () => {
@@ -386,11 +430,11 @@ test('every older release is recognized and updated', () => {
 });
 
 test('skill files from different releases are treated as edited', () => {
-  const tags = releaseTags.filter((t) => RELEASED[t.slice(1)]?.['setup.md']).sort();
+  const tags = releaseTags.filter((t) => RELEASED[t.slice(1)]?.['README.md'] && RELEASED[t.slice(1)]?.['CHANGELOG.md']).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   const [older, newest] = [tags[0], tags.at(-1)];
   if (!older || older === newest) return;
   const root = withRelease(project({ git: true }), newest);
-  writeFileSync(join(root, SKILL_DIR, 'setup.md'), execFileSync('git', ['show', `${older}:template/.claude/skills/chomik/setup.md`]));
+  writeFileSync(join(root, SKILL_DIR, 'SKILL.md'), execFileSync('git', ['show', `${older}:template/.claude/skills/chomik/SKILL.md`]));
   gitIn(root, 'add', '-A');
   gitIn(root, 'commit', '-qm', 'mixed');
   const { stdout } = run(root, ['--dry-run']);
@@ -511,7 +555,7 @@ test('-y works like --yes', () => {
 test('a deleted skill file is restored with a clear message', () => {
   const root = project();
   run(root, ['--yes']);
-  rmSync(join(root, SKILL_DIR, 'setup.md'));
+  rmSync(join(root, SKILL_DIR, 'README.md'));
   assert.match(run(root, ['--dry-run']).stdout, new RegExp(`^Restoring missing chomik ${VERSION.replaceAll('.', '\\.')} files in this project\\.`));
 });
 
@@ -547,22 +591,23 @@ test('the changelog has an entry for the current version', () => {
 });
 
 test('the files copied into a project name the current chomik version', () => {
-  for (const content of [scriptTemplate(), template('chomik-workflow.yml')]) assert.match(content.toString('utf8').split('\n').slice(0, 2).join('\n'), new RegExp(`🐹 chomik ${VERSION.replaceAll('.', '\\.')}[ :]`));
+  for (const content of [scriptTemplate(), workflowSource()]) assert.match(content.toString('utf8').split('\n').slice(0, 2).join('\n'), new RegExp(`🐹 chomik ${VERSION.replaceAll('.', '\\.')}[ :]`));
 });
 
 test('the workflow templates pin every action to a full commit SHA', () => {
-  for (const file of ['chomik-workflow.yml']) {
-    const uses = readFileSync(join(TEMPLATE, file), 'utf8').match(/uses:\s*\S+/g) ?? [];
+  for (const file of [resolve('template', WORKFLOW)]) {
+    const uses = readFileSync(file, 'utf8').match(/uses:\s*\S+/g) ?? [];
     assert.ok(uses.length > 0, file);
     for (const line of uses) assert.match(line, /@[0-9a-f]{40}$/, `${file}: ${line}`);
   }
 });
 
-test('the workflow template marks its own schedule and uses the shared name', () => {
-  const text = readFileSync(join(TEMPLATE, 'chomik-workflow.yml'), 'utf8');
+test('the workflow runs nightly, can be called by a build, and reads the default branch at run time', () => {
+  const text = workflowSource().toString('utf8');
   assert.match(text, /^name: "🐹 chomik: looking for messages from the past"$/m);
   assert.match(text, /workflow_call:/);
-  assert.match(text, /# chomik: only without a daily build, begin\n[\s\S]*schedule:[\s\S]*# chomik: only without a daily build, end/);
+  assert.match(text, /# chomik: only without a daily build, begin\n {2}schedule:\n {4}- cron: [^\n]*\n {2}# chomik: only without a daily build, end\n/);
+  assert.doesNotMatch(text, /push:|--branch BRANCH/);
   assert.match(text, /^ {2}looking-for-messages-from-the-past:$/m);
-  assert.match(text, /node \.chomik\/looking-for-messages-from-the-past\.mjs --branch BRANCH/);
+  assert.match(text, /DEFAULT_BRANCH: \$\{\{ github\.event\.repository\.default_branch \}\}\n {8}run: node \.chomik\/looking-for-messages-from-the-past\.mjs --branch "\$DEFAULT_BRANCH"/);
 });

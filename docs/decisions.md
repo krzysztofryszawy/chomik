@@ -5,6 +5,29 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **One-step install; the agent offers the daily build.** On GitHub,
+  `npx chomik@latest` writes `.github/workflows/chomik.yml` with its own nightly
+  run, in the same plan and confirmation as the skill and the check script, and
+  says to commit and push it. `/chomik` then welcomes the developer, says how
+  chomik is set up, and offers once to move chomik into the daily build (two
+  lines there, its own schedule removed from `chomik.yml`), never into a build
+  that a production deployment depends on. The installer keeps whichever form
+  the project uses: when another workflow calls `chomik.yml`, it writes it
+  without the schedule. Why: the owner's test showed install, setup and the
+  check as three disconnected steps, with silence after setup and messages that
+  sent him back to `/chomik`; the daily build stays the place chomik belongs, as
+  decided on 2026-11-05. This replaces: the CI workflow staying with the agent
+  (2026-11-08), setup asking for the default branch (2026-11-10, now read at run
+  time from `github.event.repository.default_branch`), the separate `setup.md`
+  read on first use (2026-11-07; the steps are short and the production rule
+  should always be in view), the prompt to paste after the first install
+  (2026-11-08; it stays where chomik is not installed yet), introducing itself
+  in one line (2026-11-05; the welcome also says how chomik is set up, one
+  question at a time), and the standalone workflow running on push (it runs
+  nightly and by hand; inside the daily build it runs as that build does). One
+  exception to reading without shell commands: when the agent has no tool to
+  list a folder, as in Claude Code, one read-only `ls .github/workflows` is
+  allowed, announced first. All agreed by the owner on 2026-11-10.
 - **Rules lost from the skill are restored, and no rule leaves it silently
   again.** An audit against this file, `message-from-the-past.md` and the
   security checklist found decided rules missing from the skill: saying that the

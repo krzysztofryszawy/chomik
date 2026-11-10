@@ -60,11 +60,9 @@ your reminders.
 
 ### Do I need a coding agent?
 
-Not strictly, but chomik is built for one: Claude Code or GitHub Copilot sets up
-CI and writes reminders with you. Without an agent there is a manual, craft mode:
-after installing, set up `.github/workflows/chomik.yml` by following
-`.claude/skills/chomik/setup.md`, and write each reminder by hand in the format
-shown in `SKILL.md` next to it. Handling a reminder never needs an agent: each
+Not strictly, but chomik is built for one: Claude Code or GitHub Copilot writes
+reminders with you. Without an agent there is a manual, craft mode: write each
+reminder by hand in the format shown in `.claude/skills/chomik/SKILL.md`. Handling a reminder never needs an agent: each
 has a part for humans.
 
 ### The install shows `command not found`: what to do
@@ -90,10 +88,9 @@ node .chomik/looking-for-messages-from-the-past.mjs
 
 Coding agents: give the developer these commands to run.
 
-## Use it locally
+## Without GitHub
 
-A temporary mode with limited features, for trying chomik before it goes into CI.
-The installer has already put the check script in `.chomik/`, and reminders are
+Until the project is on GitHub, chomik has no nightly check, and reminders are
 written the same way.
 
 - Check by hand in the project root: `npx chomik check`. It prints the reminders
@@ -101,8 +98,8 @@ written the same way.
   it fail.
 - Nothing runs on its own and nobody else is reminded. By design there are no
   git hooks, npm scripts or scheduled jobs.
-- For the full flow, type `/chomik` and ask to set up CI. Existing reminders stay
-  as they are.
+- Once the project is on GitHub, run `npx chomik@latest` again to add the nightly
+  check. Existing reminders stay as they are.
 
 ## Files that belong to chomik
 
@@ -110,9 +107,10 @@ written the same way.
 - `.chomik/`: the check script, written by the installer, and the reminders,
   nothing else; the check reports anything else there, so no reminder is lost
   unnoticed
-- `.github/workflows/chomik.yml` (not in local use)
-- in a project with a daily build, two lines in that build workflow: the job
-  `looking-for-messages-from-the-past`, which calls `chomik.yml`
+- `.github/workflows/chomik.yml`, written by the installer on GitHub
+- in a project with a daily build, after you agree to move chomik into it, two
+  lines in that build workflow: the job `looking-for-messages-from-the-past`,
+  which calls `chomik.yml`
 
 ## Is it safe?
 
@@ -137,6 +135,6 @@ and it never overwrites edits that are not committed to git. What changed:
 
 ## Stop or remove
 
-- Stop: delete the two-line `looking-for-messages-from-the-past` job from the
-  build workflow, or `.github/workflows/chomik.yml` if there is no build.
+- Stop: delete `.github/workflows/chomik.yml` and, if your build calls it, the
+  two-line `looking-for-messages-from-the-past` job there.
 - Remove: delete the files listed above. Nothing else depends on chomik.

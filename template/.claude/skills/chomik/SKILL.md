@@ -15,43 +15,81 @@ knows what to do, even without the author.
 
 chomik belongs to the repository whose root holds this skill folder
 (`.claude/skills/chomik/`), because that repository's CI checks its reminders.
-Every path in this skill and in setup.md, such as `.chomik/` or
-`.github/workflows/`, is relative to that root, even when the session started
-elsewhere, for example in a folder that holds several repositories. Look at
-files there with your tools for reading, listing and finding files, by their full
-path; do not use shell commands such as `cd`, `cat` or `grep` for this, even
-read-only ones, since their permission prompts alarm the developer. Commands you
-give the developer run in that root.
+Every path in this skill, such as `.chomik/` or `.github/workflows/`, is
+relative to that root, even when the session started elsewhere, for example in a
+folder that holds several repositories. Look at files there with your tools for
+reading, listing and finding files, by their full path. If your only way to list
+a folder is a shell command, one read-only listing such as `ls .github/workflows`
+is fine, after saying in one line that you are checking read-only. Avoid other
+shell commands, even read-only ones such as `cat` or `grep`, since their
+permission prompts alarm the developer. Commands you give the developer run in
+that root.
 
-Be a friendly, brief colleague. To a developer new to chomik, say in one sentence
-what it gives them; explain how it works inside only when asked. When the developer
-wants to see chomik work, lead a minimal tutorial, one step per message: write a
-sample reminder with them, then let them see it as it will look on its date, the
-way "What it does" in [README.md](README.md) describes.
+Be a friendly, brief colleague, talking about what chomik does for the
+developer rather than how it works inside; explain the inner workings only when
+asked. When the developer wants to see chomik work, lead a minimal tutorial, one
+step per message: write a sample reminder with them, then let them see it as it
+will look on its date, the way "What it does" in [README.md](README.md)
+describes.
 
-chomik works in stages, and the developer starts each one:
+When the developer says what to remember, create the reminder as described
+below. When they invoke chomik without that, welcome them: say what chomik does
+for them and how it is set up here, then ask what they would like it to
+remember. How it is set up depends on `.github/workflows/chomik.yml`:
 
-1. **Setup**, connecting chomik to CI: follow [setup.md](setup.md) when
-   `.github/workflows/chomik.yml` does not exist and `.chomik/` has no reminders
-   yet, unless the developer already declined CI in this conversation, and
-   whenever the developer asks for CI.
-2. **Creating a reminder**, below, when the developer says what to remember. If
-   they said it before setup, continue with it once setup is finished. If they
-   invoke chomik without saying anything and setup is not needed, say in one
-   sentence what chomik can do for them, then wait for them to describe it.
-3. **Handling a reminder**, on its date, by whoever picks it up, from the prompt
-   inside it; this skill is not involved.
+- Another workflow calls it: it runs inside that daily build, which turns red on
+  a reminder's date.
+- It exists on its own: once it is committed and pushed to the main branch,
+  GitHub checks the reminders every night. If the project has a daily build,
+  propose moving chomik into it, as described below, once per conversation;
+  ask what to remember only after the developer has answered that.
+- It does not exist: reminders show only when someone runs `npx chomik check`.
+  On a GitHub repository, running `npx chomik@latest` again adds the nightly
+  check; otherwise it comes once the project is on GitHub.
 
-The installer keeps the check script in `.chomik/` up to date. The CI workflow
-`.github/workflows/chomik.yml` names its chomik version in the first comment; if
-it is older than `chomik-workflow.yml` in this folder, chomik was updated: first
-propose updating it as in "Updating chomik.yml" in setup.md, and wait for a yes.
+The installer, `npx chomik@latest`, writes and updates all of chomik's files
+except the reminders, including `.github/workflows/chomik.yml` in either form.
+Apart from moving chomik into the daily build, do not edit them; when something
+in them looks outdated or missing, point the developer to the installer. For
+anything this file does not cover, rely on README.md instead of inventing
+setups such as git hooks or npm scripts.
 
-Without `.github/workflows/chomik.yml`, chomik runs in a temporary mode with
-limited features: reminders show only when someone runs `npx chomik check`. After
-writing a reminder in that mode, say so in one sentence and that `/chomik` can
-set up CI. For anything this file does not cover, rely on README.md instead of
-inventing setups such as git hooks or npm scripts.
+## Moving chomik into the daily build
+
+chomik is most useful inside the build the team already watches every morning:
+on a reminder's date that build turns red, instead of a separate check that is
+easy to overlook.
+
+Read every workflow in `.github/workflows/` before deciding. The daily build is
+a workflow other than `chomik.yml` that builds or tests the project and has a
+`schedule` trigger running at least once a day. With several candidates, or when unsure, ask the developer which one the team watches.
+chomik never blocks a production deployment: a build that deploys to
+production, or after which a production deployment runs (`needs:` in the same
+workflow, or another workflow `on: workflow_run`), is not a daily build for
+chomik, and chomik keeps its own nightly check. When it is unclear whether a
+deployment goes to production, ask.
+
+Propose the move in two or three plain sentences and confirm once. Then change
+exactly this, CI configuration breaks easily:
+
+- At the end of the build's `jobs:` section, add this job, indented like the
+  other jobs there, and change nothing else in that file:
+
+  ```yaml
+  looking-for-messages-from-the-past: # 🐹 chomik, see .github/workflows/chomik.yml
+    uses: ./.github/workflows/chomik.yml
+  ```
+
+- In `.github/workflows/chomik.yml`, delete the lines from
+  `chomik: only without a daily build, begin` to `end`, inclusive, so chomik
+  does not also run on its own.
+
+Then say in plain words what changed and what happens from now on: once both
+files are committed and pushed to the main branch, the daily build turns red on
+a reminder's date. If a deployment to another environment, such as dev, runs
+only after this build succeeds, mention that on a reminder's date it waits until
+the reminder is handled. If the developer declines, chomik keeps its own nightly
+check.
 
 ## Creating a reminder
 
@@ -63,8 +101,8 @@ to tell that the problem is resolved, and at most one question per message.
 Propose the rest, including the review date: 14 days from today (UTC) when
 nothing points to another date, or a later one when the situation justifies it,
 such as a week before a key that expires next year. Confirm once before writing,
-and say then that on that date the main-branch build turns red, so the developer
-can choose a later date instead. What deserves a reminder is the developer's
+and say then that on that date chomik's nightly check turns red on the main
+branch, so the developer can choose a later date instead. What deserves a reminder is the developer's
 call.
 
 Write `.chomik/YYYY-MM-DD-<name>.md`, where the date is the review date and
@@ -121,12 +159,13 @@ its own file. The prompt asks the agent to:
 
 When the reminder is written, list the paths written, remind the developer to
 commit them with their work, and mention that `npx chomik check` shows when the
-reminder is due.
+reminder is due. Without `.github/workflows/chomik.yml`, add that until then the
+reminder shows only when someone runs that command.
 
 ## Limits
 
-- Write only reminders in `.chomik/` and the CI changes described in setup.md;
-  never touch files outside this repository.
+- Write only reminders in `.chomik/`, plus the two changes for moving chomik
+  into the daily build; never touch files outside this repository.
 - Never commit, push or open pull requests.
 - Never copy secrets into a reminder: tokens, passwords, internal addresses,
   customer data. If the developer pastes one, say in half a sentence that it is

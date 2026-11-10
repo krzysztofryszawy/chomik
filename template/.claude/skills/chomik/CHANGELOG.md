@@ -7,11 +7,20 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
-- The prompt chomik gives you to paste into your coding agent asks what trouble
-  chomik takes off your hands and what you gain, so the answer starts from your
-  side rather than from how chomik works. The agent then invites you to the next
-  step, installing chomik or typing `/chomik`, and says what it will and will
-  not change.
+- Installing is one step. On GitHub, `npx chomik@latest` also adds
+  `.github/workflows/chomik.yml`, which checks your reminders every night once
+  you commit and push it. No more separate setup with your agent, and no need
+  to run `npx chomik check` to finish it.
+- Type `/chomik` and the agent welcomes you, says how chomik is set up in your
+  project and, if you have a daily build, offers to move chomik into it, so the
+  build your team already watches turns red on a reminder's date. A build that
+  leads to a production deployment is never used.
+- No question about your default branch: the workflow reads it from GitHub.
+- On its own, chomik's workflow runs every night and by hand, no longer on every
+  push.
+- Where chomik is not installed yet, the prompt to paste into your coding agent
+  asks what trouble chomik takes off your hands, and ends by inviting you to
+  install it.
 
 ## [0.1.11] - 2026-11-10
 

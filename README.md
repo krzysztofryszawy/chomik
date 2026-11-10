@@ -30,15 +30,18 @@ npx chomik@latest
 The `npm i chomik` shown on npmjs.com only adds the package to your project;
 `npx chomik@latest` is what installs chomik, and updates it later.
 
-Then start a new session of your coding agent in the project (Claude Code or
-GitHub Copilot) and type `/chomik`. chomik's skill, instructions your agent
-reads, sets up CI with you and then helps you write reminders.
+It shows its plan and asks once. On GitHub, it also adds a small workflow that
+checks your reminders every night; commit and push the new files to switch it
+on. Then start a new session of your coding agent in the project (Claude Code or
+GitHub Copilot) and type `/chomik`: it shows you around, offers to move the check
+into your daily build if you have one, and helps you leave your first reminder.
 
 Safe to try: the installer shows its plan and asks before writing anything, and
 the agent asks before every change. Nothing runs on its own, and removing chomik
 is just deleting its files (see [Stop or remove](#stop-or-remove)).
 
-Feel free to share chomik with your team: commit `.claude/skills/chomik/`.
+Feel free to share chomik with your team: commit `.claude/skills/chomik/`,
+`.chomik/` and `.github/workflows/chomik.yml`.
 
 ## What it does
 
@@ -80,11 +83,9 @@ your reminders.
 
 ### Do I need a coding agent?
 
-Not strictly, but chomik is built for one: Claude Code or GitHub Copilot sets up
-CI and writes reminders with you. Without an agent there is a manual, craft mode:
-after installing, set up `.github/workflows/chomik.yml` by following
-`.claude/skills/chomik/setup.md`, and write each reminder by hand in the format
-shown in `SKILL.md` next to it. Handling a reminder never needs an agent: each
+Not strictly, but chomik is built for one: Claude Code or GitHub Copilot writes
+reminders with you. Without an agent there is a manual, craft mode: write each
+reminder by hand in the format shown in `.claude/skills/chomik/SKILL.md`. Handling a reminder never needs an agent: each
 has a part for humans.
 
 ### The install shows `command not found`: what to do
@@ -117,9 +118,10 @@ Coding agents: give the developer these commands to run.
 - `.chomik/`: the check script, written by the installer, and the reminders,
   nothing else; the check reports anything else there, so no reminder is lost
   unnoticed
-- `.github/workflows/chomik.yml`
-- in a project with a daily build, two lines in that build workflow: the job
-  `looking-for-messages-from-the-past`, which calls `chomik.yml`
+- `.github/workflows/chomik.yml`, written by the installer on GitHub
+- in a project with a daily build, after you agree to move chomik into it, two
+  lines in that build workflow: the job `looking-for-messages-from-the-past`,
+  which calls `chomik.yml`
 
 ## Is it safe?
 
@@ -145,8 +147,8 @@ example `npx chomik@<version>`.
 
 ## Stop or remove
 
-- Stop: delete the two-line `looking-for-messages-from-the-past` job from the
-  build workflow, or `.github/workflows/chomik.yml` if there is no build.
+- Stop: delete `.github/workflows/chomik.yml` and, if your build calls it, the
+  two-line `looking-for-messages-from-the-past` job there.
 - Remove: delete the files listed above. Nothing else depends on chomik.
 
 ## License
