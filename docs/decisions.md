@@ -5,6 +5,14 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **Setup never joins a build that a production deployment depends on.** A daily
+  build that deploys to production, or after which a production deployment runs
+  (`needs:` or `workflow_run`), is treated as no daily build: chomik gets its own
+  nightly workflow, which blocks nothing. When the target is unclear, the skill
+  asks. Why: "production is never blocked" (2026-11-05) was in the skill's first
+  version as "ask which branch deploys to dev", but that question was dropped on
+  2026-11-06 (`e110e59`), when setup switched to the default branch, without a
+  decision recording it; the owner found the gap on 2026-11-10.
 - **chomik introduces itself by its benefit, and the model chooses the words.**
   The README opens with the burden chomik takes off (remembering what must not
   be forgotten, with every detail), the first-contact prompt asks what chomik

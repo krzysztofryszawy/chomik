@@ -21,6 +21,12 @@ in README.md says what that means.
    Scheduled workflows run only on the default branch, which is why chomik uses
    that branch. With several candidates, or when unsure, ask the developer which
    one the team watches. With none, chomik gets its own nightly run.
+
+   chomik never blocks a production deployment. A build that deploys to
+   production, or after which a production deployment runs (`needs:` in the
+   same workflow, or another workflow `on: workflow_run`), does not count as the
+   daily build; chomik gets its own nightly run instead and says so in one
+   sentence. When it is unclear whether a deployment goes to production, ask.
 3. Propose the setup in two or three plain sentences and confirm once: this is a
    one-time step that adds one workflow file, plus two lines in the daily build
    if there is one, and after it chomik checks by itself every day. Mention only
@@ -39,9 +45,9 @@ in README.md says what that means.
        uses: ./.github/workflows/chomik.yml
      ```
 
-     If another workflow deploys only after this build succeeds
-     (`on: workflow_run`), mention that on a reminder's date that deployment
-     waits until the reminder is handled.
+     If a deployment to another environment, such as dev, runs only after this
+     build succeeds, mention that on a reminder's date it waits until the
+     reminder is handled.
    - Without a daily build: keep that block in `chomik.yml` and remove only its
      two marker comments, so it runs every night and on push by itself.
 4. Skip how the files were checked and finish as a short dialogue with someone

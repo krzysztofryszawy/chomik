@@ -7,6 +7,9 @@ What changed in chomik, newest first. chomik follows
 
 ### Changed
 
+- chomik never blocks a production deployment: setup does not join a build
+  that deploys to production or that a production deployment waits for, and
+  gives chomik its own nightly run instead.
 - Setup asks which branch is the default one when the repository does not say,
   instead of guessing.
 - Updating `chomik.yml` after a chomik update has its own short steps and keeps

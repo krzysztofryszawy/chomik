@@ -3,12 +3,21 @@
 Bulletproof reminders for things that really matter. A message from the past
 turns the build red on a chosen date, with everything the team needs to act.
 
-Some things in a project must not be forgotten: a key that expires, a temporary
-workaround, a follow-up promised for later. Keeping them in your head, with every
-detail of what to do, is a burden, and still no guarantee. chomik carries it for
-you. On the day, the main-branch build turns red with exactly what needs doing and
-a ready task for your coding agent, so nobody misses it, and whoever picks it up,
-even someone new to the project, can act at once.
+You know the feeling: something in your project must not be forgotten. A key
+that expires next spring, a workaround you promised to remove, a follow-up
+after the release. A calendar alert or a ticket tells you *that* something is
+due, but it lives far from the code, and by then nobody remembers the details.
+
+chomik puts the reminder where the work happens: in your repository, right
+next to the code it is about. Tell your coding agent what to remember. On the
+day, the main-branch build you check every morning with your coffee turns red,
+on purpose, so it cannot slip by; a production deployment is never held up. It
+tells you exactly what to do and why, with a ready task for your coding agent.
+No extra tool to watch, no context to dig up.
+
+For example: your API key expires in a year. A week before, the build turns
+red with where the key is used, how to rotate it, and a prompt your agent can
+run with.
 
 ## Try it
 
