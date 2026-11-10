@@ -5,6 +5,14 @@ the convention is in [message-from-the-past.md](message-from-the-past.md).
 
 ## 2026-11-10
 
+- **The welcome does not press for a reminder.** Invoked without a request, the
+  agent treats the developer as possibly new and with nothing to remember yet:
+  what chomik takes off their hands, one everyday example, how it is set up, then
+  an open next step (a sample reminder, or `/chomik` later). Questions go in the
+  reply text, not in question forms. The voice is warm and plain instead of
+  "brief". Why: in the owner's test, Copilot answered with a technical status and
+  a form asking what to remember before explaining anything; "brief" was read
+  literally. The rule of 2026-11-05 to wait for the developer's description stays.
 - **One-step install; the agent offers the daily build.** On GitHub,
   `npx chomik@latest` writes `.github/workflows/chomik.yml` with its own nightly
   run, in the same plan and confirmation as the skill and the check script, and

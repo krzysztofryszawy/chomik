@@ -15,6 +15,9 @@ What changed in chomik, newest first. chomik follows
   project and, if you have a daily build, offers to move chomik into it, so the
   build your team already watches turns red on a reminder's date. A build that
   leads to a production deployment is never used.
+- The welcome no longer asks you right away what to remember. It says what
+  chomik takes off your hands, with an example, and lets you try it on a
+  sample reminder or come back whenever something comes up.
 - No question about your default branch: the workflow reads it from GitHub.
 - On its own, chomik's workflow runs every night and by hand, no longer on every
   push.
